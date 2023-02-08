@@ -34,10 +34,13 @@ const menuItems: MenuItem[] = [
 
 const Layout: React.FC = () => {
   return (
-    <AntdLayout className="h-full flex">
-      <Header className="flex" style={{ background: 'white' }}>
+    <AntdLayout>
+      <Header
+        className="flex"
+        style={{ padding: '0 6rem', background: 'white' }}
+      >
         <div className="flex flex-1 items-center">
-          <span className="mr-4 text-2xl font-semibold font-mono cursor-pointer">
+          <span className="mr-4 text-xl font-semibold font-mono cursor-pointer">
             <Link className="hover:text-black" to="/">
               GitHub Ranking
             </Link>
@@ -63,16 +66,10 @@ const Layout: React.FC = () => {
           </Button>
         </a>
       </Header>
-      <Content
-        className="flex flex-1 flex-col"
-        style={{ padding: '0 50px', background: 'white' }}
-      >
+      <Content className="px-40 flex">
         <Outlet />
       </Content>
-      <Footer
-        className="flex justify-center"
-        style={{ padding: '16px 0', background: 'white' }}
-      >
+      <Footer className="flex justify-center" style={{ padding: '1rem 0' }}>
         <span className="text-sm">
           Crafted with <HeartFilled style={{ color: '#eb2f96' }} /> by{' '}
           <a

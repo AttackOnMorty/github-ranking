@@ -22,7 +22,10 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react'],
-  rules: {},
+  rules: {
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
+  },
   settings: {
     react: {
       version: 'detect',
