@@ -41,7 +41,7 @@ const Layout: React.FC = () => {
       >
         <div className="flex flex-1 items-center">
           <span className="mr-4 text-xl font-semibold font-mono cursor-pointer">
-            <Link className="hover:text-black" to="/">
+            <Link className="text-black hover:text-black" to="/">
               GitHub Ranking
             </Link>
           </span>

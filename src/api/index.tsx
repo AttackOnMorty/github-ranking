@@ -6,8 +6,13 @@ const octokit = new Octokit({
 });
 
 export interface Repo {
+  id: string;
   name: string;
-  avatarUrl: string;
+  url: string;
+  owner: {
+    avatarUrl: string;
+    url: string;
+  };
   stars: number;
   description: string;
   language: string;
@@ -26,16 +31,23 @@ export const getTopReposAsync = async (): Promise<Repo[]> => {
 
   return res.data.items.map((repo: any) => {
     const {
+      id,
       name,
-      owner: { avatar_url },
+      html_url,
+      owner,
       stargazers_count,
       description,
       language,
     } = repo;
 
     return {
+      id,
       name,
-      avatarUrl: avatar_url,
+      url: html_url,
+      owner: {
+        avatarUrl: owner.avatar_url,
+        url: owner.html_url,
+      },
       stars: stargazers_count,
       description,
       language,
