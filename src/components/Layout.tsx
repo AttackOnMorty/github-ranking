@@ -1,8 +1,8 @@
 import { GithubOutlined, HeartFilled } from '@ant-design/icons';
-import { Button, Layout, Menu } from 'antd';
+import { Button, Layout as AntdLayout, Menu } from 'antd';
 import { Link, Outlet } from 'react-router-dom';
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content, Footer } = AntdLayout;
 
 interface MenuItem {
   key: string;
@@ -32,9 +32,9 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-const Layouts: React.FC = () => {
+const Layout: React.FC = () => {
   return (
-    <Layout className="h-full flex">
+    <AntdLayout className="h-full flex">
       <Header className="flex" style={{ background: 'white' }}>
         <div className="flex flex-1 items-center">
           <span className="mr-4 text-2xl font-semibold font-mono cursor-pointer">
@@ -85,8 +85,8 @@ const Layouts: React.FC = () => {
           </a>
         </span>
       </Footer>
-    </Layout>
+    </AntdLayout>
   );
 };
 
-export default Layouts;
+export default Layout;

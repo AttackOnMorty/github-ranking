@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 
-import Layout from './components/Layouts';
+import Layout from './components/Layout';
 import Organizations from './components/Organizations';
 import Repositories from './components/Repositories';
 import Users from './components/Users';
