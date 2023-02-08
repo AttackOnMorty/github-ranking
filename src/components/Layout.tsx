@@ -66,10 +66,10 @@ const Layout: React.FC = () => {
           </Button>
         </a>
       </Header>
-      <Content className="px-40 pt-10 flex">
+      <Content className="px-40 flex">
         <Outlet />
       </Content>
-      <Footer className="flex justify-center" style={{ padding: '1rem 0' }}>
+      <Footer className="flex justify-center">
         <span className="text-sm">
           Crafted with <HeartFilled style={{ color: '#eb2f96' }} /> by{' '}
           <a
