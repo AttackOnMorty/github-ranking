@@ -66,7 +66,7 @@ const Layout: React.FC = () => {
           </Button>
         </a>
       </Header>
-      <Content className="px-40 flex">
+      <Content className="px-40 pt-10 flex">
         <Outlet />
       </Content>
       <Footer className="flex justify-center" style={{ padding: '1rem 0' }}>

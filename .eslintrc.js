@@ -25,6 +25,7 @@ module.exports = {
   rules: {
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/strict-boolean-expressions': 'warn',
   },
   settings: {
     react: {
