@@ -2,7 +2,7 @@ import { GithubOutlined, HeartFilled } from '@ant-design/icons';
 import { Button, Layout as AntdLayout, Menu } from 'antd';
 import { Link, Outlet } from 'react-router-dom';
 
-const { Header, Content, Footer } = AntdLayout;
+const { Header } = AntdLayout;
 
 interface MenuItem {
   key: string;
@@ -40,7 +40,7 @@ const Layout: React.FC = () => {
         style={{ padding: '0 6rem', background: 'white' }}
       >
         <div className="flex flex-1 items-center">
-          <span className="mr-4 text-xl font-semibold font-mono cursor-pointer">
+          <span className="mr-4 text-2xl font-mono cursor-pointer whitespace-nowrap">
             <Link className="text-black hover:text-black" to="/">
               GitHub Ranking
             </Link>
@@ -66,11 +66,11 @@ const Layout: React.FC = () => {
           </Button>
         </a>
       </Header>
-      <Content className="px-40 flex">
+      <main className="max-w-6xl px-14 pb-6 m-auto flex">
         <Outlet />
-      </Content>
-      <Footer className="flex justify-center">
-        <span className="text-sm">
+      </main>
+      <footer className="pb-6 flex justify-center">
+        <span className="text-sm font-light">
           Crafted with <HeartFilled style={{ color: '#eb2f96' }} /> by{' '}
           <a
             className="text-blue-500 hover:underline"
@@ -81,7 +81,7 @@ const Layout: React.FC = () => {
             Luke Mao
           </a>
         </span>
-      </Footer>
+      </footer>
     </AntdLayout>
   );
 };

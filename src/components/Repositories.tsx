@@ -52,17 +52,22 @@ const Repositories: React.FC = () => {
             rel="noreferrer"
           >
             <img
-              className="w-8 h-8 mr-2 rounded-full"
+              className="w-8 mr-2 rounded-full"
               src={owner.avatarUrl}
               alt="avatar"
             />
           </a>
-          <a href={url} target="_black" rel="noreferrer">
+          <a
+            className="font-medium"
+            href={url}
+            target="_black"
+            rel="noreferrer"
+          >
             {name}
           </a>
         </div>
       ),
-      width: 250,
+      width: 260,
     },
     {
       title: 'Stars',
@@ -92,10 +97,10 @@ const Repositories: React.FC = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
-      ellipsis: true,
       render: (description) => (
         <span className="text-sm font-light">{description}</span>
       ),
+      ellipsis: true,
     },
     {
       title: 'Language',
@@ -106,11 +111,11 @@ const Repositories: React.FC = () => {
       onFilter: (value, record) => record.language === value,
       render: (language: string) =>
         language ? (
-          <Tag color="blue" key={language}>
+          <Tag className="font-medium" color="rgb(14 165 233)" key={language}>
             {language}
           </Tag>
         ) : (
-          <Tag color="orange" key="N/A">
+          <Tag className="font-medium" color="rgb(251 146 60)" key="N/A">
             N/A
           </Tag>
         ),
@@ -120,8 +125,11 @@ const Repositories: React.FC = () => {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="py-8 text-3xl flex justify-center">Top 100 by Stars</div>
+      <div className="py-10 flex justify-center">
+        <span className="text-4xl font-extralight">Top 100 by Stars</span>
+      </div>
       <Table
+        className="shadow-lg"
         rowKey="id"
         loading={loading}
         columns={columns}
