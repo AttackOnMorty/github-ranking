@@ -8,17 +8,21 @@ import type { MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { Repo } from '../api';
 
+const menuItems: MenuProps['items'] = [
+  {
+    key: 'Stars',
+    label: 'Stars',
+  },
+  {
+    key: 'Forks',
+    label: 'Forks',
+  },
+];
+
 const Repositories: React.FC = () => {
   const [category, setCategory] = useState('Stars');
   const [data, setData] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const languageFilters = uniq(
-    data
-      .map((repo) => repo.language)
-      .filter((value) => value)
-      .sort()
-  ).map((value) => ({ text: value, value }));
 
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
@@ -34,18 +38,51 @@ const Repositories: React.FC = () => {
     };
   }, [category]);
 
-  const menuItems: MenuProps['items'] = [
-    {
-      key: 'Stars',
-      label: 'Stars',
-    },
-    {
-      key: 'Forks',
-      label: 'Forks',
-    },
-  ];
+  return (
+    <div className="flex flex-1 flex-col">
+      <header className="py-10 flex justify-center">
+        <Space>
+          <span className="text-4xl font-extralight">Top 100 by</span>
+          <Dropdown
+            menu={{
+              items: menuItems,
+              selectable: true,
+              defaultSelectedKeys: [category],
+              onClick: (e) => {
+                setCategory(e.key);
+              },
+            }}
+          >
+            <Typography.Link>
+              <Space>
+                <span className="text-4xl font-extralight">{category}</span>
+                <DownOutlined />
+              </Space>
+            </Typography.Link>
+          </Dropdown>
+        </Space>
+      </header>
+      <Table
+        className="shadow-lg"
+        rowKey="id"
+        loading={loading}
+        columns={getColumns(data)}
+        dataSource={data}
+        pagination={false}
+      />
+    </div>
+  );
+};
 
-  const columns: ColumnsType<Repo> = [
+function getColumns(data: Repo[]): ColumnsType<Repo> {
+  const languageFilters = uniq(
+    data
+      .map((repo) => repo.language)
+      .filter((value) => value)
+      .sort()
+  ).map((value) => ({ text: value, value }));
+
+  return [
     {
       title: 'Rank',
       dataIndex: 'rank',
@@ -138,42 +175,6 @@ const Repositories: React.FC = () => {
       width: 150,
     },
   ];
-
-  return (
-    <div className="flex flex-1 flex-col">
-      <header className="py-10 flex justify-center">
-        <Space>
-          <span className="text-4xl font-extralight">Top 100 by</span>
-          <Dropdown
-            menu={{
-              items: menuItems,
-              selectable: true,
-              defaultSelectedKeys: [category],
-              onClick: (e) => {
-                console.log(e);
-                setCategory(e.key);
-              },
-            }}
-          >
-            <Typography.Link>
-              <Space>
-                <span className="text-4xl font-extralight">{category}</span>
-                <DownOutlined />
-              </Space>
-            </Typography.Link>
-          </Dropdown>
-        </Space>
-      </header>
-      <Table
-        className="shadow-lg"
-        rowKey="id"
-        loading={loading}
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-      />
-    </div>
-  );
-};
+}
 
 export default Repositories;
