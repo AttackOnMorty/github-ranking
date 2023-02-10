@@ -4,8 +4,12 @@ import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getTopReposAsync } from '../api';
 
-import type { MenuProps } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import type { MenuProps, TableProps } from 'antd';
+import type {
+  ColumnsType,
+  FilterValue,
+  SorterResult,
+} from 'antd/es/table/interface';
 import type { Repo } from '../api';
 
 const menuItems: MenuProps['items'] = [
@@ -23,11 +27,21 @@ const Repositories: React.FC = () => {
   const [category, setCategory] = useState('Stars');
   const [data, setData] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(false);
+  const [filteredInfo, setFilteredInfo] = useState<
+    Record<string, FilterValue | null>
+  >({});
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<Repo>>({});
+
+  const clearAll = (): void => {
+    setFilteredInfo({});
+    setSortedInfo({});
+  };
 
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
       setData(await getTopReposAsync(category.toLowerCase()));
+      clearAll();
       setLoading(false);
     };
     const id = setTimeout(() => {
@@ -37,6 +51,15 @@ const Repositories: React.FC = () => {
       clearTimeout(id);
     };
   }, [category]);
+
+  const handleChange: TableProps<Repo>['onChange'] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    setFilteredInfo(filters);
+    setSortedInfo(sorter as SorterResult<Repo>);
+  };
 
   return (
     <div className="flex flex-1 flex-col">
@@ -66,15 +89,20 @@ const Repositories: React.FC = () => {
         className="shadow-lg"
         rowKey="id"
         loading={loading}
-        columns={getColumns(data)}
+        columns={getColumns(data, sortedInfo, filteredInfo)}
         dataSource={data}
+        onChange={handleChange}
         pagination={false}
       />
     </div>
   );
 };
 
-function getColumns(data: Repo[]): ColumnsType<Repo> {
+function getColumns(
+  data: Repo[],
+  sortedInfo: SorterResult<Repo>,
+  filteredInfo: Record<string, FilterValue | null>
+): ColumnsType<Repo> {
   const languageFilters = uniq(
     data
       .map((repo) => repo.language)
@@ -126,6 +154,7 @@ function getColumns(data: Repo[]): ColumnsType<Repo> {
       key: 'stars',
       sortDirections: ['descend', 'ascend'],
       sorter: (repo1, repo2) => repo1.stars - repo2.stars,
+      sortOrder: sortedInfo.columnKey === 'stars' ? sortedInfo.order : null,
       render: (stars) => (
         <span className="text-xs font-medium">
           {stars >= 1000 ? `${Math.floor(stars / 1000)}k` : stars}
@@ -139,6 +168,7 @@ function getColumns(data: Repo[]): ColumnsType<Repo> {
       key: 'forks',
       sortDirections: ['descend', 'ascend'],
       sorter: (repo1, repo2) => repo1.forks - repo2.forks,
+      sortOrder: sortedInfo.columnKey === 'forks' ? sortedInfo.order : null,
       render: (forks) => (
         <span className="text-xs font-medium">
           {forks >= 1000 ? `${Math.floor(forks / 1000)}k` : forks}
@@ -160,10 +190,11 @@ function getColumns(data: Repo[]): ColumnsType<Repo> {
       key: 'language',
       dataIndex: 'language',
       filters: languageFilters,
+      filteredValue: filteredInfo.language ?? null,
       filterSearch: true,
       onFilter: (value, record) => record.language === value,
-      render: (language: string) =>
-        language ? (
+      render: (language) =>
+        language !== null ? (
           <Tag className="font-medium" color="rgb(14 165 233)" key={language}>
             {language}
           </Tag>
