@@ -1,10 +1,9 @@
-import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space, Table, Tag, Typography } from 'antd';
+import { Radio, Table, Tag } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getTopReposAsync } from '../api';
 
-import type { MenuProps, TableProps } from 'antd';
+import type { TableProps } from 'antd';
 import type {
   ColumnsType,
   FilterValue,
@@ -12,19 +11,19 @@ import type {
 } from 'antd/es/table/interface';
 import type { Repo } from '../api';
 
-const menuItems: MenuProps['items'] = [
+const categoryOptions = [
   {
-    key: 'Stars',
     label: 'Stars',
+    value: 'stars',
   },
   {
-    key: 'Forks',
     label: 'Forks',
+    value: 'forks',
   },
 ];
 
 const Repositories: React.FC = () => {
-  const [category, setCategory] = useState('Stars');
+  const [category, setCategory] = useState('stars');
   const [data, setData] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState<
@@ -40,7 +39,7 @@ const Repositories: React.FC = () => {
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopReposAsync(category.toLowerCase()));
+      setData(await getTopReposAsync(category));
       clearAll();
       setLoading(false);
     };
@@ -63,28 +62,18 @@ const Repositories: React.FC = () => {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="py-10 flex justify-center">
-        <Space>
-          <span className="text-4xl font-extralight">Top 100 by</span>
-          <Dropdown
-            menu={{
-              items: menuItems,
-              selectable: true,
-              defaultSelectedKeys: [category],
-              onClick: (e) => {
-                setCategory(e.key);
-              },
-            }}
-          >
-            <Typography.Link>
-              <Space>
-                <span className="text-4xl font-extralight">{category}</span>
-                <DownOutlined />
-              </Space>
-            </Typography.Link>
-          </Dropdown>
-        </Space>
-      </header>
+      <div className="py-10 flex justify-center">
+        <Radio.Group
+          size="large"
+          optionType="button"
+          buttonStyle="solid"
+          defaultValue="stars"
+          options={categoryOptions}
+          onChange={(e) => {
+            setCategory(e.target.value);
+          }}
+        />
+      </div>
       <Table
         className="shadow-lg"
         rowKey="id"
