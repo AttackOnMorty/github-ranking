@@ -20,11 +20,11 @@ export interface Repo {
   language: string;
 }
 
-export const getTopReposAsync = async (): Promise<Repo[]> => {
+export const getTopReposAsync = async (category: string): Promise<Repo[]> => {
   const res = await octokit.request('GET /search/repositories{?q}', {
     // TODO: Data would be unstable if we filter stars with a small number
-    q: 'stars:>100',
-    sort: 'stars',
+    q: `${category}:>100`,
+    sort: category,
     per_page: 100,
   });
 

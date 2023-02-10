@@ -1,12 +1,15 @@
-import { Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Space, Table, Tag, Typography } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
-
-import type { Repo } from '../api';
 import { getTopReposAsync } from '../api';
 
+import type { MenuProps } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import type { Repo } from '../api';
+
 const Repositories: React.FC = () => {
+  const [category, setCategory] = useState('Stars');
   const [data, setData] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +23,7 @@ const Repositories: React.FC = () => {
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopReposAsync());
+      setData(await getTopReposAsync(category.toLowerCase()));
       setLoading(false);
     };
     const id = setTimeout(() => {
@@ -29,7 +32,18 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, []);
+  }, [category]);
+
+  const menuItems: MenuProps['items'] = [
+    {
+      key: 'Stars',
+      label: 'Stars',
+    },
+    {
+      key: 'Forks',
+      label: 'Forks',
+    },
+  ];
 
   const columns: ColumnsType<Repo> = [
     {
@@ -73,6 +87,8 @@ const Repositories: React.FC = () => {
       title: 'Stars',
       dataIndex: 'stars',
       key: 'stars',
+      sortDirections: ['descend', 'ascend'],
+      sorter: (repo1, repo2) => repo1.stars - repo2.stars,
       render: (stars) => (
         <span className="text-xs font-medium">
           {stars >= 1000 ? `${Math.floor(stars / 1000)}k` : stars}
@@ -83,12 +99,12 @@ const Repositories: React.FC = () => {
     {
       title: 'Forks',
       dataIndex: 'forks',
-      key: 'stars',
+      key: 'forks',
       sortDirections: ['descend', 'ascend'],
       sorter: (repo1, repo2) => repo1.forks - repo2.forks,
-      render: (stars) => (
+      render: (forks) => (
         <span className="text-xs font-medium">
-          {stars >= 1000 ? `${Math.floor(stars / 1000)}k` : stars}
+          {forks >= 1000 ? `${Math.floor(forks / 1000)}k` : forks}
         </span>
       ),
       width: 100,
@@ -125,9 +141,29 @@ const Repositories: React.FC = () => {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="py-10 flex justify-center">
-        <span className="text-4xl font-extralight">Top 100 by Stars</span>
-      </div>
+      <header className="py-10 flex justify-center">
+        <Space>
+          <span className="text-4xl font-extralight">Top 100 by</span>
+          <Dropdown
+            menu={{
+              items: menuItems,
+              selectable: true,
+              defaultSelectedKeys: [category],
+              onClick: (e) => {
+                console.log(e);
+                setCategory(e.key);
+              },
+            }}
+          >
+            <Typography.Link>
+              <Space>
+                <span className="text-4xl font-extralight">{category}</span>
+                <DownOutlined />
+              </Space>
+            </Typography.Link>
+          </Dropdown>
+        </Space>
+      </header>
       <Table
         className="shadow-lg"
         rowKey="id"
