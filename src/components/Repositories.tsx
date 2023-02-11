@@ -1,15 +1,13 @@
-import { Radio, Table, Tag } from 'antd';
+import { Input, Select, Space, Table, Tag } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getTopReposAsync } from '../api';
 
 import type { TableProps } from 'antd';
-import type {
-  ColumnsType,
-  FilterValue,
-  SorterResult,
-} from 'antd/es/table/interface';
+import type { ColumnsType, FilterValue } from 'antd/es/table/interface';
 import type { Repo } from '../api';
+
+const { Search } = Input;
 
 const categoryOptions = [
   {
@@ -24,22 +22,23 @@ const categoryOptions = [
 
 const Repositories: React.FC = () => {
   const [category, setCategory] = useState('stars');
+  const [language, setLanguage] = useState('');
+  const [sorter, setSorter] = useState('stars');
   const [data, setData] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
-  const [sortedInfo, setSortedInfo] = useState<SorterResult<Repo>>({});
 
   const clearAll = (): void => {
     setFilteredInfo({});
-    setSortedInfo({});
   };
 
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopReposAsync(category));
+      setData(await getTopReposAsync(category, language));
+      setSorter(category);
       clearAll();
       setLoading(false);
     };
@@ -49,36 +48,53 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [category]);
+  }, [category, language]);
 
-  const handleChange: TableProps<Repo>['onChange'] = (
-    pagination,
-    filters,
-    sorter
-  ) => {
+  const handleChange: TableProps<Repo>['onChange'] = (pagination, filters) => {
     setFilteredInfo(filters);
-    setSortedInfo(sorter as SorterResult<Repo>);
+  };
+
+  const handleSortByChange = (value: string): void => {
+    setCategory(value);
+  };
+
+  const handleLanguageSearch = (value: string, e: any): void => {
+    setLanguage(value);
+    e.target.blur();
   };
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="py-10 flex justify-center">
-        <Radio.Group
-          size="large"
-          optionType="button"
-          buttonStyle="solid"
-          defaultValue="stars"
-          options={categoryOptions}
-          onChange={(e) => {
-            setCategory(e.target.value);
-          }}
-        />
-      </div>
+      <Space wrap className="py-10 flex justify-center" size="large">
+        <Space>
+          <span className="text-lg font-extralight">Sort by:</span>
+          <Select
+            className="w-32"
+            size="large"
+            defaultValue="stars"
+            onChange={handleSortByChange}
+            options={categoryOptions}
+          />
+        </Space>
+        <Space>
+          <span className="text-lg font-extralight">Language:</span>
+          <Search
+            className="w-40"
+            size="large"
+            placeholder="Any"
+            onSearch={handleLanguageSearch}
+          />
+        </Space>
+        <Space>
+          <span className="text-lg font-extralight">Topic:</span>
+          <Search className="w-40" size="large" placeholder="Any" />
+        </Space>
+      </Space>
       <Table
         className="shadow-lg"
         rowKey="id"
         loading={loading}
-        columns={getColumns(data, sortedInfo, filteredInfo)}
+        columns={getColumns(data, sorter, filteredInfo)}
         dataSource={data}
         onChange={handleChange}
         pagination={false}
@@ -89,7 +105,7 @@ const Repositories: React.FC = () => {
 
 function getColumns(
   data: Repo[],
-  sortedInfo: SorterResult<Repo>,
+  sorter: string,
   filteredInfo: Record<string, FilterValue | null>
 ): ColumnsType<Repo> {
   const languageFilters = uniq(
@@ -141,9 +157,10 @@ function getColumns(
       title: 'Stars',
       dataIndex: 'stars',
       key: 'stars',
-      sortDirections: ['descend', 'ascend'],
-      sorter: (repo1, repo2) => repo1.stars - repo2.stars,
-      sortOrder: sortedInfo.columnKey === 'stars' ? sortedInfo.order : null,
+      sortDirections: ['descend'],
+      showSorterTooltip: false,
+      sorter: sorter === 'stars',
+      sortOrder: sorter === 'stars' ? 'descend' : null,
       render: (stars) => (
         <span className="text-xs font-medium">
           {stars >= 1000 ? `${Math.floor(stars / 1000)}k` : stars}
@@ -155,9 +172,10 @@ function getColumns(
       title: 'Forks',
       dataIndex: 'forks',
       key: 'forks',
-      sortDirections: ['descend', 'ascend'],
-      sorter: (repo1, repo2) => repo1.forks - repo2.forks,
-      sortOrder: sortedInfo.columnKey === 'forks' ? sortedInfo.order : null,
+      sortDirections: ['descend'],
+      showSorterTooltip: false,
+      sorter: sorter === 'forks',
+      sortOrder: sorter === 'forks' ? 'descend' : null,
       render: (forks) => (
         <span className="text-xs font-medium">
           {forks >= 1000 ? `${Math.floor(forks / 1000)}k` : forks}
