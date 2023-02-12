@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [
 
 const Layout: React.FC = () => {
   return (
-    <AntdLayout>
+    <AntdLayout className="h-full flex">
       <Header
         className="flex"
         style={{ padding: '0 6rem', background: 'white' }}
@@ -66,10 +66,12 @@ const Layout: React.FC = () => {
           </Button>
         </a>
       </Header>
-      <main className="max-w-6xl px-14 pb-6 m-auto flex">
-        <Outlet />
+      <main className="flex flex-1 justify-center bg-[#f5f5f5]">
+        <div className="max-w-6xl px-14 py-6 flex">
+          <Outlet />
+        </div>
       </main>
-      <footer className="pb-6 flex justify-center">
+      <footer className="pb-6 flex justify-center bg-[#f5f5f5]">
         <span className="text-sm font-light">
           Crafted with <HeartFilled style={{ color: '#eb2f96' }} /> by{' '}
           <a

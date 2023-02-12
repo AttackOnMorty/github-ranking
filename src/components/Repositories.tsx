@@ -1,4 +1,4 @@
-import { Radio, Select, Space, Table, Tag } from 'antd';
+import { Radio, Select, Space, Spin, Table, Tag } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
@@ -25,24 +25,20 @@ const Repositories: React.FC = () => {
   const [languageOptions, setLanguageOptions] = useState<string[]>();
   const [topic, setTopic] = useState<string>();
   const [sorter, setSorter] = useState('stars');
-  const [data, setData] = useState<Repo[]>([]);
+  const [data, setData] = useState<Repo[]>();
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
-
-  const clearAll = (): void => {
-    setFilteredInfo({});
-  };
 
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
       await getLanguagesAsync();
       setData(await getTopReposAsync(category, language, topic));
-      setSorter(category);
-      clearAll();
       setLoading(false);
+      setSorter(category);
+      setFilteredInfo({});
     };
     const getLanguageOptions = async (): Promise<void> => {
       setLanguageOptions(await getLanguagesAsync());
@@ -60,59 +56,65 @@ const Repositories: React.FC = () => {
     setFilteredInfo(filters);
   };
 
-  return (
-    <div className="flex flex-1 flex-col">
-      <div className="pt-10 pb-5 flex justify-between">
-        <Radio.Group
-          size="large"
-          options={categoryOptions}
-          onChange={(e) => {
-            setCategory(e.target.value);
-          }}
-          value={category}
-          optionType="button"
-          buttonStyle="solid"
-        />
-        <Space size="large">
-          <Space>
-            <span className="text-lg font-extralight">Language:</span>
-            <Select
-              className="w-36"
-              size="large"
-              placeholder="Any"
-              onChange={(value: string) => {
-                setLanguage(value);
-              }}
-              options={languageOptions?.map((value) => ({
-                value,
-                label: value,
-              }))}
-              dropdownMatchSelectWidth={180}
-              showSearch
-              allowClear
-            />
-          </Space>
-          <Space>
-            <span className="text-lg font-extralight">Topic:</span>
-            <SearchInput
-              className="w-36"
-              placeholder="Any"
-              value={topic}
-              setValue={setTopic}
-            />
-          </Space>
-        </Space>
-      </div>
-      <Table
-        className="shadow-lg"
-        rowKey="id"
-        loading={loading}
-        columns={getColumns(data, sorter, filteredInfo)}
-        dataSource={data}
-        onChange={handleChange}
-        pagination={false}
+  const getTitle = (): JSX.Element => (
+    <div className="flex justify-between">
+      <Radio.Group
+        size="large"
+        options={categoryOptions}
+        onChange={(e) => {
+          setCategory(e.target.value);
+        }}
+        value={category}
+        optionType="button"
+        buttonStyle="solid"
       />
+      <Space size="large">
+        <Space>
+          <span className="text-lg font-extralight">Language:</span>
+          <Select
+            className="w-36"
+            size="large"
+            placeholder="Any"
+            onChange={(value: string) => {
+              setLanguage(value);
+            }}
+            options={languageOptions?.map((value) => ({
+              value,
+              label: value,
+            }))}
+            dropdownMatchSelectWidth={200}
+            showSearch
+            allowClear
+          />
+        </Space>
+        <Space>
+          <span className="text-lg font-extralight">Topic:</span>
+          <SearchInput
+            className="w-36"
+            placeholder="Any"
+            value={topic}
+            setValue={setTopic}
+          />
+        </Space>
+      </Space>
     </div>
+  );
+
+  return data === undefined ? (
+    <div className="flex items-center">
+      <Spin size="large" />
+    </div>
+  ) : (
+    <Table
+      className="shadow-lg"
+      rowKey="id"
+      title={getTitle}
+      loading={loading}
+      columns={getColumns(data, sorter, filteredInfo)}
+      dataSource={data}
+      onChange={handleChange}
+      pagination={false}
+    />
   );
 };
 

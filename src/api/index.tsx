@@ -45,7 +45,7 @@ export const getTopReposAsync = async (
   const res = await octokit.request('GET /search/repositories{?q}', {
     q,
     sort: category,
-    per_page: 10,
+    per_page: 100,
   });
 
   if (res.status !== 200) {

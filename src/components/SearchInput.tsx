@@ -80,7 +80,7 @@ const SearchInput: React.FC<{
       onChange={handleChange}
       notFoundContent={loading ? <Spin size="small" /> : null}
       optionLabelProp="label"
-      dropdownMatchSelectWidth={460}
+      dropdownMatchSelectWidth={300}
     >
       {renderOptions(data)}
     </Select>
