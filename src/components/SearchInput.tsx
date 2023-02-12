@@ -60,7 +60,7 @@ const SearchInput: React.FC<{
       <Option key={name} value={name} label={name}>
         <div className="font-medium">{name}</div>
         {description !== null && (
-          <div className="font-extralight">{description}</div>
+          <div className="font-extralight whitespace-normal">{description}</div>
         )}
       </Option>
     ));
@@ -80,7 +80,7 @@ const SearchInput: React.FC<{
       onChange={handleChange}
       notFoundContent={loading ? <Spin size="small" /> : null}
       optionLabelProp="label"
-      dropdownMatchSelectWidth={500}
+      dropdownMatchSelectWidth={460}
     >
       {renderOptions(data)}
     </Select>

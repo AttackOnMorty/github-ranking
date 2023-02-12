@@ -1,7 +1,7 @@
-import { Input, Radio, Space, Table, Tag } from 'antd';
+import { Radio, Select, Space, Table, Tag } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
-import { getTopReposAsync } from '../api';
+import { getLanguagesAsync, getTopReposAsync } from '../api';
 import SearchInput from './SearchInput';
 
 import type { TableProps } from 'antd';
@@ -22,6 +22,7 @@ const categoryOptions = [
 const Repositories: React.FC = () => {
   const [category, setCategory] = useState('stars');
   const [language, setLanguage] = useState<string>();
+  const [languageOptions, setLanguageOptions] = useState<string[]>();
   const [topic, setTopic] = useState<string>();
   const [sorter, setSorter] = useState('stars');
   const [data, setData] = useState<Repo[]>([]);
@@ -37,13 +38,18 @@ const Repositories: React.FC = () => {
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
+      await getLanguagesAsync();
       setData(await getTopReposAsync(category, language, topic));
       setSorter(category);
       clearAll();
       setLoading(false);
     };
+    const getLanguageOptions = async (): Promise<void> => {
+      setLanguageOptions(await getLanguagesAsync());
+    };
     const id = setTimeout(() => {
       void getTopRepos();
+      void getLanguageOptions();
     }, 1000);
     return () => {
       clearTimeout(id);
@@ -70,13 +76,19 @@ const Repositories: React.FC = () => {
         <Space size="large">
           <Space>
             <span className="text-lg font-extralight">Language:</span>
-            <Input
+            <Select
               className="w-36"
               size="large"
               placeholder="Any"
-              onPressEnter={(e) => {
-                setLanguage(e.currentTarget.value);
+              onChange={(value: string) => {
+                setLanguage(value);
               }}
+              options={languageOptions?.map((value) => ({
+                value,
+                label: value,
+              }))}
+              dropdownMatchSelectWidth={180}
+              showSearch
               allowClear
             />
           </Space>

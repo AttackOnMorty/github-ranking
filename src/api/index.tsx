@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
 
 const octokit = new Octokit({
@@ -34,7 +35,7 @@ export const getTopReposAsync = async (
   let q = `${category}:>100`;
 
   if (language !== undefined && language.trim() !== '') {
-    q += ` language:${language}`;
+    q += ` language:"${language}"`;
   }
 
   if (topic !== undefined && topic.trim() !== '') {
@@ -78,6 +79,16 @@ export const getTopReposAsync = async (
       language,
     };
   });
+};
+
+export const getLanguagesAsync = async (): Promise<string[]> => {
+  const res = await fetch(
+    'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml'
+  );
+  const yamlString = await res.text();
+  const data = (await load(yamlString)) as object;
+
+  return Object.keys(data);
 };
 
 export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
