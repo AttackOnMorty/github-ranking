@@ -21,10 +21,10 @@ const categoryOptions = [
 
 const Repositories: React.FC = () => {
   const [category, setCategory] = useState('stars');
+  const [sorter, setSorter] = useState(category);
   const [language, setLanguage] = useState<string>();
-  const [languageOptions, setLanguageOptions] = useState<string[]>();
+  const [languages, setLanguages] = useState<string[]>();
   const [topic, setTopic] = useState<string>();
-  const [sorter, setSorter] = useState('stars');
   const [data, setData] = useState<Repo[]>();
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState<
@@ -40,12 +40,12 @@ const Repositories: React.FC = () => {
       setSorter(category);
       setFilteredInfo({});
     };
-    const getLanguageOptions = async (): Promise<void> => {
-      setLanguageOptions(await getLanguagesAsync());
+    const getLanguages = async (): Promise<void> => {
+      setLanguages(await getLanguagesAsync());
     };
     const id = setTimeout(() => {
       void getTopRepos();
-      void getLanguageOptions();
+      void getLanguages();
     }, 1000);
     return () => {
       clearTimeout(id);
@@ -78,7 +78,7 @@ const Repositories: React.FC = () => {
             onChange={(value: string) => {
               setLanguage(value);
             }}
-            options={languageOptions?.map((value) => ({
+            options={languages?.map((value) => ({
               value,
               label: value,
             }))}
@@ -123,6 +123,9 @@ function getColumns(
   sorter: string,
   filteredInfo: Record<string, FilterValue | null>
 ): ColumnsType<Repo> {
+  const categoryOption = categoryOptions.find(
+    (option) => option.value === sorter
+  );
   const languageFilters = uniq(
     data
       .map((repo) => repo.language)
@@ -169,34 +172,15 @@ function getColumns(
       width: 260,
     },
     {
-      title: 'Stars',
-      dataIndex: 'stars',
-      key: 'stars',
-      sortDirections: ['descend'],
-      showSorterTooltip: false,
-      sorter: sorter === 'stars',
-      sortOrder: sorter === 'stars' ? 'descend' : null,
-      render: (stars) => (
+      title: categoryOption?.label,
+      dataIndex: categoryOption?.value,
+      key: categoryOption?.value,
+      render: (value) => (
         <span className="text-xs font-medium">
-          {stars >= 1000 ? `${Math.floor(stars / 1000)}k` : stars}
+          {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
         </span>
       ),
-      width: 100,
-    },
-    {
-      title: 'Forks',
-      dataIndex: 'forks',
-      key: 'forks',
-      sortDirections: ['descend'],
-      showSorterTooltip: false,
-      sorter: sorter === 'forks',
-      sortOrder: sorter === 'forks' ? 'descend' : null,
-      render: (forks) => (
-        <span className="text-xs font-medium">
-          {forks >= 1000 ? `${Math.floor(forks / 1000)}k` : forks}
-        </span>
-      ),
-      width: 100,
+      width: 80,
     },
     {
       title: 'Description',
