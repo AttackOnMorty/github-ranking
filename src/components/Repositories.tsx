@@ -1,4 +1,4 @@
-import { Input, Select, Space, Table, Tag } from 'antd';
+import { Input, Radio, Space, Table, Tag } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getTopReposAsync } from '../api';
@@ -56,41 +56,41 @@ const Repositories: React.FC = () => {
 
   return (
     <div className="flex flex-1 flex-col">
-      <Space wrap className="py-10 flex justify-center" size="large">
-        <Space>
-          <span className="text-lg font-extralight">Sort by:</span>
-          <Select
-            className="w-36"
-            size="large"
-            defaultValue="stars"
-            onChange={(value) => {
-              setCategory(value);
-            }}
-            options={categoryOptions}
-          />
+      <div className="pt-10 pb-5 flex justify-between">
+        <Radio.Group
+          size="large"
+          options={categoryOptions}
+          onChange={(e) => {
+            setCategory(e.target.value);
+          }}
+          value={category}
+          optionType="button"
+          buttonStyle="solid"
+        />
+        <Space size="large">
+          <Space>
+            <span className="text-lg font-extralight">Language:</span>
+            <Input
+              className="w-36"
+              size="large"
+              placeholder="Any"
+              onPressEnter={(e) => {
+                setLanguage(e.currentTarget.value);
+              }}
+              allowClear
+            />
+          </Space>
+          <Space>
+            <span className="text-lg font-extralight">Topic:</span>
+            <SearchInput
+              className="w-36"
+              placeholder="Any"
+              value={topic}
+              setValue={setTopic}
+            />
+          </Space>
         </Space>
-        <Space>
-          <span className="text-lg font-extralight">Language:</span>
-          <Input
-            className="w-36"
-            size="large"
-            placeholder="Any"
-            onPressEnter={(e) => {
-              setLanguage(e.currentTarget.value);
-            }}
-            allowClear
-          />
-        </Space>
-        <Space>
-          <span className="text-lg font-extralight">Topic:</span>
-          <SearchInput
-            className="w-36"
-            placeholder="Any"
-            value={topic}
-            setValue={setTopic}
-          />
-        </Space>
-      </Space>
+      </div>
       <Table
         className="shadow-lg"
         rowKey="id"
