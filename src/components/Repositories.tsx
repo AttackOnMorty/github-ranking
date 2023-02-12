@@ -2,12 +2,11 @@ import { Input, Select, Space, Table, Tag } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getTopReposAsync } from '../api';
+import SearchInput from './SearchInput';
 
 import type { TableProps } from 'antd';
 import type { ColumnsType, FilterValue } from 'antd/es/table/interface';
 import type { Repo } from '../api';
-
-const { Search } = Input;
 
 const categoryOptions = [
   {
@@ -22,7 +21,8 @@ const categoryOptions = [
 
 const Repositories: React.FC = () => {
   const [category, setCategory] = useState('stars');
-  const [language, setLanguage] = useState('');
+  const [language, setLanguage] = useState<string>();
+  const [topic, setTopic] = useState<string>();
   const [sorter, setSorter] = useState('stars');
   const [data, setData] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ const Repositories: React.FC = () => {
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopReposAsync(category, language));
+      setData(await getTopReposAsync(category, language, topic));
       setSorter(category);
       clearAll();
       setLoading(false);
@@ -48,19 +48,10 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [category, language]);
+  }, [category, language, topic]);
 
   const handleChange: TableProps<Repo>['onChange'] = (pagination, filters) => {
     setFilteredInfo(filters);
-  };
-
-  const handleSortByChange = (value: string): void => {
-    setCategory(value);
-  };
-
-  const handleLanguageSearch = (value: string, e: any): void => {
-    setLanguage(value);
-    e.target.blur();
   };
 
   return (
@@ -69,25 +60,35 @@ const Repositories: React.FC = () => {
         <Space>
           <span className="text-lg font-extralight">Sort by:</span>
           <Select
-            className="w-32"
+            className="w-36"
             size="large"
             defaultValue="stars"
-            onChange={handleSortByChange}
+            onChange={(value) => {
+              setCategory(value);
+            }}
             options={categoryOptions}
           />
         </Space>
         <Space>
           <span className="text-lg font-extralight">Language:</span>
-          <Search
-            className="w-40"
+          <Input
+            className="w-36"
             size="large"
             placeholder="Any"
-            onSearch={handleLanguageSearch}
+            onPressEnter={(e) => {
+              setLanguage(e.currentTarget.value);
+            }}
+            allowClear
           />
         </Space>
         <Space>
           <span className="text-lg font-extralight">Topic:</span>
-          <Search className="w-40" size="large" placeholder="Any" />
+          <SearchInput
+            className="w-36"
+            placeholder="Any"
+            value={topic}
+            setValue={setTopic}
+          />
         </Space>
       </Space>
       <Table

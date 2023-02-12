@@ -20,15 +20,25 @@ export interface Repo {
   language: string;
 }
 
+export interface Topic {
+  name: string;
+  description: string;
+}
+
 export const getTopReposAsync = async (
   category: string,
-  language: string
+  language?: string,
+  topic?: string
 ): Promise<Repo[]> => {
   // TODO: Data would be unstable if we filter stars with a small number
   let q = `${category}:>100`;
 
-  if (language.trim() !== '') {
+  if (language !== undefined && language.trim() !== '') {
     q += ` language:${language}`;
+  }
+
+  if (topic !== undefined && topic.trim() !== '') {
+    q += ` topic:${topic}`;
   }
 
   const res = await octokit.request('GET /search/repositories{?q}', {
@@ -66,6 +76,25 @@ export const getTopReposAsync = async (
       forks,
       description,
       language,
+    };
+  });
+};
+
+export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
+  const res = await octokit.request('GET /search/topics{?q}', {
+    q: topic,
+  });
+
+  if (res.status !== 200) {
+    return [];
+  }
+
+  return res.data.items.map((topic: any, index: number) => {
+    const { name, short_description } = topic;
+
+    return {
+      name,
+      description: short_description,
     };
   });
 };
