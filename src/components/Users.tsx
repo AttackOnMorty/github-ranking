@@ -5,7 +5,7 @@ import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
 
-const Repositories: React.FC = () => {
+const Users: React.FC = () => {
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>();
   const [data, setData] = useState<User[]>();
@@ -96,7 +96,7 @@ function getColumns(): ColumnsType<User> {
           </a>
         </div>
       ),
-      width: 260,
+      width: 200,
     },
     {
       title: 'Followers',
@@ -107,19 +107,38 @@ function getColumns(): ColumnsType<User> {
           {followers >= 1000 ? `${Math.floor(followers / 1000)}k` : followers}
         </span>
       ),
+      width: 100,
     },
     {
       title: 'Company',
       dataIndex: 'company',
       key: 'company',
-      width: '30%',
+      width: 180,
+    },
+    {
+      title: 'Blog',
+      dataIndex: 'blog',
+      key: 'blog',
+      render: (blog: string | null) =>
+        blog != null ? (
+          <a
+            className="font-medium"
+            href={blog.startsWith('http') ? blog : `https://${blog}`}
+            target="_black"
+            rel="noreferrer"
+          >
+            {blog}
+          </a>
+        ) : null,
+      ellipsis: true,
     },
     {
       title: 'Location',
       dataIndex: 'location',
       key: 'location',
+      width: 180,
     },
   ];
 }
 
-export default Repositories;
+export default Users;

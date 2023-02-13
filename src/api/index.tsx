@@ -35,6 +35,7 @@ export interface User {
   followers: number;
   company: string | null;
   location: string | null;
+  blog: string | null;
 }
 
 export const getTopReposAsync = async (
@@ -128,7 +129,7 @@ export const getUserAsync = async (username: string): Promise<User | null> => {
     return null;
   }
 
-  const { id, avatar_url, html_url, name, followers, company, location } =
+  const { id, avatar_url, html_url, name, followers, company, location, blog } =
     res.data;
 
   return {
@@ -140,6 +141,7 @@ export const getUserAsync = async (username: string): Promise<User | null> => {
     followers,
     company,
     location,
+    blog,
   };
 };
 
