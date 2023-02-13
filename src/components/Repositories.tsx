@@ -2,7 +2,7 @@ import { Radio, Select, Space, Spin, Table, Tag } from 'antd';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
-import SearchInput from './SearchInput';
+import TopicInput from './TopicInput';
 
 import type { TableProps } from 'antd';
 import type { ColumnsType, FilterValue } from 'antd/es/table/interface';
@@ -89,7 +89,7 @@ const Repositories: React.FC = () => {
         </Space>
         <Space>
           <span className="text-lg font-extralight">Topic:</span>
-          <SearchInput
+          <TopicInput
             className="w-36"
             placeholder="Any"
             value={topic}
