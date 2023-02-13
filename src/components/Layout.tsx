@@ -1,38 +1,37 @@
 import { GithubOutlined, HeartFilled } from '@ant-design/icons';
 import { Button, Layout as AntdLayout, Menu } from 'antd';
+import { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+
+import type { MenuProps } from 'antd';
 
 const { Header } = AntdLayout;
 
-interface MenuItem {
-  key: string;
-  label: string;
-  route: string;
-  disabled: boolean;
-}
-
-const menuItems: MenuItem[] = [
+const menuItems = [
   {
     key: 'Repositories',
-    label: 'Repositories',
+    label: <Link to={'/repositories'}>Repositories</Link>,
     route: '/repositories',
-    disabled: false,
+  },
+  {
+    key: 'Users',
+    label: <Link to={'/users'}>Users</Link>,
+    route: '/users',
   },
   {
     key: 'Organizations',
     label: 'Organizations',
-    route: '/organizations',
-    disabled: true,
-  },
-  {
-    key: 'Users',
-    label: 'Users',
-    route: '/Users',
     disabled: true,
   },
 ];
 
 const Layout: React.FC = () => {
+  const [current, setCurrent] = useState('Users');
+
+  const handleClick: MenuProps['onClick'] = (e) => {
+    setCurrent(e.key);
+  };
+
   return (
     <AntdLayout className="h-full flex">
       <Header
@@ -48,12 +47,9 @@ const Layout: React.FC = () => {
           <Menu
             className="flex-1 text-lg"
             mode="horizontal"
-            defaultSelectedKeys={['Repositories']}
-            items={menuItems.map(({ key, label, route, disabled }) => ({
-              key,
-              label: disabled ? label : <Link to={route}>{label}</Link>,
-              disabled,
-            }))}
+            selectedKeys={[current]}
+            onClick={handleClick}
+            items={menuItems}
           />
         </div>
         <a

@@ -26,6 +26,17 @@ export interface Topic {
   description: string;
 }
 
+export interface User {
+  id: number;
+  avatarUrl: string;
+  url: string;
+  username: string;
+  name: string | null;
+  followers: number;
+  company: string | null;
+  location: string | null;
+}
+
 export const getTopReposAsync = async (
   category: string,
   language?: string,
@@ -108,4 +119,48 @@ export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
       description: short_description,
     };
   });
+};
+
+export const getUserAsync = async (username: string): Promise<User | null> => {
+  const res = await octokit.request(`GET /users/${username}`);
+
+  if (res.status !== 200) {
+    return null;
+  }
+
+  const { id, avatar_url, html_url, name, followers, company, location } =
+    res.data;
+
+  return {
+    id,
+    avatarUrl: avatar_url,
+    url: html_url,
+    username,
+    name,
+    followers,
+    company,
+    location,
+  };
+};
+
+export const getTopUsersAsync = async (language?: string): Promise<User[]> => {
+  let q = 'type:user followers:>100';
+
+  if (language !== undefined && language.trim() !== '') {
+    q += ` language:"${language}"`;
+  }
+
+  const res = await octokit.request('GET /search/users{?q}', {
+    q,
+    sort: 'followers',
+    per_page: 100,
+  });
+
+  if (res.status !== 200) {
+    return [];
+  }
+
+  const usernames = res.data.items.map((user: any) => user.login);
+
+  return await Promise.all(usernames.map(getUserAsync));
 };
