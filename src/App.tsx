@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
-import Organizations from './components/Organizations';
 import Repositories from './components/Repositories';
 import Users from './components/Users';
 
@@ -11,7 +10,6 @@ const App: React.FC = () => {
         <Route index element={<Repositories />} />
         <Route path="/repositories" element={<Repositories />} />
         <Route path="/users" element={<Users />} />
-        <Route path="/organizations" element={<Organizations />} />
       </Route>
     </Routes>
   );

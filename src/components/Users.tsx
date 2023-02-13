@@ -1,11 +1,24 @@
-import { Select, Space, Spin, Table } from 'antd';
+import { Radio, Select, Space, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
 
+const userOptions = [
+  {
+    label: 'Developers',
+    value: 'user',
+  },
+  {
+    label: 'Organizations',
+    value: 'org',
+  },
+];
+
 const Users: React.FC = () => {
+  const [type, setType] = useState('user');
+  const [tableType, setTableType] = useState(type);
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>();
   const [data, setData] = useState<User[]>();
@@ -14,8 +27,9 @@ const Users: React.FC = () => {
   useEffect(() => {
     const getTopUsers = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopUsersAsync(language));
+      setData(await getTopUsersAsync(type, language));
       setLoading(false);
+      setTableType(type);
     };
     const getLanguages = async (): Promise<void> => {
       setLanguages(await getLanguagesAsync());
@@ -27,10 +41,20 @@ const Users: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [language]);
+  }, [type, language]);
 
   const getTitle = (): JSX.Element => (
-    <div className="flex justify-end">
+    <div className="flex justify-between">
+      <Radio.Group
+        size="large"
+        options={userOptions}
+        onChange={(e) => {
+          setType(e.target.value);
+        }}
+        value={type}
+        optionType="button"
+        buttonStyle="solid"
+      />
       <Space>
         <span className="text-lg font-extralight">Language:</span>
         <Select
@@ -62,14 +86,52 @@ const Users: React.FC = () => {
       rowKey="id"
       title={getTitle}
       loading={loading}
-      columns={getColumns()}
+      columns={getColumns(tableType)}
       dataSource={data}
       pagination={false}
     />
   );
 };
 
-function getColumns(): ColumnsType<User> {
+function getColumns(type: string): ColumnsType<User> {
+  const customizedColumns: ColumnsType<User> =
+    type === 'user'
+      ? [
+          {
+            title: 'Company',
+            dataIndex: 'company',
+            key: 'company',
+            width: 180,
+            ellipsis: true,
+          },
+          {
+            title: 'Blog',
+            dataIndex: 'blog',
+            key: 'blog',
+            render: (blog: string | null) =>
+              blog != null ? (
+                <a
+                  className="font-medium"
+                  href={blog.startsWith('http') ? blog : `https://${blog}`}
+                  target="_black"
+                  rel="noreferrer"
+                >
+                  {blog}
+                </a>
+              ) : null,
+            ellipsis: true,
+          },
+        ]
+      : [
+          {
+            title: 'Bio',
+            dataIndex: 'bio',
+            key: 'bio',
+            render: (bio) => <span className="text-sm font-light">{bio}</span>,
+            ellipsis: true,
+          },
+        ];
+
   return [
     {
       title: 'Rank',
@@ -96,7 +158,7 @@ function getColumns(): ColumnsType<User> {
           </a>
         </div>
       ),
-      width: 200,
+      width: 240,
     },
     {
       title: 'Followers',
@@ -109,34 +171,13 @@ function getColumns(): ColumnsType<User> {
       ),
       width: 100,
     },
-    {
-      title: 'Company',
-      dataIndex: 'company',
-      key: 'company',
-      width: 180,
-    },
-    {
-      title: 'Blog',
-      dataIndex: 'blog',
-      key: 'blog',
-      render: (blog: string | null) =>
-        blog != null ? (
-          <a
-            className="font-medium"
-            href={blog.startsWith('http') ? blog : `https://${blog}`}
-            target="_black"
-            rel="noreferrer"
-          >
-            {blog}
-          </a>
-        ) : null,
-      ellipsis: true,
-    },
+    ...customizedColumns,
     {
       title: 'Location',
       dataIndex: 'location',
       key: 'location',
       width: 180,
+      ellipsis: true,
     },
   ];
 }

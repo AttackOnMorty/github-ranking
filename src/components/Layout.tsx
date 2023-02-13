@@ -11,22 +11,15 @@ const menuItems = [
   {
     key: 'Repositories',
     label: <Link to={'/repositories'}>Repositories</Link>,
-    route: '/repositories',
   },
   {
     key: 'Users',
     label: <Link to={'/users'}>Users</Link>,
-    route: '/users',
-  },
-  {
-    key: 'Organizations',
-    label: 'Organizations',
-    disabled: true,
   },
 ];
 
 const Layout: React.FC = () => {
-  const [current, setCurrent] = useState('Users');
+  const [current, setCurrent] = useState('Repositories');
 
   const handleClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);

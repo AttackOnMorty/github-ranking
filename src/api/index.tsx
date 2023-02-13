@@ -34,8 +34,9 @@ export interface User {
   name: string | null;
   followers: number;
   company: string | null;
-  location: string | null;
   blog: string | null;
+  bio: string;
+  location: string | null;
 }
 
 export const getTopReposAsync = async (
@@ -122,15 +123,24 @@ export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
   });
 };
 
-export const getUserAsync = async (username: string): Promise<User | null> => {
+const getUserAsync = async (username: string): Promise<User | null> => {
   const res = await octokit.request(`GET /users/${username}`);
 
   if (res.status !== 200) {
     return null;
   }
 
-  const { id, avatar_url, html_url, name, followers, company, location, blog } =
-    res.data;
+  const {
+    id,
+    avatar_url,
+    html_url,
+    name,
+    followers,
+    company,
+    blog,
+    bio,
+    location,
+  } = res.data;
 
   return {
     id,
@@ -140,13 +150,17 @@ export const getUserAsync = async (username: string): Promise<User | null> => {
     name,
     followers,
     company,
-    location,
     blog,
+    bio,
+    location,
   };
 };
 
-export const getTopUsersAsync = async (language?: string): Promise<User[]> => {
-  let q = 'type:user followers:>100';
+export const getTopUsersAsync = async (
+  type: string,
+  language?: string
+): Promise<User[]> => {
+  let q = `type:${type} followers:>100`;
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
