@@ -2,6 +2,11 @@
 import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
 
+// TODO: Data would be unstable if we filter stars/forks/followers with a small number
+const MIN_STARS_OR_FORKS = 100;
+const MIN_FOLLOWERS = 100;
+const PER_PAGE = 100;
+
 const octokit = new Octokit({
   auth: process.env.REACT_APP_GITHUB_ACCESS_TOKEN,
 });
@@ -40,12 +45,11 @@ export interface User {
 }
 
 export const getTopReposAsync = async (
-  category: string,
+  sorter: string,
   language?: string,
   topic?: string
 ): Promise<Repo[]> => {
-  // TODO: Data would be unstable if we filter stars with a small number
-  let q = `${category}:>100`;
+  let q = `${sorter}:>${MIN_STARS_OR_FORKS}`;
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
@@ -57,8 +61,8 @@ export const getTopReposAsync = async (
 
   const res = await octokit.request('GET /search/repositories{?q}', {
     q,
-    sort: category,
-    per_page: 100,
+    sort: sorter,
+    per_page: PER_PAGE,
   });
 
   if (res.status !== 200) {
@@ -160,7 +164,7 @@ export const getTopUsersAsync = async (
   type: string,
   language?: string
 ): Promise<User[]> => {
-  let q = `type:${type} followers:>100`;
+  let q = `type:${type} followers:>${MIN_FOLLOWERS}`;
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
@@ -169,7 +173,7 @@ export const getTopUsersAsync = async (
   const res = await octokit.request('GET /search/users{?q}', {
     q,
     sort: 'followers',
-    per_page: 100,
+    per_page: PER_PAGE,
   });
 
   if (res.status !== 200) {

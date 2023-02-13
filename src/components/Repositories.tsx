@@ -20,8 +20,8 @@ const categoryOptions = [
 ];
 
 const Repositories: React.FC = () => {
-  const [category, setCategory] = useState('stars');
-  const [sorter, setSorter] = useState(category);
+  const [sorter, setSorter] = useState('stars');
+  const [tableSorter, setTableSorter] = useState(sorter);
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>();
   const [topic, setTopic] = useState<string>();
@@ -35,9 +35,9 @@ const Repositories: React.FC = () => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
       await getLanguagesAsync();
-      setData(await getTopReposAsync(category, language, topic));
+      setData(await getTopReposAsync(sorter, language, topic));
       setLoading(false);
-      setSorter(category);
+      setTableSorter(sorter);
       setFilteredInfo({});
     };
     const getLanguages = async (): Promise<void> => {
@@ -50,7 +50,7 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [category, language, topic]);
+  }, [sorter, language, topic]);
 
   const handleChange: TableProps<Repo>['onChange'] = (pagination, filters) => {
     setFilteredInfo(filters);
@@ -62,9 +62,9 @@ const Repositories: React.FC = () => {
         size="large"
         options={categoryOptions}
         onChange={(e) => {
-          setCategory(e.target.value);
+          setSorter(e.target.value);
         }}
-        value={category}
+        value={sorter}
         optionType="button"
         buttonStyle="solid"
       />
@@ -110,7 +110,7 @@ const Repositories: React.FC = () => {
       rowKey="id"
       title={getTitle}
       loading={loading}
-      columns={getColumns(data, sorter, filteredInfo)}
+      columns={getColumns(data, tableSorter, filteredInfo)}
       dataSource={data}
       onChange={handleChange}
       pagination={false}
