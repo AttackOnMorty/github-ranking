@@ -1,7 +1,7 @@
 import { GithubOutlined, HeartFilled } from '@ant-design/icons';
 import { Button, Layout as AntdLayout, Menu } from 'antd';
 import { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 import type { MenuProps } from 'antd';
 
@@ -9,17 +9,20 @@ const { Header } = AntdLayout;
 
 const menuItems = [
   {
-    key: 'Repositories',
+    key: '/repositories',
     label: <Link to={'/repositories'}>Repositories</Link>,
   },
   {
-    key: 'Users',
+    key: '/users',
     label: <Link to={'/users'}>Users</Link>,
   },
 ];
 
 const Layout: React.FC = () => {
-  const [current, setCurrent] = useState('Repositories');
+  const location = useLocation();
+  const [current, setCurrent] = useState(
+    location.pathname === '/' ? '/repositories' : location.pathname
+  );
 
   const handleClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
@@ -32,7 +35,7 @@ const Layout: React.FC = () => {
         style={{ padding: '0 6rem', background: 'white' }}
       >
         <div className="flex flex-1 items-center">
-          <span className="mr-4 text-2xl font-mono cursor-pointer whitespace-nowrap">
+          <span className="mr-4 text-xl font-mono cursor-pointer whitespace-nowrap">
             <Link className="text-black hover:text-black" to="/">
               GitHub Ranking
             </Link>

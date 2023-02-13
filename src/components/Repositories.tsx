@@ -70,7 +70,7 @@ const Repositories: React.FC = () => {
       />
       <Space size="large">
         <Space>
-          <span className="text-lg font-extralight">Language:</span>
+          <span className="text-lg font-light">Language:</span>
           <Select
             className="w-36"
             size="large"
@@ -88,7 +88,7 @@ const Repositories: React.FC = () => {
           />
         </Space>
         <Space>
-          <span className="text-lg font-extralight">Topic:</span>
+          <span className="text-lg font-light">Topic:</span>
           <TopicInput
             className="w-36"
             placeholder="Any"
@@ -147,12 +147,7 @@ function getColumns(
       key: 'name',
       render: (name, { owner, url }) => (
         <div className="flex items-center">
-          <a
-            className="font-medium"
-            href={owner.url}
-            target="_black"
-            rel="noreferrer"
-          >
+          <a href={owner.url} target="_black" rel="noreferrer">
             <img
               className="w-8 mr-2 rounded-full"
               src={owner.avatarUrl}
@@ -187,7 +182,7 @@ function getColumns(
       dataIndex: 'description',
       key: 'description',
       render: (description) => (
-        <span className="text-sm font-light">{description}</span>
+        <span className="font-light">{description}</span>
       ),
       ellipsis: true,
     },

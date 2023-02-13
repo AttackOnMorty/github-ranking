@@ -56,7 +56,7 @@ const Users: React.FC = () => {
         buttonStyle="solid"
       />
       <Space>
-        <span className="text-lg font-extralight">Language:</span>
+        <span className="text-lg font-light">Language:</span>
         <Select
           className="w-36"
           size="large"
@@ -103,22 +103,24 @@ function getColumns(type: string): ColumnsType<User> {
             key: 'company',
             width: 180,
             ellipsis: true,
+            render: (company) => company ?? '-',
           },
           {
             title: 'Blog',
             dataIndex: 'blog',
             key: 'blog',
-            render: (blog: string | null) =>
-              blog != null ? (
+            render: (blog: string) =>
+              blog !== '' ? (
                 <a
-                  className="font-medium"
                   href={blog.startsWith('http') ? blog : `https://${blog}`}
                   target="_black"
                   rel="noreferrer"
                 >
                   {blog}
                 </a>
-              ) : null,
+              ) : (
+                '-'
+              ),
             ellipsis: true,
           },
         ]
@@ -127,7 +129,12 @@ function getColumns(type: string): ColumnsType<User> {
             title: 'Bio',
             dataIndex: 'bio',
             key: 'bio',
-            render: (bio) => <span className="text-sm font-light">{bio}</span>,
+            render: (bio) =>
+              bio !== null ? (
+                <span className="text-sm font-light">{bio}</span>
+              ) : (
+                '-'
+              ),
             ellipsis: true,
           },
         ];
@@ -147,7 +154,7 @@ function getColumns(type: string): ColumnsType<User> {
       key: 'name',
       render: (name, { username, avatarUrl, url }) => (
         <div className="flex items-center">
-          <img className="w-8 mr-2 rounded-full" src={avatarUrl} alt="avatar" />
+          <img className="w-9 mr-4 rounded-full" src={avatarUrl} alt="avatar" />
           <a
             className="font-medium"
             href={url}
@@ -177,6 +184,7 @@ function getColumns(type: string): ColumnsType<User> {
       dataIndex: 'location',
       key: 'location',
       width: 180,
+      render: (location) => location ?? '-',
       ellipsis: true,
     },
   ];

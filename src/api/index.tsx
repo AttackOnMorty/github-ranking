@@ -39,7 +39,7 @@ export interface User {
   name: string | null;
   followers: number;
   company: string | null;
-  blog: string | null;
+  blog: string;
   bio: string;
   location: string | null;
 }
