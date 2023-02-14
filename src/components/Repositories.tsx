@@ -7,6 +7,7 @@ import TopicInput from './TopicInput';
 import type { TableProps } from 'antd';
 import type { ColumnsType, FilterValue } from 'antd/es/table/interface';
 import type { Repo } from '../api';
+import { POPULAR_LANGUAGES } from '../constants';
 
 const categoryOptions = [
   {
@@ -34,7 +35,6 @@ const Repositories: React.FC = () => {
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
-      await getLanguagesAsync();
       setData(await getTopReposAsync(sorter, language, topic));
       setLoading(false);
       setTableSorter(sorter);
@@ -56,49 +56,65 @@ const Repositories: React.FC = () => {
     setFilteredInfo(filters);
   };
 
-  const getTitle = (): JSX.Element => (
-    <div className="flex justify-between">
-      <Radio.Group
-        size="large"
-        options={categoryOptions}
-        onChange={(e) => {
-          setSorter(e.target.value);
-        }}
-        value={sorter}
-        optionType="button"
-        buttonStyle="solid"
-      />
-      <Space size="large">
-        <Space>
-          <span className="text-lg font-light">Language:</span>
-          <Select
-            className="w-36"
-            size="large"
-            placeholder="Any"
-            onChange={(value: string) => {
-              setLanguage(value);
-            }}
-            options={languages?.map((value) => ({
-              value,
-              label: value,
-            }))}
-            dropdownMatchSelectWidth={200}
-            showSearch
-            allowClear
-          />
+  const getTitle = (): JSX.Element => {
+    const popularLanguages = {
+      label: 'Popular',
+      options: POPULAR_LANGUAGES.map((value) => ({
+        value,
+        label: value,
+      })),
+    };
+    const otherLanguages = {
+      label: 'Everything else',
+      options: languages
+        ?.filter((value) => !POPULAR_LANGUAGES.includes(value))
+        .map((value) => ({
+          value,
+          label: value,
+        })),
+    };
+
+    return (
+      <div className="flex justify-between">
+        <Radio.Group
+          size="large"
+          options={categoryOptions}
+          onChange={(e) => {
+            setSorter(e.target.value);
+          }}
+          value={sorter}
+          optionType="button"
+          buttonStyle="solid"
+        />
+        <Space size="large">
+          <Space>
+            <span className="text-lg font-light">Language:</span>
+            <Select
+              className="w-36"
+              size="large"
+              placeholder="Any"
+              onChange={(value: string) => {
+                setLanguage(value);
+              }}
+              options={[popularLanguages, otherLanguages]}
+              dropdownMatchSelectWidth={200}
+              showSearch
+              allowClear
+            />
+          </Space>
+          <Space>
+            <span className="text-lg font-light">Topic:</span>
+            <TopicInput
+              className="w-36"
+              placeholder="Any"
+              value={topic}
+              setValue={setTopic}
+            />
+          </Space>
         </Space>
-        <Space>
-          <span className="text-lg font-light">Topic:</span>
-          <TopicInput
-            className="w-36"
-            placeholder="Any"
-            value={topic}
-            setValue={setTopic}
-          />
-        </Space>
-      </Space>
-    </div>
-  );
+      </div>
+    );
+  };
 
   return (
     <div className="max-w-6xl px-10 py-6 flex flex-1">
