@@ -130,7 +130,7 @@ function getColumns(): ColumnsType<User> {
               {name ?? username}
             </a>
             <div className="flex items-center text-xs font-extralight">
-              {company && (
+              {company !== null && (
                 <>
                   <div>
                     <Company className="mr-1" />
@@ -140,7 +140,7 @@ function getColumns(): ColumnsType<User> {
               )}
             </div>
             <div className="flex items-center text-xs font-extralight">
-              {location && (
+              {location !== null && (
                 <>
                   <div>
                     <Location className="mr-1" />

@@ -31,7 +31,9 @@ const fetch = (
     }
   };
 
-  timeout = setTimeout(fake, 500);
+  timeout = setTimeout(() => {
+    void fake();
+  }, 500);
 };
 
 const SearchInput: React.FC<{
