@@ -100,21 +100,27 @@ const Repositories: React.FC = () => {
     </div>
   );
 
-  return data === undefined ? (
-    <div className="flex items-center">
-      <Spin size="large" />
+  return (
+    <div className="max-w-6xl px-10 py-6 flex flex-1">
+      {data === undefined ? (
+        <div className="flex flex-1 justify-center items-center">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <div className="flex-1">
+          <Table
+            className="shadow-lg"
+            rowKey="id"
+            title={getTitle}
+            loading={loading}
+            columns={getColumns(data, tableSorter, filteredInfo)}
+            dataSource={data}
+            onChange={handleChange}
+            pagination={false}
+          />
+        </div>
+      )}
     </div>
-  ) : (
-    <Table
-      className="shadow-lg"
-      rowKey="id"
-      title={getTitle}
-      loading={loading}
-      columns={getColumns(data, tableSorter, filteredInfo)}
-      dataSource={data}
-      onChange={handleChange}
-      pagination={false}
-    />
   );
 };
 
@@ -139,7 +145,7 @@ function getColumns(
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
-      width: 80,
+      width: 70,
     },
     {
       title: 'Name',
@@ -181,10 +187,12 @@ function getColumns(
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
-      render: (description) => (
-        <span className="font-light">{description}</span>
-      ),
-      ellipsis: true,
+      render: (description) =>
+        description !== null ? (
+          <span className="font-light">{description}</span>
+        ) : (
+          '-'
+        ),
     },
     {
       title: 'Language',
@@ -204,7 +212,7 @@ function getColumns(
             N/A
           </Tag>
         ),
-      width: 150,
+      width: 160,
     },
   ];
 }
