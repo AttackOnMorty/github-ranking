@@ -139,6 +139,8 @@ function getColumns(
       .sort()
   ).map((value) => ({ text: value, value }));
 
+  languageFilters.unshift({ text: 'N/A', value: '' });
+
   return [
     {
       title: 'Rank',
@@ -201,7 +203,8 @@ function getColumns(
       filters: languageFilters,
       filteredValue: filteredInfo.language ?? null,
       filterSearch: true,
-      onFilter: (value, record) => record.language === value,
+      onFilter: (value, record) =>
+        value === '' ? record.language === null : record.language === value,
       render: (language) =>
         language !== null ? (
           <Tag className="font-medium" color="rgb(14 165 233)" key={language}>
