@@ -173,12 +173,17 @@ const getUserAsync = async (username: string): Promise<User | null> => {
 
 export const getTopUsersAsync = async (
   type: string,
-  language?: string
+  language?: string,
+  location?: string
 ): Promise<User[]> => {
   let q = `type:${type} followers:>${MIN_FOLLOWERS}`;
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
+  }
+
+  if (location !== undefined && location.trim() !== '') {
+    q += ` location:"${location}"`;
   }
 
   const res = await octokit.request('GET /search/users{?q}', {

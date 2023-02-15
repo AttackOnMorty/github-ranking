@@ -1,11 +1,12 @@
-import { Radio, Select, Space, Spin, Table } from 'antd';
+import { Input, Radio, Select, Space, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
-import { ReactComponent as Location } from '../assets/images/location.svg';
 import { ReactComponent as Company } from '../assets/images/company.svg';
+import { ReactComponent as Location } from '../assets/images/location.svg';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
+import { POPULAR_LANGUAGES } from '../constants';
 
 const userOptions = [
   {
@@ -22,59 +23,104 @@ const Users: React.FC = () => {
   const [type, setType] = useState('user');
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>();
+  const [location, setLocation] = useState<string>();
   const [data, setData] = useState<User[]>();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getTopUsers = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopUsersAsync(type, language));
+      setData(await getTopUsersAsync(type, language, location));
       setLoading(false);
     };
+    const id = setTimeout(() => {
+      void getTopUsers();
+    }, 1000);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [type, language, location]);
+
+  useEffect(() => {
     const getLanguages = async (): Promise<void> => {
       setLanguages(await getLanguagesAsync());
     };
     const id = setTimeout(() => {
-      void getTopUsers();
       void getLanguages();
     }, 1000);
     return () => {
       clearTimeout(id);
     };
-  }, [type, language]);
+  }, []);
 
-  const getTitle = (): JSX.Element => (
-    <div className="flex justify-between">
-      <Radio.Group
-        size="large"
-        options={userOptions}
-        onChange={(e) => {
-          setType(e.target.value);
-        }}
-        value={type}
-        optionType="button"
-        buttonStyle="solid"
-      />
-      <Space>
-        <span className="text-lg font-light">Language:</span>
-        <Select
-          className="w-36"
+  const getTitle = (): JSX.Element => {
+    const popularLanguages = {
+      label: 'Popular',
+      options: POPULAR_LANGUAGES.map((value) => ({
+        value,
+        label: value,
+      })),
+    };
+    const otherLanguages = {
+      label: 'Everything else',
+      options: languages
+        ?.filter((value) => !POPULAR_LANGUAGES.includes(value))
+        .map((value) => ({
+          value,
+          label: value,
+        })),
+    };
+
+    return (
+      <div className="flex justify-between">
+        <Radio.Group
           size="large"
-          placeholder="Any"
-          onChange={(value: string) => {
-            setLanguage(value);
+          options={userOptions}
+          onChange={(e) => {
+            setType(e.target.value);
           }}
-          options={languages?.map((value) => ({
-            value,
-            label: value,
-          }))}
-          dropdownMatchSelectWidth={200}
-          showSearch
-          allowClear
+          value={type}
+          optionType="button"
+          buttonStyle="solid"
         />
-      </Space>
-    </div>
-  );
+        <Space size="large">
+          <Space>
+            <span className="text-lg font-light">Language:</span>
+            <Select
+              className="w-36"
+              size="large"
+              placeholder="Any"
+              onChange={(value: string) => {
+                setLanguage(value);
+              }}
+              options={[popularLanguages, otherLanguages]}
+              dropdownMatchSelectWidth={200}
+              showSearch
+              allowClear
+            />
+          </Space>
+          <Space>
+            <span className="text-lg font-light">Location:</span>
+            <Input
+              className="w-36"
+              size="large"
+              placeholder="Any"
+              onChange={(e) => {
+                if ((e.target as HTMLInputElement).value === '') {
+                  setLocation('');
+                }
+              }}
+              onPressEnter={(e) => {
+                console.log(e);
+                setLocation((e.target as HTMLInputElement).value);
+              }}
+              allowClear
+            />
+          </Space>
+        </Space>
+      </div>
+    );
+  };
 
   return (
     <div className="max-w-6xl px-10 py-6 flex flex-1">

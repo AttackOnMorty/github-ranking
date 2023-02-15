@@ -31,7 +31,13 @@ const Layout: React.FC = () => {
       <header className="px-14 flex items-center">
         <div className="flex flex-1 items-center">
           <span className="mr-4 text-2xl font-mono cursor-pointer whitespace-nowrap">
-            <Link className="text-black hover:text-black no-underline" to="/">
+            <Link
+              className="text-black hover:text-black no-underline"
+              to="/"
+              onClick={() => {
+                setCurrent('/repositories');
+              }}
+            >
               GitHub Ranking
             </Link>
           </span>

@@ -40,17 +40,25 @@ const Repositories: React.FC = () => {
       setTableSorter(sorter);
       setFilteredInfo({});
     };
-    const getLanguages = async (): Promise<void> => {
-      setLanguages(await getLanguagesAsync());
-    };
     const id = setTimeout(() => {
       void getTopRepos();
-      void getLanguages();
-    }, 1000);
+    }, 300);
     return () => {
       clearTimeout(id);
     };
   }, [sorter, language, topic]);
+
+  useEffect(() => {
+    const getLanguages = async (): Promise<void> => {
+      setLanguages(await getLanguagesAsync());
+    };
+    const id = setTimeout(() => {
+      void getLanguages();
+    }, 300);
+    return () => {
+      clearTimeout(id);
+    };
+  }, []);
 
   const handleChange: TableProps<Repo>['onChange'] = (pagination, filters) => {
     setFilteredInfo(filters);
