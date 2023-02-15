@@ -13,8 +13,10 @@ Search top GitHub repos, developers and organizations by advanced filters.
   - Filter by **language**
   - Filter by **location**
 
-![Repo ranking](./docs/repo-ranking.png)
-**Figure: Repo ranking**
+### Repo Ranking
 
-![User ranking](./docs/user-ranking.png)
-**Figure: User ranking**
+![Repo ranking](./docs/repo.png)
+
+### User Ranking
+
+![User ranking](./docs/user.png)
