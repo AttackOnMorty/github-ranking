@@ -73,7 +73,7 @@ const Layout: React.FC = () => {
               target="_black"
               rel="noreferrer"
             >
-              Luke
+              Luke Mao
             </a>
           </span>
         </footer>
