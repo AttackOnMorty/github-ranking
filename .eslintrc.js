@@ -23,11 +23,11 @@ module.exports = {
   },
   plugins: ['react'],
   rules: {
-    'react/prop-types': 'off',
-    'no-unused-vars': 'off',
-    '@typescript-eslint/strict-boolean-expressions': 'warn',
     '@typescript-eslint/no-misused-promises': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/strict-boolean-expressions': 'warn',
+    'no-unused-vars': 'off',
+    'react/prop-types': 'off',
   },
   settings: {
     react: {
