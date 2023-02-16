@@ -1,12 +1,13 @@
-import { Input, Radio, Select, Space, Spin, Table } from 'antd';
+import { Input, Radio, Select, Space, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
-import { ReactComponent as Company } from '../assets/images/company.svg';
-import { ReactComponent as Location } from '../assets/images/location.svg';
+import { ReactComponent as Company } from '../assets/company.svg';
+import { ReactComponent as Location } from '../assets/location.svg';
+import NyanCat from '../assets/nyan-cat.gif';
+import { POPULAR_LANGUAGES } from '../constants';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
-import { POPULAR_LANGUAGES } from '../constants';
 
 const userOptions = [
   {
@@ -126,7 +127,7 @@ const Users: React.FC = () => {
     <div className="max-w-6xl px-10 py-6 flex flex-1">
       {data === undefined ? (
         <div className="flex flex-1 justify-center items-center">
-          <Spin size="large" />
+          <img className="w-30 h-20" src={NyanCat} alt="loading..." />
         </div>
       ) : (
         <div className="flex-1">
