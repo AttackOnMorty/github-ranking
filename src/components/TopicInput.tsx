@@ -41,7 +41,8 @@ const SearchInput: React.FC<{
   placeholder: string;
   value?: string;
   setValue: Function;
-}> = ({ className, placeholder, value, setValue }) => {
+  resetPage: Function;
+}> = ({ className, placeholder, value, setValue, resetPage }) => {
   const [data, setData] = useState<Topic[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -55,6 +56,7 @@ const SearchInput: React.FC<{
 
   const handleChange = (newValue: string): void => {
     setValue(newValue);
+    resetPage();
   };
 
   const renderOptions = (data: Topic[]): JSX.Element[] =>

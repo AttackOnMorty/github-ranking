@@ -1,12 +1,11 @@
+import { PAGE_SIZE } from './../constants/index';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
 import { POPULAR_LANGUAGES } from '../constants';
 
 // TODO: Data would be unstable if we filter stars/forks/followers with a small number
-const MIN_STARS_OR_FORKS = 100;
-const MIN_FOLLOWERS = 100;
-const PER_PAGE = 100;
+const MIN_COUNT = 100;
 
 const octokit = new Octokit({
   auth: process.env.REACT_APP_GITHUB_ACCESS_TOKEN,
@@ -25,6 +24,11 @@ export interface Repo {
   forks: number;
   description: string;
   language: string;
+}
+
+export interface Repos {
+  totalCount: number;
+  data: Repo[];
 }
 
 export interface Topic {
@@ -46,11 +50,12 @@ export interface User {
 }
 
 export const getTopReposAsync = async (
+  page: number,
   sorter: string,
   language?: string,
-  topic?: string
-): Promise<Repo[]> => {
-  let q = `${sorter}:>${MIN_STARS_OR_FORKS}`;
+  topic?: string,
+): Promise<Repos> => {
+  let q = `${sorter}:>${MIN_COUNT}`;
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
@@ -63,40 +68,33 @@ export const getTopReposAsync = async (
   const res = await octokit.request('GET /search/repositories{?q}', {
     q,
     sort: sorter,
-    per_page: PER_PAGE,
+    per_page: PAGE_SIZE,
+    page,
   });
 
   if (res.status !== 200) {
-    return [];
+    return { totalCount: 0, data: [] };
   }
 
-  return res.data.items.map((repo: any, index: number) => {
-    const {
-      id,
-      name,
-      html_url,
-      owner,
-      stargazers_count,
-      forks,
-      description,
-      language,
-    } = repo;
+  const data = res.data.items.map((repo: any, index: number) => ({
+    id: repo.id,
+    rank: (page - 1) * PAGE_SIZE + index + 1,
+    name: repo.name,
+    url: repo.html_url,
+    owner: {
+      avatarUrl: repo.owner.avatar_url,
+      url: repo.owner.html_url,
+    },
+    stars: repo.stargazers_count,
+    forks: repo.forks,
+    description: repo.description,
+    language: repo.language,
+  }));
 
-    return {
-      id,
-      rank: index + 1,
-      name,
-      url: html_url,
-      owner: {
-        avatarUrl: owner.avatar_url,
-        url: owner.html_url,
-      },
-      stars: stargazers_count,
-      forks,
-      description,
-      language,
-    };
-  });
+  return {
+    totalCount: res.data.total_count,
+    data,
+  };
 };
 
 export const getLanguagesAsync = async (): Promise<string[]> => {
@@ -176,7 +174,7 @@ export const getTopUsersAsync = async (
   language?: string,
   location?: string
 ): Promise<User[]> => {
-  let q = `type:${type} followers:>${MIN_FOLLOWERS}`;
+  let q = `type:${type} followers:>${MIN_COUNT}`;
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
@@ -189,7 +187,7 @@ export const getTopUsersAsync = async (
   const res = await octokit.request('GET /search/users{?q}', {
     q,
     sort: 'followers',
-    per_page: PER_PAGE,
+    per_page: PAGE_SIZE,
   });
 
   if (res.status !== 200) {

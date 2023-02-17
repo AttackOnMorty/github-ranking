@@ -1,3 +1,7 @@
+export const PAGE_SIZE = 20;
+
+export const MAX_DATA_COUNT = 100;
+
 export const POPULAR_LANGUAGES = [
   'C',
   'C#',

@@ -3,7 +3,7 @@ import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
-import { POPULAR_LANGUAGES } from '../constants';
+import { MAX_DATA_COUNT, PAGE_SIZE, POPULAR_LANGUAGES } from '../constants';
 import TopicInput from './TopicInput';
 
 import type { TableProps } from 'antd';
@@ -27,7 +27,9 @@ const Repositories: React.FC = () => {
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>();
   const [topic, setTopic] = useState<string>();
+  const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<Repo[]>();
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
@@ -36,7 +38,14 @@ const Repositories: React.FC = () => {
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopReposAsync(sorter, language, topic));
+      const { totalCount, data } = await getTopReposAsync(
+        page,
+        sorter,
+        language,
+        topic
+      );
+      setTotalCount(totalCount);
+      setData(data);
       setLoading(false);
       setTableSorter(sorter);
       setFilteredInfo({});
@@ -47,7 +56,7 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [sorter, language, topic]);
+  }, [page, sorter, language, topic]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -63,6 +72,10 @@ const Repositories: React.FC = () => {
 
   const handleChange: TableProps<Repo>['onChange'] = (pagination, filters) => {
     setFilteredInfo(filters);
+  };
+
+  const resetPage = (): void => {
+    setPage(1);
   };
 
   const getTitle = (): JSX.Element => {
@@ -90,6 +103,7 @@ const Repositories: React.FC = () => {
           options={categoryOptions}
           onChange={(e) => {
             setSorter(e.target.value);
+            resetPage();
           }}
           value={sorter}
           optionType="button"
@@ -104,6 +118,7 @@ const Repositories: React.FC = () => {
               placeholder="Any"
               onChange={(value: string) => {
                 setLanguage(value);
+                resetPage();
               }}
               options={[popularLanguages, otherLanguages]}
               dropdownMatchSelectWidth={200}
@@ -118,6 +133,7 @@ const Repositories: React.FC = () => {
               placeholder="Any"
               value={topic}
               setValue={setTopic}
+              resetPage={resetPage}
             />
           </Space>
         </Space>
@@ -141,7 +157,19 @@ const Repositories: React.FC = () => {
             columns={getColumns(data, tableSorter, filteredInfo)}
             dataSource={data}
             onChange={handleChange}
-            pagination={false}
+            pagination={{
+              current: page,
+              pageSize: PAGE_SIZE,
+              total: totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
+              showSizeChanger: false,
+              onChange(page) {
+                setPage(page);
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                });
+              },
+            }}
           />
         </div>
       )}
@@ -225,11 +253,11 @@ function getColumns(
       title: 'Language',
       key: 'language',
       dataIndex: 'language',
-      filters: languageFilters,
-      filteredValue: filteredInfo.language ?? null,
-      filterSearch: true,
-      onFilter: (value, record) =>
-        value === '' ? record.language === null : record.language === value,
+      // filters: languageFilters,
+      // filteredValue: filteredInfo.language ?? null,
+      // filterSearch: true,
+      // onFilter: (value, record) =>
+      //   value === '' ? record.language === null : record.language === value,
       render: (language) =>
         language !== null ? (
           <Tag className="font-medium" color="rgb(14 165 233)" key={language}>
