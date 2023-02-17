@@ -4,7 +4,7 @@ import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
-import { POPULAR_LANGUAGES } from '../constants';
+import { MAX_DATA_COUNT, PAGE_SIZE, POPULAR_LANGUAGES } from '../constants';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
@@ -25,13 +25,22 @@ const Users: React.FC = () => {
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>();
   const [location, setLocation] = useState<string>();
+  const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<User[]>();
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getTopUsers = async (): Promise<void> => {
       setLoading(true);
-      setData(await getTopUsersAsync(type, language, location));
+      const { totalCount, data } = await getTopUsersAsync(
+        page,
+        type,
+        language,
+        location
+      );
+      setTotalCount(totalCount);
+      setData(data);
       setLoading(false);
     };
     const id = setTimeout(() => {
@@ -40,7 +49,7 @@ const Users: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [type, language, location]);
+  }, [page, type, language, location]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -53,6 +62,10 @@ const Users: React.FC = () => {
       clearTimeout(id);
     };
   }, []);
+
+  const resetPage = (): void => {
+    setPage(1);
+  };
 
   const getTitle = (): JSX.Element => {
     const popularLanguages = {
@@ -79,6 +92,7 @@ const Users: React.FC = () => {
           options={userOptions}
           onChange={(e) => {
             setType(e.target.value);
+            resetPage();
           }}
           value={type}
           optionType="button"
@@ -93,6 +107,7 @@ const Users: React.FC = () => {
               placeholder="Any"
               onChange={(value: string) => {
                 setLanguage(value);
+                resetPage();
               }}
               options={[popularLanguages, otherLanguages]}
               dropdownMatchSelectWidth={200}
@@ -109,11 +124,12 @@ const Users: React.FC = () => {
               onChange={(e) => {
                 if ((e.target as HTMLInputElement).value === '') {
                   setLocation('');
+                  resetPage();
                 }
               }}
               onPressEnter={(e) => {
-                console.log(e);
                 setLocation((e.target as HTMLInputElement).value);
+                resetPage();
               }}
               allowClear
             />
@@ -138,7 +154,19 @@ const Users: React.FC = () => {
             loading={loading}
             columns={getColumns()}
             dataSource={data}
-            pagination={false}
+            pagination={{
+              current: page,
+              pageSize: PAGE_SIZE,
+              total: totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
+              showSizeChanger: false,
+              onChange(page) {
+                setPage(page);
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                });
+              },
+            }}
           />
         </div>
       )}
@@ -153,7 +181,6 @@ function getColumns(): ColumnsType<User> {
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
-      render: (_text, _record, index) => index + 1,
       width: 70,
     },
     {

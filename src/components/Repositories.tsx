@@ -1,13 +1,11 @@
 import { Radio, Select, Space, Table, Tag } from 'antd';
-import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
 import { MAX_DATA_COUNT, PAGE_SIZE, POPULAR_LANGUAGES } from '../constants';
 import TopicInput from './TopicInput';
 
-import type { TableProps } from 'antd';
-import type { ColumnsType, FilterValue } from 'antd/es/table/interface';
+import type { ColumnsType } from 'antd/es/table/interface';
 import type { Repo } from '../api';
 
 const categoryOptions = [
@@ -31,9 +29,6 @@ const Repositories: React.FC = () => {
   const [data, setData] = useState<Repo[]>();
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [filteredInfo, setFilteredInfo] = useState<
-    Record<string, FilterValue | null>
-  >({});
 
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
@@ -48,7 +43,6 @@ const Repositories: React.FC = () => {
       setData(data);
       setLoading(false);
       setTableSorter(sorter);
-      setFilteredInfo({});
     };
     const id = setTimeout(() => {
       void getTopRepos();
@@ -69,10 +63,6 @@ const Repositories: React.FC = () => {
       clearTimeout(id);
     };
   }, []);
-
-  const handleChange: TableProps<Repo>['onChange'] = (pagination, filters) => {
-    setFilteredInfo(filters);
-  };
 
   const resetPage = (): void => {
     setPage(1);
@@ -154,9 +144,8 @@ const Repositories: React.FC = () => {
             rowKey="id"
             title={getTitle}
             loading={loading}
-            columns={getColumns(data, tableSorter, filteredInfo)}
+            columns={getColumns(tableSorter)}
             dataSource={data}
-            onChange={handleChange}
             pagination={{
               current: page,
               pageSize: PAGE_SIZE,
@@ -177,22 +166,10 @@ const Repositories: React.FC = () => {
   );
 };
 
-function getColumns(
-  data: Repo[],
-  sorter: string,
-  filteredInfo: Record<string, FilterValue | null>
-): ColumnsType<Repo> {
+function getColumns(sorter: string): ColumnsType<Repo> {
   const categoryOption = categoryOptions.find(
     (option) => option.value === sorter
   );
-  const languageFilters = uniq(
-    data
-      .map((repo) => repo.language)
-      .filter((value) => value)
-      .sort()
-  ).map((value) => ({ text: value, value }));
-
-  languageFilters.unshift({ text: 'N/A', value: '' });
 
   return [
     {
@@ -253,11 +230,6 @@ function getColumns(
       title: 'Language',
       key: 'language',
       dataIndex: 'language',
-      // filters: languageFilters,
-      // filteredValue: filteredInfo.language ?? null,
-      // filterSearch: true,
-      // onFilter: (value, record) =>
-      //   value === '' ? record.language === null : record.language === value,
       render: (language) =>
         language !== null ? (
           <Tag className="font-medium" color="rgb(14 165 233)" key={language}>

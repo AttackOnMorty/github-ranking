@@ -38,6 +38,7 @@ export interface Topic {
 
 export interface User {
   id: number;
+  rank?: number;
   avatarUrl: string;
   url: string;
   username: string;
@@ -49,11 +50,16 @@ export interface User {
   location: string | null;
 }
 
+export interface Users {
+  totalCount: number;
+  data: User[];
+}
+
 export const getTopReposAsync = async (
   page: number,
   sorter: string,
   language?: string,
-  topic?: string,
+  topic?: string
 ): Promise<Repos> => {
   let q = `${sorter}:>${MIN_COUNT}`;
 
@@ -170,10 +176,11 @@ const getUserAsync = async (username: string): Promise<User | null> => {
 };
 
 export const getTopUsersAsync = async (
+  page: number,
   type: string,
   language?: string,
   location?: string
-): Promise<User[]> => {
+): Promise<Users> => {
   let q = `type:${type} followers:>${MIN_COUNT}`;
 
   if (language !== undefined && language.trim() !== '') {
@@ -188,13 +195,22 @@ export const getTopUsersAsync = async (
     q,
     sort: 'followers',
     per_page: PAGE_SIZE,
+    page,
   });
 
   if (res.status !== 200) {
-    return [];
+    return { totalCount: 0, data: [] };
   }
 
   const usernames = res.data.items.map((user: any) => user.login);
+  const users = await Promise.all(usernames.map(getUserAsync));
+  const data = users.map((user, index) => ({
+    ...user,
+    rank: (page - 1) * PAGE_SIZE + index + 1,
+  }));
 
-  return await Promise.all(usernames.map(getUserAsync));
+  return {
+    totalCount: res.data.total_count,
+    data,
+  };
 };
