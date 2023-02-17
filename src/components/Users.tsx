@@ -5,6 +5,7 @@ import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
 import { MAX_DATA_COUNT, PAGE_SIZE, POPULAR_LANGUAGES } from '../constants';
+import { scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
@@ -161,10 +162,7 @@ const Users: React.FC = () => {
               showSizeChanger: false,
               onChange(page) {
                 setPage(page);
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                });
+                scrollToTop();
               },
             }}
           />

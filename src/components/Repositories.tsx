@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
 import { MAX_DATA_COUNT, PAGE_SIZE, POPULAR_LANGUAGES } from '../constants';
+import { scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -20,8 +21,8 @@ const categoryOptions = [
 ];
 
 const Repositories: React.FC = () => {
-  const [sorter, setSorter] = useState('stars');
-  const [tableSorter, setTableSorter] = useState(sorter);
+  const [sort, setSort] = useState('stars');
+  const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>();
   const [topic, setTopic] = useState<string>();
@@ -35,14 +36,14 @@ const Repositories: React.FC = () => {
       setLoading(true);
       const { totalCount, data } = await getTopReposAsync(
         page,
-        sorter,
+        sort,
         language,
         topic
       );
       setTotalCount(totalCount);
       setData(data);
       setLoading(false);
-      setTableSorter(sorter);
+      setTableSort(sort);
     };
     const id = setTimeout(() => {
       void getTopRepos();
@@ -50,7 +51,7 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [page, sorter, language, topic]);
+  }, [page, sort, language, topic]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -92,10 +93,10 @@ const Repositories: React.FC = () => {
           size="large"
           options={categoryOptions}
           onChange={(e) => {
-            setSorter(e.target.value);
+            setSort(e.target.value);
             resetPage();
           }}
-          value={sorter}
+          value={sort}
           optionType="button"
           buttonStyle="solid"
         />
@@ -144,7 +145,7 @@ const Repositories: React.FC = () => {
             rowKey="id"
             title={getTitle}
             loading={loading}
-            columns={getColumns(tableSorter)}
+            columns={getColumns(tableSort)}
             dataSource={data}
             pagination={{
               current: page,
@@ -153,10 +154,7 @@ const Repositories: React.FC = () => {
               showSizeChanger: false,
               onChange(page) {
                 setPage(page);
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                });
+                scrollToTop();
               },
             }}
           />
