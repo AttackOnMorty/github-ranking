@@ -147,16 +147,21 @@ const Repositories: React.FC = () => {
             loading={loading}
             columns={getColumns(tableSort)}
             dataSource={data}
-            pagination={{
-              current: page,
-              pageSize: PAGE_SIZE,
-              total: totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
-              showSizeChanger: false,
-              onChange(page) {
-                setPage(page);
-                scrollToTop();
-              },
-            }}
+            pagination={
+              totalCount <= 20
+                ? false
+                : {
+                    current: page,
+                    pageSize: PAGE_SIZE,
+                    total:
+                      totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
+                    showSizeChanger: false,
+                    onChange(page) {
+                      setPage(page);
+                      scrollToTop();
+                    },
+                  }
+            }
           />
         </div>
       )}
