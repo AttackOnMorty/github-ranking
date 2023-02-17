@@ -1,8 +1,8 @@
-import { PAGE_SIZE } from './../constants/index';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
 import { POPULAR_LANGUAGES } from '../constants';
+import { PAGE_SIZE } from './../constants/index';
 
 // TODO: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
@@ -57,11 +57,11 @@ export interface Users {
 
 export const getTopReposAsync = async (
   page: number,
-  sorter: string,
+  sort: string,
   language?: string,
   topic?: string
 ): Promise<Repos> => {
-  let q = `${sorter}:>${MIN_COUNT}`;
+  let q = `${sort}:>${MIN_COUNT}`;
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
@@ -73,7 +73,7 @@ export const getTopReposAsync = async (
 
   const res = await octokit.request('GET /search/repositories{?q}', {
     q,
-    sort: sorter,
+    sort,
     per_page: PAGE_SIZE,
     page,
   });
@@ -82,20 +82,33 @@ export const getTopReposAsync = async (
     return { totalCount: 0, data: [] };
   }
 
-  const data = res.data.items.map((repo: any, index: number) => ({
-    id: repo.id,
-    rank: (page - 1) * PAGE_SIZE + index + 1,
-    name: repo.name,
-    url: repo.html_url,
-    owner: {
-      avatarUrl: repo.owner.avatar_url,
-      url: repo.owner.html_url,
-    },
-    stars: repo.stargazers_count,
-    forks: repo.forks,
-    description: repo.description,
-    language: repo.language,
-  }));
+  const data = res.data.items.map((repo: any, index: number) => {
+    const {
+      id,
+      name,
+      html_url,
+      owner,
+      stargazers_count,
+      forks,
+      description,
+      language,
+    } = repo;
+
+    return {
+      id,
+      rank: (page - 1) * PAGE_SIZE + index + 1,
+      name,
+      url: html_url,
+      owner: {
+        avatarUrl: owner.avatar_url,
+        url: owner.html_url,
+      },
+      stars: stargazers_count,
+      forks,
+      description,
+      language,
+    };
+  });
 
   return {
     totalCount: res.data.total_count,
@@ -132,7 +145,7 @@ export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
     return [];
   }
 
-  return res.data.items.map((topic: any, index: number) => {
+  return res.data.items.map((topic: any) => {
     const { name, short_description } = topic;
 
     return {
