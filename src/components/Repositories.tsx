@@ -132,39 +132,35 @@ const Repositories: React.FC = () => {
     );
   };
 
-  return (
-    <div className="max-w-6xl px-10 py-6 flex flex-1">
-      {data === undefined ? (
-        <div className="flex flex-1 justify-center items-center">
-          <img className="w-30 h-20" src={NyanCat} alt="loading..." />
-        </div>
-      ) : (
-        <div className="flex-1">
-          <Table
-            className="shadow-lg"
-            rowKey="id"
-            title={getTitle}
-            loading={loading}
-            columns={getColumns(tableSort)}
-            dataSource={data}
-            pagination={
-              totalCount <= 20
-                ? false
-                : {
-                    current: page,
-                    pageSize: PAGE_SIZE,
-                    total:
-                      totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
-                    showSizeChanger: false,
-                    onChange(page) {
-                      setPage(page);
-                      scrollToTop();
-                    },
-                  }
-            }
-          />
-        </div>
-      )}
+  return data === undefined ? (
+    <div className="flex flex-1 justify-center items-center">
+      <img className="w-30 h-20" src={NyanCat} alt="loading..." />
+    </div>
+  ) : (
+    <div className="flex-1">
+      <Table
+        className="shadow-lg"
+        rowKey="id"
+        title={getTitle}
+        loading={loading}
+        columns={getColumns(tableSort)}
+        dataSource={data}
+        pagination={
+          totalCount <= 20
+            ? false
+            : {
+                current: page,
+                pageSize: PAGE_SIZE,
+                total:
+                  totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
+                showSizeChanger: false,
+                onChange(page) {
+                  setPage(page);
+                  scrollToTop();
+                },
+              }
+        }
+      />
     </div>
   );
 };
