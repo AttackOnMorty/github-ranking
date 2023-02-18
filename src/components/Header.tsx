@@ -22,7 +22,11 @@ const Header: React.FC = () => {
     location.pathname === '/' ? '/repositories' : location.pathname
   );
 
-  const handleClick: MenuProps['onClick'] = (e) => {
+  const handleTitleClick = (): void => {
+    setCurrent('/repositories');
+  };
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
   };
 
@@ -33,9 +37,7 @@ const Header: React.FC = () => {
           <Link
             className="text-black hover:text-black no-underline"
             to="/"
-            onClick={() => {
-              setCurrent('/repositories');
-            }}
+            onClick={handleTitleClick}
           >
             GitHub Ranking
           </Link>
@@ -45,7 +47,7 @@ const Header: React.FC = () => {
           style={{ lineHeight: '4rem' }}
           mode="horizontal"
           selectedKeys={[current]}
-          onClick={handleClick}
+          onClick={handleMenuClick}
           items={menuItems}
         />
       </div>
