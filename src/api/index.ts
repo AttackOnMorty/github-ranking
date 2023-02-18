@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
-import { POPULAR_LANGUAGES } from '../constants';
 import { PAGE_SIZE } from './../constants/index';
 
 // TODO: Data would be unstable if we filter stars/forks/followers with a small number
@@ -117,17 +116,12 @@ export const getTopReposAsync = async (
 };
 
 export const getLanguagesAsync = async (): Promise<string[]> => {
-  let res;
-  try {
-    res = await fetch(
-      'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml'
-    );
-  } catch (error) {
-    return POPULAR_LANGUAGES;
-  }
+  const res = await fetch(
+    'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml'
+  );
 
   if (res.status !== 200) {
-    return POPULAR_LANGUAGES;
+    return [];
   }
 
   const yamlString = await res.text();

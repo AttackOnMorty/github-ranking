@@ -2,14 +2,14 @@ import { Radio, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
-import { MAX_DATA_COUNT, PAGE_SIZE, POPULAR_LANGUAGES } from '../constants';
-import { scrollToTop } from '../utils';
+import { MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
+import { getLanguagesOptions, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { Repo } from '../api';
 
-const categoryOptions = [
+const sortOptions = [
   {
     label: 'Stars',
     value: 'stars',
@@ -24,18 +24,18 @@ const Repositories: React.FC = () => {
   const [sort, setSort] = useState('stars');
   const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
-  const [languages, setLanguages] = useState<string[]>();
+  const [languages, setLanguages] = useState<string[]>([]);
   const [topic, setTopic] = useState<string>();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<Repo[]>();
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getTopRepos = async (): Promise<void> => {
       setLoading(true);
       const { totalCount, data } = await getTopReposAsync(
-        page,
+        currentPage,
         sort,
         language,
         topic
@@ -51,7 +51,7 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [page, sort, language, topic]);
+  }, [currentPage, sort, language, topic]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -66,71 +66,70 @@ const Repositories: React.FC = () => {
   }, []);
 
   const resetPage = (): void => {
-    setPage(1);
+    setCurrentPage(1);
   };
 
-  const getTitle = (): JSX.Element => {
-    const popularLanguages = {
-      label: 'Popular',
-      options: POPULAR_LANGUAGES.map((value) => ({
-        value,
-        label: value,
-      })),
-    };
-    const otherLanguages = {
-      label: 'Everything else',
-      options: languages
-        ?.filter((value) => !POPULAR_LANGUAGES.includes(value))
-        .map((value) => ({
-          value,
-          label: value,
-        })),
-    };
+  const handleCategoryChange = (e: any): void => {
+    setSort(e.target.value);
+    resetPage();
+  };
 
-    return (
-      <div className="flex justify-between">
-        <Radio.Group
-          size="large"
-          options={categoryOptions}
-          onChange={(e) => {
-            setSort(e.target.value);
-            resetPage();
-          }}
-          value={sort}
-          optionType="button"
-          buttonStyle="solid"
-        />
-        <Space size="large">
-          <Space>
-            <span className="text-lg font-light">Language:</span>
-            <Select
-              className="w-36"
-              size="large"
-              placeholder="Any"
-              onChange={(value: string) => {
-                setLanguage(value);
-                resetPage();
-              }}
-              options={[popularLanguages, otherLanguages]}
-              dropdownMatchSelectWidth={200}
-              showSearch
-              allowClear
-            />
-          </Space>
-          <Space>
-            <span className="text-lg font-light">Topic:</span>
-            <TopicInput
-              className="w-36"
-              placeholder="Any"
-              value={topic}
-              setValue={setTopic}
-              resetPage={resetPage}
-            />
-          </Space>
+  const handleLanguageChange = (value: string): void => {
+    setLanguage(value);
+    resetPage();
+  };
+
+  const getTitle = (): JSX.Element => (
+    <div className="flex justify-between">
+      <Radio.Group
+        size="large"
+        options={sortOptions}
+        onChange={handleCategoryChange}
+        value={sort}
+        optionType="button"
+        buttonStyle="solid"
+      />
+      <Space size="large">
+        <Space>
+          <span className="text-lg font-light">Language:</span>
+          <Select
+            className="w-36"
+            size="large"
+            placeholder="Any"
+            onChange={handleLanguageChange}
+            options={getLanguagesOptions(languages)}
+            dropdownMatchSelectWidth={200}
+            showSearch
+            allowClear
+          />
         </Space>
-      </div>
-    );
-  };
+        <Space>
+          <span className="text-lg font-light">Topic:</span>
+          <TopicInput
+            className="w-36"
+            placeholder="Any"
+            value={topic}
+            setValue={setTopic}
+            resetPage={resetPage}
+          />
+        </Space>
+      </Space>
+    </div>
+  );
+
+  const pagination =
+    totalCount <= PAGE_SIZE
+      ? false
+      : {
+          current: currentPage,
+          pageSize: PAGE_SIZE,
+          total: totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
+          showSizeChanger: false,
+          onChange(page: number) {
+            setCurrentPage(page);
+            scrollToTop();
+          },
+        };
 
   return data === undefined ? (
     <div className="flex flex-1 justify-center items-center">
@@ -145,30 +144,14 @@ const Repositories: React.FC = () => {
         loading={loading}
         columns={getColumns(tableSort)}
         dataSource={data}
-        pagination={
-          totalCount <= 20
-            ? false
-            : {
-                current: page,
-                pageSize: PAGE_SIZE,
-                total:
-                  totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
-                showSizeChanger: false,
-                onChange(page) {
-                  setPage(page);
-                  scrollToTop();
-                },
-              }
-        }
+        pagination={pagination}
       />
     </div>
   );
 };
 
 function getColumns(sorter: string): ColumnsType<Repo> {
-  const categoryOption = categoryOptions.find(
-    (option) => option.value === sorter
-  );
+  const categoryOption = sortOptions.find((option) => option.value === sorter);
 
   return [
     {

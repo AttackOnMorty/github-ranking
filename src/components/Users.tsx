@@ -4,13 +4,13 @@ import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
-import { MAX_DATA_COUNT, PAGE_SIZE, POPULAR_LANGUAGES } from '../constants';
-import { scrollToTop } from '../utils';
+import { MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
+import { getLanguagesOptions, scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
 
-const userOptions = [
+const userTypeOptions = [
   {
     label: 'Developers',
     value: 'user',
@@ -22,21 +22,21 @@ const userOptions = [
 ];
 
 const Users: React.FC = () => {
-  const [type, setType] = useState('user');
+  const [userType, setUserType] = useState('user');
   const [language, setLanguage] = useState<string>();
-  const [languages, setLanguages] = useState<string[]>();
+  const [languages, setLanguages] = useState<string[]>([]);
   const [location, setLocation] = useState<string>();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<User[]>();
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getTopUsers = async (): Promise<void> => {
       setLoading(true);
       const { totalCount, data } = await getTopUsersAsync(
-        page,
-        type,
+        currentPage,
+        userType,
         language,
         location
       );
@@ -50,7 +50,7 @@ const Users: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [page, type, language, location]);
+  }, [currentPage, userType, language, location]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -65,80 +65,83 @@ const Users: React.FC = () => {
   }, []);
 
   const resetPage = (): void => {
-    setPage(1);
+    setCurrentPage(1);
   };
 
-  const getTitle = (): JSX.Element => {
-    const popularLanguages = {
-      label: 'Popular',
-      options: POPULAR_LANGUAGES.map((value) => ({
-        value,
-        label: value,
-      })),
-    };
-    const otherLanguages = {
-      label: 'Everything else',
-      options: languages
-        ?.filter((value) => !POPULAR_LANGUAGES.includes(value))
-        .map((value) => ({
-          value,
-          label: value,
-        })),
-    };
+  const handleUserTypeChange = (e: any): void => {
+    setUserType(e.target.value);
+    resetPage();
+  };
 
-    return (
-      <div className="flex justify-between">
-        <Radio.Group
-          size="large"
-          options={userOptions}
-          onChange={(e) => {
-            setType(e.target.value);
-            resetPage();
-          }}
-          value={type}
-          optionType="button"
-          buttonStyle="solid"
-        />
-        <Space size="large">
-          <Space>
-            <span className="text-lg font-light">Language:</span>
-            <Select
-              className="w-36"
-              size="large"
-              placeholder="Any"
-              onChange={(value: string) => {
-                setLanguage(value);
-                resetPage();
-              }}
-              options={[popularLanguages, otherLanguages]}
-              dropdownMatchSelectWidth={200}
-              showSearch
-              allowClear
-            />
-          </Space>
-          <Space>
-            <span className="text-lg font-light">Location:</span>
-            <Input
-              className="w-36"
-              size="large"
-              placeholder="Any"
-              onChange={(e) => {
-                if ((e.target as HTMLInputElement).value === '') {
-                  setLocation('');
-                  resetPage();
-                }
-              }}
-              onPressEnter={(e) => {
-                setLocation((e.target as HTMLInputElement).value);
-                resetPage();
-              }}
-              allowClear
-            />
-          </Space>
+  const handleLanguageChange = (value: string): void => {
+    setLanguage(value);
+    resetPage();
+  };
+
+  const handleLocationChange = (e: any): void => {
+    if (e.target.value === '') {
+      setLocation('');
+      resetPage();
+    }
+  };
+
+  const handleLocationPressEnter = (e: any): void => {
+    setLocation(e.target.value);
+    resetPage();
+  };
+
+  const getTitle = (): JSX.Element => (
+    <div className="flex justify-between">
+      <Radio.Group
+        size="large"
+        options={userTypeOptions}
+        onChange={handleUserTypeChange}
+        value={userType}
+        optionType="button"
+        buttonStyle="solid"
+      />
+      <Space size="large">
+        <Space>
+          <span className="text-lg font-light">Language:</span>
+          <Select
+            className="w-36"
+            size="large"
+            placeholder="Any"
+            onChange={handleLanguageChange}
+            options={getLanguagesOptions(languages)}
+            dropdownMatchSelectWidth={200}
+            showSearch
+            allowClear
+          />
         </Space>
-      </div>
-    );
-  };
+        <Space>
+          <span className="text-lg font-light">Location:</span>
+          <Input
+            className="w-36"
+            size="large"
+            placeholder="Any"
+            onChange={handleLocationChange}
+            onPressEnter={handleLocationPressEnter}
+            allowClear
+          />
+        </Space>
+      </Space>
+    </div>
+  );
+
+  const pagination =
+    totalCount <= PAGE_SIZE
+      ? false
+      : {
+          current: currentPage,
+          pageSize: PAGE_SIZE,
+          total: totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
+          showSizeChanger: false,
+          onChange(page: number) {
+            setCurrentPage(page);
+            scrollToTop();
+          },
+        };
 
   return data === undefined ? (
     <div className="flex flex-1 justify-center items-center">
@@ -153,21 +156,7 @@ const Users: React.FC = () => {
         loading={loading}
         columns={getColumns()}
         dataSource={data}
-        pagination={
-          totalCount <= 20
-            ? false
-            : {
-                current: page,
-                pageSize: PAGE_SIZE,
-                total:
-                  totalCount > MAX_DATA_COUNT ? MAX_DATA_COUNT : totalCount,
-                showSizeChanger: false,
-                onChange(page) {
-                  setPage(page);
-                  scrollToTop();
-                },
-              }
-        }
+        pagination={pagination}
       />
     </div>
   );
