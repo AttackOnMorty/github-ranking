@@ -5,12 +5,10 @@ Search top GitHub repos, developers and organizations by advanced filters.
 - Repos
 
   - Sort by **stars** or **forks**
-  - Filter by **language**
-  - Filter by **topic**
+  - Filter by **language** and **topic**
 
 - Developers/Organizations
   - Sort by **followers**
-  - Filter by **language**
-  - Filter by **location**
+  - Filter by **language** and **location**
 
 ![Repo Ranking](./docs/repo-ranking.png)
