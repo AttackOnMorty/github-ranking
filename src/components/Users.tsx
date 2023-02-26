@@ -91,7 +91,7 @@ const Users: React.FC = () => {
   };
 
   const getTitle = (): JSX.Element => (
-    <div className="flex justify-between">
+    <Space className="flex justify-center flex-wrap sm:justify-between">
       <Radio.Group
         size="large"
         options={userTypeOptions}
@@ -100,7 +100,7 @@ const Users: React.FC = () => {
         optionType="button"
         buttonStyle="solid"
       />
-      <Space size="large">
+      <Space className="hidden sm:flex" size="large">
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
@@ -126,7 +126,7 @@ const Users: React.FC = () => {
           />
         </Space>
       </Space>
-    </div>
+    </Space>
   );
 
   const pagination =
@@ -226,6 +226,7 @@ function getColumns(): ColumnsType<User> {
         </span>
       ),
       width: 100,
+      responsive: ['md'],
     },
     {
       title: 'Bio',
@@ -233,6 +234,7 @@ function getColumns(): ColumnsType<User> {
       key: 'bio',
       render: (bio) =>
         bio !== null ? <span className="text-sm font-light">{bio}</span> : '-',
+      responsive: ['md'],
     },
     {
       title: 'Website',
@@ -252,6 +254,7 @@ function getColumns(): ColumnsType<User> {
         ),
       width: 240,
       ellipsis: true,
+      responsive: ['md'],
     },
   ];
 }

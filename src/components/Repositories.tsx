@@ -80,7 +80,7 @@ const Repositories: React.FC = () => {
   };
 
   const getTitle = (): JSX.Element => (
-    <div className="flex justify-between">
+    <Space className="flex justify-center flex-wrap sm:justify-between">
       <Radio.Group
         size="large"
         options={sortOptions}
@@ -89,7 +89,7 @@ const Repositories: React.FC = () => {
         optionType="button"
         buttonStyle="solid"
       />
-      <Space size="large">
+      <Space className="hidden sm:flex" size="large">
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
@@ -114,7 +114,7 @@ const Repositories: React.FC = () => {
           />
         </Space>
       </Space>
-    </div>
+    </Space>
   );
 
   const pagination =
@@ -196,6 +196,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
         </span>
       ),
       width: 80,
+      responsive: ['md'],
     },
     {
       title: 'Description',
@@ -207,6 +208,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
         ) : (
           '-'
         ),
+      responsive: ['md'],
     },
     {
       title: 'Language',
@@ -223,6 +225,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
           </Tag>
         ),
       width: 160,
+      responsive: ['md'],
     },
   ];
 }
