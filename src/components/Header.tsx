@@ -31,9 +31,9 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="px-14 flex items-center">
+    <header className="px-6 sm:px-14 flex items-center">
       <div className="flex flex-1 items-center">
-        <span className="mr-4 text-2xl font-mono cursor-pointer whitespace-nowrap">
+        <span className="mr-4 text-lg sm:text-2xl font-mono cursor-pointer whitespace-nowrap">
           <Link
             className="text-black hover:text-black no-underline"
             to="/"
@@ -43,7 +43,7 @@ const Header: React.FC = () => {
           </Link>
         </span>
         <Menu
-          className="flex-1 text-lg"
+          className="flex-1 sm:text-lg"
           style={{ lineHeight: '4rem' }}
           mode="horizontal"
           selectedKeys={[current]}
