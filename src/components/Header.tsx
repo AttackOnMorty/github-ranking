@@ -52,6 +52,7 @@ const Header: React.FC = () => {
         />
       </div>
       <a
+        className="hidden sm:block"
         href="https://github.com/AttackOnMorty/github-ranking"
         target="_black"
         rel="noreferrer"
