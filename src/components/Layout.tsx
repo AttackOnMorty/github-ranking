@@ -9,7 +9,7 @@ const Layout: React.FC = () => {
       <Header />
       <div className="flex flex-1 flex-col bg-[#f5f5f5]">
         <main className="flex flex-1 justify-center">
-          <div className="max-w-6xl px-10 py-6 flex flex-1">
+          <div className="max-w-6xl px-6 py-6 flex flex-1">
             <Outlet />
           </div>
         </main>
