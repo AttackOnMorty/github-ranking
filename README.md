@@ -2,7 +2,7 @@
 
 Search top GitHub repositories, developers and organizations by advanced filters.
 
-- Repos
+- Repositories
 
   - Sort by **stars** or **forks**
   - Filter by **language** and **topic**
