@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash';
 import { POPULAR_LANGUAGES } from '../constants';
+import { nameToEmoji } from 'gemoji';
 
 export function getLanguagesOptions(languages: string[]): any[] {
   const popularLanguageOptions = POPULAR_LANGUAGES.map((value) => ({
@@ -51,4 +52,10 @@ export const GHQ = {
     })
     return res;
   }
+}
+
+export function convertText2Emoji(text: string): string {
+  return text.replaceAll(/:(\w+):/g, (sub, emojiText) => {
+    return isEmpty(nameToEmoji[emojiText]) ? sub : nameToEmoji[emojiText];
+  });
 }
