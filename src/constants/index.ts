@@ -29,3 +29,6 @@ export const POPULAR_LANGUAGES = [
   'Swift',
   'TypeScript',
 ];
+
+// TODO: Data would be unstable if we filter stars/forks/followers with a small number
+export const MIN_COUNT = 100;

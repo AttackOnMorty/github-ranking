@@ -7,7 +7,7 @@ import { getLanguagesOptions, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
-import type { Repo } from '../api';
+import type { Repo, RepoSortOption } from '../api';
 
 const sortOptions = [
   {
@@ -21,7 +21,7 @@ const sortOptions = [
 ];
 
 const Repositories: React.FC = () => {
-  const [sort, setSort] = useState('stars');
+  const [sort, setSort] = useState<RepoSortOption>('stars');
   const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>([]);

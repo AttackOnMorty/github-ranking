@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { POPULAR_LANGUAGES } from '../constants';
 
 export function getLanguagesOptions(languages: string[]): any[] {
@@ -31,4 +32,23 @@ export function scrollToTop(): void {
     top: 0,
     behavior: 'smooth',
   });
+}
+
+// GITHUB Qualifier for search
+export const GHQ = {
+  stringify: function (obj: Record<string, string | undefined>): string {
+    return Object.entries(obj).filter(([_,v]) => !isEmpty(v)).map((pair) => pair.join(':')).join(' ')
+  },
+
+  parse: function(value: string): Record<string, string> {
+    const isValid = /^\w+:\w+( \w+:\w+)*$/.test(value);
+    if(!isValid) return {};
+
+    const pairs = value.split(' ').map(pair => pair.trim().split(':'))
+    const res: Record<string, string> = {};
+    pairs.forEach(([k,v]) => {
+      res[k] = v
+    })
+    return res;
+  }
 }
