@@ -1,6 +1,6 @@
-import { PAGE_SIZE } from '../constants';
 import { load } from 'js-yaml';
 import client from './client';
+import { PAGE_SIZE } from '../constants';
 import { GHQ } from '../utils';
 
 // TODO: Data would be unstable if we filter stars/forks/followers with a small number

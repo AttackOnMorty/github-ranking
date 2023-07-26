@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { POPULAR_LANGUAGES } from '../constants';
 import { nameToEmoji } from 'gemoji';
+import { POPULAR_LANGUAGES } from '../constants';
 
 export function getLanguagesOptions(languages: string[]): any[] {
   const popularLanguageOptions = POPULAR_LANGUAGES.map((value) => ({
@@ -38,16 +38,16 @@ export function scrollToTop(): void {
 // GITHUB Qualifier for search
 export const GHQ = {
   stringify: function (obj: Record<string, string | undefined>): string {
-    return Object.entries(obj).filter(([_,v]) => !isEmpty(v)).map((pair) => pair.join(':')).join(' ')
+    return Object.entries(obj).filter(([_, v]) => !isEmpty(v)).map((pair) => pair.join(':')).join(' ')
   },
 
-  parse: function(value: string): Record<string, string> {
+  parse: function (value: string): Record<string, string> {
     const isValid = /^\w+:\w+( \w+:\w+)*$/.test(value);
-    if(!isValid) return {};
+    if (!isValid) return {};
 
     const pairs = value.split(' ').map(pair => pair.trim().split(':'))
     const res: Record<string, string> = {};
-    pairs.forEach(([k,v]) => {
+    pairs.forEach(([k, v]) => {
       res[k] = v
     })
     return res;
