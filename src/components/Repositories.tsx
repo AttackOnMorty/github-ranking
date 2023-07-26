@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
 import { MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
-import { convertText2Emoji, getLanguagesOptions, scrollToTop } from '../utils';
+import { convertTextToEmoji, getLanguagesOptions, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -204,7 +204,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       key: 'description',
       render: (description) =>
         description !== null ? (
-          <span className="font-light">{convertText2Emoji(description)}</span>
+          <span className="font-light">{convertTextToEmoji(description)}</span>
         ) : (
           '-'
         ),

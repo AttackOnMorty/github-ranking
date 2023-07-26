@@ -54,7 +54,7 @@ export const GHQ = {
   }
 }
 
-export function convertText2Emoji(text: string): string {
+export function convertTextToEmoji(text: string): string {
   return text.replaceAll(/:(\w+):/g, (sub, emojiText) => {
     return isEmpty(nameToEmoji[emojiText]) ? sub : nameToEmoji[emojiText];
   });
