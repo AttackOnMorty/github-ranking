@@ -1,7 +1,10 @@
-import { MIN_COUNT, PAGE_SIZE } from '../constants';
+import { PAGE_SIZE } from '../constants';
 import { load } from 'js-yaml';
 import client from './client';
 import { GHQ } from '../utils';
+
+// TODO: Data would be unstable if we filter stars/forks/followers with a small number
+const MIN_COUNT = 100;
 
 export interface Repo {
   id: string;
@@ -47,7 +50,11 @@ export interface Users {
   data: User[];
 }
 
-export type RepoSortOption = "stars" | "forks" | "help-wanted-issues" | "updated"
+export type RepoSortOption =
+  | 'stars'
+  | 'forks'
+  | 'help-wanted-issues'
+  | 'updated';
 
 export const getTopReposAsync = async (
   page: number,
@@ -62,8 +69,8 @@ export const getTopReposAsync = async (
     q: GHQ.stringify({
       language,
       topic,
-      [sort]: `>${MIN_COUNT}`
-    })
+      [sort]: `>${MIN_COUNT}`,
+    }),
   });
 
   if (res.status !== 200) {
@@ -120,7 +127,7 @@ export const getLanguagesAsync = async (): Promise<string[]> => {
 };
 
 export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
-  const res = await client.rest.search.topics({ q: GHQ.stringify({ topic }) })
+  const res = await client.rest.search.topics({ q: GHQ.stringify({ topic }) });
 
   if (res.status !== 200) {
     return [];
@@ -131,16 +138,17 @@ export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
 
     return {
       name,
-      description
+      description,
     };
   });
 };
 
-async function getUserAsync(username: string): Promise<Record<string, any> | null> {
-
+async function getUserAsync(
+  username: string
+): Promise<Record<string, any> | null> {
   const res = await client.rest.users.getByUsername({
     username,
-  })
+  });
 
   if (res.status !== 200) {
     return null;
@@ -180,7 +188,7 @@ export async function getTopUsersAsync(
 ): Promise<{
   totalCount: number;
   data: any[];
-}> { 
+}> {
   const res = await client.rest.search.users({
     page,
     per_page: PAGE_SIZE,
@@ -189,9 +197,9 @@ export async function getTopUsersAsync(
       type,
       followers: `>${MIN_COUNT}`,
       language,
-      location
-    })
-  })
+      location,
+    }),
+  });
 
   if (res.status !== 200) {
     return { totalCount: 0, data: [] };
@@ -207,5 +215,5 @@ export async function getTopUsersAsync(
   return {
     totalCount: res.data.total_count,
     data,
-  }
+  };
 }
