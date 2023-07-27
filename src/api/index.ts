@@ -3,6 +3,8 @@ import { PAGE_SIZE } from '../constants';
 import { GHQ } from '../utils';
 import client from './client';
 
+import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
+
 // TODO: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
 
@@ -50,18 +52,22 @@ export interface Users {
   data: User[];
 }
 
-export type RepoSortOption =
-  | 'stars'
-  | 'forks'
-  | 'help-wanted-issues'
-  | 'updated';
+export type RepoSortOptions = RestEndpointMethodTypes["search"]["repos"]["parameters"]["sort"];
 
-export const getTopReposAsync = async (
-  page: number,
-  sort: RepoSortOption,
-  language?: string,
+type GetTopReposParams = Pick<RestEndpointMethodTypes["search"]["repos"]["parameters"], "page" | "sort"> & {
+  language?: string;
   topic?: string
-): Promise<any> => {
+}
+
+export const getTopReposAsync: (params: GetTopReposParams) => Promise<Repos> = async (
+  {
+    page = 1,
+    sort = "stars",
+    language,
+    topic
+  }
+) => {
+
   const res = await client.rest.search.repos({
     sort,
     per_page: PAGE_SIZE,
