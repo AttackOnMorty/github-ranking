@@ -152,7 +152,7 @@ const Repositories: React.FC = () => {
   );
 };
 
-function getColumns(sorter: string): ColumnsType<Repo> {
+function getColumns(sorter: RepoSortOptions): ColumnsType<Repo> {
   const categoryOption = sortOptions.find((option) => option.value === sorter);
 
   return [
