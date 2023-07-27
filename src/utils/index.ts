@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
 import { nameToEmoji } from 'gemoji';
+import { isEmpty } from 'lodash';
 import { POPULAR_LANGUAGES } from '../constants';
 
 export function getLanguagesOptions(languages: string[]): any[] {

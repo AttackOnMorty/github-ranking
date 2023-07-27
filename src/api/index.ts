@@ -1,7 +1,7 @@
 import { load } from 'js-yaml';
-import client from './client';
 import { PAGE_SIZE } from '../constants';
 import { GHQ } from '../utils';
+import client from './client';
 
 // TODO: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
