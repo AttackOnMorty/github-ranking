@@ -52,11 +52,12 @@ export interface Users {
   data: User[];
 }
 
-export type RepoSortOptions = RestEndpointMethodTypes["search"]["repos"]["parameters"]["sort"];
+export type RepoSortOptions = Exclude<RestEndpointMethodTypes["search"]["repos"]["parameters"]["sort"], "help-wanted-issues" | "updated">
 
-type GetTopReposParams = Pick<RestEndpointMethodTypes["search"]["repos"]["parameters"], "page" | "sort"> & {
+type GetTopReposParams = Pick<RestEndpointMethodTypes["search"]["repos"]["parameters"], "page"> & {
+  sort: RepoSortOptions;
   language?: string;
-  topic?: string
+  topic?: string;
 }
 
 export const getTopReposAsync: (params: GetTopReposParams) => Promise<Repos> = async (
