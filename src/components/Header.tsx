@@ -35,7 +35,11 @@ const Header: React.FC = () => {
     <header className="px-6 sm:px-14 flex items-center">
       <div className="flex flex-1 items-center">
         <div className="flex items-center">
-          <img src={Logo} alt="logo" className="w-10 h-10 mr-4" />
+          <img
+            src={Logo}
+            alt="logo"
+            className="hidden sm:block sm:w-10 sm:h-10 sm:mr-4"
+          />
           <span className="mr-4 text-lg sm:text-2xl font-mono cursor-pointer whitespace-nowrap">
             <Link
               className="text-black hover:text-black no-underline"
