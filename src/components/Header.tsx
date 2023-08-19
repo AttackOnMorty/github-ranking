@@ -2,6 +2,7 @@ import { GithubOutlined } from '@ant-design/icons';
 import { Button, Menu } from 'antd';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Logo from '../assets/logo.png';
 
 import type { MenuProps } from 'antd';
 
@@ -33,15 +34,18 @@ const Header: React.FC = () => {
   return (
     <header className="px-6 sm:px-14 flex items-center">
       <div className="flex flex-1 items-center">
-        <span className="mr-4 text-lg sm:text-2xl font-mono cursor-pointer whitespace-nowrap">
-          <Link
-            className="text-black hover:text-black no-underline"
-            to="/"
-            onClick={handleTitleClick}
-          >
-            GitHub Ranking
-          </Link>
-        </span>
+        <div className="flex items-center">
+          <img src={Logo} alt="logo" className="w-10 h-10 mr-4" />
+          <span className="mr-4 text-lg sm:text-2xl font-mono cursor-pointer whitespace-nowrap">
+            <Link
+              className="text-black hover:text-black no-underline"
+              to="/"
+              onClick={handleTitleClick}
+            >
+              GitHub Ranking
+            </Link>
+          </span>
+        </div>
         <Menu
           className="flex-1 sm:text-lg"
           style={{ lineHeight: '4rem' }}
