@@ -25,7 +25,7 @@ const Repositories: React.FC = () => {
   const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>([]);
-  const [topic, setTopic] = useState<string>();
+  const [topics, setTopic] = useState<string[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<Repo[]>();
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,7 +38,7 @@ const Repositories: React.FC = () => {
         currentPage,
         sort,
         language,
-        topic
+        topics
       );
       setTotalCount(totalCount);
       setData(data);
@@ -51,7 +51,7 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [currentPage, sort, language, topic]);
+  }, [currentPage, sort, language, topics]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -108,7 +108,7 @@ const Repositories: React.FC = () => {
           <TopicInput
             className="w-36"
             placeholder="Any"
-            value={topic}
+            value={topics}
             setValue={setTopic}
             resetPage={resetPage}
           />

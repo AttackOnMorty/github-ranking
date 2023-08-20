@@ -58,7 +58,7 @@ export const getTopReposAsync = async (
   page: number,
   sort: string,
   language?: string,
-  topic?: string
+  topics?: string[]
 ): Promise<Repos> => {
   let q = `${sort}:>${MIN_COUNT}`;
 
@@ -66,8 +66,8 @@ export const getTopReposAsync = async (
     q += ` language:"${language}"`;
   }
 
-  if (topic !== undefined && topic.trim() !== '') {
-    q += ` topic:${topic}`;
+  if((topics != null) && (topics.length > 0)) {
+    q += topics.map(topic => ` topic:${topic}`).join('+');
   }
 
   const res = await octokit.request('GET /search/repositories{?q}', {
