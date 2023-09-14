@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { load } from 'js-yaml';
-import { Octokit } from 'octokit';
-import { PAGE_SIZE } from './../constants/index';
+import { PAGE_SIZE } from '../constants';
+import { GHQ } from '../utils';
+import client from './client';
+
+import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
 
 // TODO: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
-
-const octokit = new Octokit({
-  auth: process.env.REACT_APP_GITHUB_ACCESS_TOKEN,
-});
 
 export interface Repo {
   id: string;
@@ -54,27 +52,32 @@ export interface Users {
   data: User[];
 }
 
-export const getTopReposAsync = async (
-  page: number,
-  sort: string,
-  language?: string,
-  topic?: string
-): Promise<Repos> => {
-  let q = `${sort}:>${MIN_COUNT}`;
+export type RepoSortOptions = Exclude<RestEndpointMethodTypes["search"]["repos"]["parameters"]["sort"], "help-wanted-issues" | "updated">
 
-  if (language !== undefined && language.trim() !== '') {
-    q += ` language:"${language}"`;
+type GetTopReposParams = Pick<RestEndpointMethodTypes["search"]["repos"]["parameters"], "page"> & {
+  sort: RepoSortOptions;
+  language?: string;
+  topic?: string;
+}
+
+export const getTopReposAsync: (params: GetTopReposParams) => Promise<Repos> = async (
+  {
+    page = 1,
+    sort = "stars",
+    language,
+    topic
   }
+) => {
 
-  if (topic !== undefined && topic.trim() !== '') {
-    q += ` topic:${topic}`;
-  }
-
-  const res = await octokit.request('GET /search/repositories{?q}', {
-    q,
+  const res = await client.rest.search.repos({
     sort,
     per_page: PAGE_SIZE,
     page,
+    q: GHQ.stringify({
+      language,
+      topic,
+      [sort]: `>${MIN_COUNT}`,
+    }),
   });
 
   if (res.status !== 200) {
@@ -85,9 +88,9 @@ export const getTopReposAsync = async (
     const {
       id,
       name,
-      html_url,
+      html_url: htmlURL,
       owner,
-      stargazers_count,
+      stargazers_count: stargazersCount,
       forks,
       description,
       language,
@@ -97,12 +100,12 @@ export const getTopReposAsync = async (
       id,
       rank: (page - 1) * PAGE_SIZE + index + 1,
       name,
-      url: html_url,
+      url: htmlURL,
       owner: {
         avatarUrl: owner.avatar_url,
         url: owner.html_url,
       },
-      stars: stargazers_count,
+      stars: stargazersCount,
       forks,
       description,
       language,
@@ -131,26 +134,28 @@ export const getLanguagesAsync = async (): Promise<string[]> => {
 };
 
 export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
-  const res = await octokit.request('GET /search/topics{?q}', {
-    q: topic,
-  });
+  const res = await client.rest.search.topics({ q: GHQ.stringify({ topic }) });
 
   if (res.status !== 200) {
     return [];
   }
 
   return res.data.items.map((topic: any) => {
-    const { name, short_description } = topic;
+    const { name, short_description: description } = topic;
 
     return {
       name,
-      description: short_description,
+      description,
     };
   });
 };
 
-const getUserAsync = async (username: string): Promise<User | null> => {
-  const res = await octokit.request(`GET /users/${username}`);
+async function getUserAsync(
+  username: string
+): Promise<Record<string, any> | null> {
+  const res = await client.rest.users.getByUsername({
+    username,
+  });
 
   if (res.status !== 200) {
     return null;
@@ -158,8 +163,8 @@ const getUserAsync = async (username: string): Promise<User | null> => {
 
   const {
     id,
-    avatar_url,
-    html_url,
+    avatar_url: avatarUrl,
+    html_url: url,
     name,
     followers,
     company,
@@ -170,8 +175,8 @@ const getUserAsync = async (username: string): Promise<User | null> => {
 
   return {
     id,
-    avatarUrl: avatar_url,
-    url: html_url,
+    avatarUrl,
+    url,
     username,
     name,
     followers,
@@ -180,29 +185,27 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     bio,
     location,
   };
-};
+}
 
-export const getTopUsersAsync = async (
+export async function getTopUsersAsync(
   page: number,
   type: string,
   language?: string,
   location?: string
-): Promise<Users> => {
-  let q = `type:${type} followers:>${MIN_COUNT}`;
-
-  if (language !== undefined && language.trim() !== '') {
-    q += ` language:"${language}"`;
-  }
-
-  if (location !== undefined && location.trim() !== '') {
-    q += ` location:"${location}"`;
-  }
-
-  const res = await octokit.request('GET /search/users{?q}', {
-    q,
-    sort: 'followers',
-    per_page: PAGE_SIZE,
+): Promise<{
+  totalCount: number;
+  data: any[];
+}> {
+  const res = await client.rest.search.users({
     page,
+    per_page: PAGE_SIZE,
+    sort: 'followers',
+    q: GHQ.stringify({
+      type,
+      followers: `>${MIN_COUNT}`,
+      language,
+      location,
+    }),
   });
 
   if (res.status !== 200) {
@@ -220,4 +223,4 @@ export const getTopUsersAsync = async (
     totalCount: res.data.total_count,
     data,
   };
-};
+}
