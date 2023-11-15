@@ -32,3 +32,17 @@ export function scrollToTop(): void {
     behavior: 'smooth',
   });
 }
+
+export function getTop3(rank: number): string | null {
+  let top3 = null;
+
+  if (rank === 1) {
+    top3 = '🥇';
+  } else if (rank === 2) {
+    top3 = '🥈';
+  } else if (rank === 3) {
+    top3 = '🥉';
+  }
+
+  return top3;
+}

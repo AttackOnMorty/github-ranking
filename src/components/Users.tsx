@@ -5,7 +5,7 @@ import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
 import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
-import { getLanguagesOptions, scrollToTop } from '../utils';
+import { getTop3, getLanguagesOptions, scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
@@ -169,6 +169,10 @@ function getColumns(): ColumnsType<User> {
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
+      render: (rank) => {
+        const top3 = getTop3(rank);
+        return top3 !== null ? <span className="text-2xl">{top3}</span> : rank;
+      },
       width: 70,
     },
     {

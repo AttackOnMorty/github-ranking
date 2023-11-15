@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
 import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
-import { getLanguagesOptions, scrollToTop } from '../utils';
+import { getTop3, getLanguagesOptions, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -159,6 +159,10 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
+      render: (rank) => {
+        const top3 = getTop3(rank);
+        return top3 !== null ? <span className="text-2xl">{top3}</span> : rank;
+      },
       width: 70,
     },
     {
