@@ -175,58 +175,21 @@ function getColumns(): ColumnsType<User> {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (name, { avatarUrl, url, username, location, company }) => (
-        <div className="flex items-center">
-          <img
-            className="w-10 mr-4 rounded-full"
-            src={avatarUrl}
-            alt="avatar"
-          />
-          <div>
-            <a
-              className="text-base font-medium"
-              href={url}
-              target="_black"
-              rel="noreferrer"
-            >
-              {name ?? username}
-            </a>
-            <div className="flex items-center text-xs font-extralight">
-              {company !== null && (
-                <>
-                  <div>
-                    <Company className="mr-1" />
-                  </div>
-                  <span>{company}</span>
-                </>
-              )}
-            </div>
-            <div className="flex items-center text-xs font-extralight">
-              {location !== null && (
-                <>
-                  <div>
-                    <Location className="mr-1" />
-                  </div>
-                  <span>{location}</span>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      ),
+      render: (_, record) => renderNameColumn(record),
       width: 260,
     },
     {
       title: 'Followers',
       dataIndex: 'followers',
       key: 'followers',
-      render: (followers) => (
-        <span className="text-xs font-medium">
-          {followers >= 1000 ? `${Math.floor(followers / 1000)}k` : followers}
-        </span>
+      render: (value) => (
+        <div style={{ width: 35 }}>
+          <span className="font-medium float-right">
+            {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
+          </span>
+        </div>
       ),
       width: 100,
-      responsive: ['md'],
     },
     {
       title: 'Bio',
@@ -241,26 +204,102 @@ function getColumns(): ColumnsType<User> {
       responsive: ['md'],
     },
     {
-      title: 'Website',
-      dataIndex: 'blog',
-      key: 'blog',
-      render: (blog: string) =>
-        blog !== '' ? (
-          <a
-            href={blog.startsWith('http') ? blog : `https://${blog}`}
-            target="_black"
-            rel="noreferrer"
-          >
-            {blog}
-          </a>
-        ) : (
-          EMPTY_EMOJI
-        ),
-      width: 240,
+      title: 'Social Links',
+      dataIndex: 'email',
+      key: 'email',
+      render: (_, record) => renderSocialLinks(record),
+      width: 160,
       ellipsis: true,
       responsive: ['md'],
     },
   ];
+}
+
+function renderNameColumn({
+  name,
+  avatarUrl,
+  url,
+  username,
+  location,
+  company,
+}: User): JSX.Element {
+  return (
+    <div className="flex items-center">
+      <img className="w-10 mr-4 rounded-full" src={avatarUrl} alt="avatar" />
+      <div>
+        <a
+          className="text-base font-medium"
+          href={url}
+          target="_black"
+          rel="noreferrer"
+        >
+          {name ?? username}
+        </a>
+        <div className="flex items-center text-xs font-extralight">
+          {company !== null && (
+            <>
+              <div>
+                <Company className="mr-1" />
+              </div>
+              <span>{company}</span>
+            </>
+          )}
+        </div>
+        <div className="flex items-center text-xs font-extralight">
+          {location !== null && (
+            <>
+              <div>
+                <Location className="mr-1" />
+              </div>
+              <span>{location}</span>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function renderSocialLinks({
+  email,
+  blog,
+  twitter,
+}: User): JSX.Element | string {
+  const emailIcon = email !== null ? <a href={`mailto:${email}`}>📧</a> : null;
+
+  const blogIcon =
+    blog !== '' ? (
+      <a
+        href={blog.startsWith('http') ? blog : `https://${blog}`}
+        target="_black"
+        rel="noreferrer"
+      >
+        🔗
+      </a>
+    ) : null;
+
+  const twitterIcon =
+    twitter !== null ? (
+      <a
+        href={`https://twitter.com/${twitter}`}
+        target="_black"
+        rel="noreferrer"
+      >
+        🐦
+      </a>
+    ) : null;
+
+  if (emailIcon === null && blogIcon === null && twitterIcon === null) {
+    return EMPTY_EMOJI;
+  }
+
+  return (
+    <Space>
+      {emailIcon}
+      {blogIcon}
+      {twitterIcon}
+    </Space>
+  );
 }
 
 export default Users;

@@ -47,6 +47,8 @@ export interface User {
   blog: string;
   bio: string;
   location: string | null;
+  email: string | null;
+  twitter: string | null;
 }
 
 export interface Users {
@@ -166,6 +168,8 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     blog,
     bio,
     location,
+    email,
+    twitter_username,
   } = res.data;
 
   return {
@@ -179,6 +183,8 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     blog,
     bio,
     location,
+    email,
+    twitter: twitter_username,
   };
 };
 

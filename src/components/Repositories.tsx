@@ -191,11 +191,13 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: categoryOption?.value,
       key: categoryOption?.value,
       render: (value) => (
-        <span className="text-xs font-medium">
-          {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-        </span>
+        <div style={{ width: 35 }}>
+          <span className="font-medium float-right">
+            {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
+          </span>
+        </div>
       ),
-      width: 80,
+      width: 100,
       responsive: ['md'],
     },
     {
@@ -216,11 +218,11 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'language',
       render: (language) =>
         language !== null ? (
-          <Tag className="font-medium" color="rgb(14 165 233)" key={language}>
+          <Tag className="font-medium" color="blue" key={language}>
             {language}
           </Tag>
         ) : (
-          <Tag className="font-medium" color="rgb(251 146 60)" key="N/A">
+          <Tag className="font-medium" color="orange" key="N/A">
             N/A
           </Tag>
         ),
