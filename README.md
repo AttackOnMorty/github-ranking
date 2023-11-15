@@ -11,4 +11,4 @@ GitHub ranking for repositories, developers and organizations.
   - Sort by **followers**
   - Filter by **language** and **location**
 
-![Repo Ranking](./docs/repo-ranking.png)
+![GitHub Ranking](./docs/github-ranking.png)
