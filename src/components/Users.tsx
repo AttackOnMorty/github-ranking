@@ -4,7 +4,7 @@ import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
-import { MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
+import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
 import { getLanguagesOptions, scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -109,7 +109,7 @@ const Users: React.FC = () => {
             placeholder="Any"
             onChange={handleLanguageChange}
             options={getLanguagesOptions(languages)}
-            dropdownMatchSelectWidth={200}
+            popupMatchSelectWidth={200}
             showSearch
             allowClear
           />
@@ -233,7 +233,11 @@ function getColumns(): ColumnsType<User> {
       dataIndex: 'bio',
       key: 'bio',
       render: (bio) =>
-        bio !== null ? <span className="text-sm font-light">{bio}</span> : '-',
+        bio !== null ? (
+          <span className="text-sm font-light">{bio}</span>
+        ) : (
+          EMPTY_EMOJI
+        ),
       responsive: ['md'],
     },
     {
@@ -250,7 +254,7 @@ function getColumns(): ColumnsType<User> {
             {blog}
           </a>
         ) : (
-          '-'
+          EMPTY_EMOJI
         ),
       width: 240,
       ellipsis: true,

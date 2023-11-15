@@ -29,3 +29,5 @@ export const POPULAR_LANGUAGES = [
   'Swift',
   'TypeScript',
 ];
+
+export const EMPTY_EMOJI = '🈳';

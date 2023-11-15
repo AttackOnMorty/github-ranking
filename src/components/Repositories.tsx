@@ -2,7 +2,7 @@ import { Radio, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
-import { MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
+import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
 import { getLanguagesOptions, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
@@ -98,7 +98,7 @@ const Repositories: React.FC = () => {
             placeholder="Any"
             onChange={handleLanguageChange}
             options={getLanguagesOptions(languages)}
-            dropdownMatchSelectWidth={200}
+            popupMatchSelectWidth={200}
             showSearch
             allowClear
           />
@@ -206,7 +206,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
         description !== null ? (
           <span className="font-light">{description}</span>
         ) : (
-          '-'
+          EMPTY_EMOJI
         ),
       responsive: ['md'],
     },

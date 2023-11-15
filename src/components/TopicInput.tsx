@@ -84,7 +84,7 @@ const SearchInput: React.FC<{
       onChange={handleChange}
       notFoundContent={loading ? <Spin size="small" /> : null}
       optionLabelProp="label"
-      dropdownMatchSelectWidth={300}
+      popupMatchSelectWidth={300}
     >
       {renderOptions(data)}
     </Select>
