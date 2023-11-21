@@ -43,6 +43,7 @@ export interface User {
   username: string;
   name: string | null;
   followers: number;
+  following: number;
   company: string | null;
   blog: string;
   bio: string;
@@ -169,6 +170,7 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     html_url,
     name,
     followers,
+    following,
     company,
     blog,
     bio,
@@ -184,6 +186,7 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     username,
     name,
     followers,
+    following,
     company,
     blog,
     bio,

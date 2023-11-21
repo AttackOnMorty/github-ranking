@@ -4,7 +4,12 @@ import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
-import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
+import {
+  EMPTY_EMOJI,
+  MAX_DATA_COUNT,
+  PAGE_SIZE,
+  USER_TYPE,
+} from '../constants';
 import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -96,7 +101,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
             className="w-48"
             size="large"
             placeholder={
-              userType === 'developer'
+              userType === USER_TYPE.DEVELOPER
                 ? 'Developer name'
                 : 'Organization name'
             }
@@ -157,7 +162,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
         rowKey="id"
         title={getTitle}
         loading={loading}
-        columns={getColumns()}
+        columns={getColumns(userType)}
         dataSource={data}
         pagination={pagination}
       />
@@ -165,7 +170,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
   );
 };
 
-function getColumns(): ColumnsType<User> {
+function getColumns(userType: string): ColumnsType<User> {
   return [
     {
       title: 'Rank',
@@ -198,6 +203,30 @@ function getColumns(): ColumnsType<User> {
       ),
       width: 100,
     },
+    ...(userType === USER_TYPE.DEVELOPER
+      ? [
+          {
+            title: 'Following',
+            dataIndex: 'following',
+            key: 'followers',
+            render: (value: number, { username }: User) => {
+              const url = `https://github.com/${username}?tab=following`;
+              return (
+                <div style={{ width: 35 }}>
+                  <a
+                    href={url}
+                    target="_black"
+                    className="text-black font-medium float-right"
+                  >
+                    {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
+                  </a>
+                </div>
+              );
+            },
+            width: 100,
+          },
+        ]
+      : []),
     {
       title: 'Bio',
       dataIndex: 'bio',
