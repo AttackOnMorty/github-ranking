@@ -1,21 +1,15 @@
-import { Input, Select, Space, Table } from 'antd';
 import {
-  MailOutlined,
-  TwitterOutlined,
   LinkOutlined,
-  MailTwoTone,
+  MailOutlined,
+  TwitterOutlined
 } from '@ant-design/icons';
+import { Input, Select, Space, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
-import {
-  EMPTY_EMOJI,
-  MAX_DATA_COUNT,
-  PAGE_SIZE,
-  USER_TYPE,
-} from '../constants';
+import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE, USER_TYPE } from '../constants';
 import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -241,7 +235,7 @@ function getColumns(userType: string): ColumnsType<User> {
         bio !== null ? (
           <span className="text-sm font-light">{bio}</span>
         ) : (
-          EMPTY_EMOJI
+          EMPTY
         ),
       responsive: ['md'],
     },
@@ -337,7 +331,7 @@ function renderSocialLinks({
     ) : null;
 
   if (emailIcon === null && blogIcon === null && twitterIcon === null) {
-    return EMPTY_EMOJI;
+    return EMPTY;
   }
 
   return (

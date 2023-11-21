@@ -2,7 +2,7 @@ import { Input, Radio, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
-import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
+import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
 import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
@@ -236,7 +236,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
         description !== null ? (
           <span className="font-light">{description}</span>
         ) : (
-          EMPTY_EMOJI
+          EMPTY
         ),
       responsive: ['md'],
     },

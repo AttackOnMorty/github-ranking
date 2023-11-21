@@ -30,7 +30,7 @@ export const POPULAR_LANGUAGES = [
   'TypeScript',
 ];
 
-export const EMPTY_EMOJI = '🈳';
+export const EMPTY = '-';
 
 export const USER_TYPE = {
   DEVELOPER: 'developer',
