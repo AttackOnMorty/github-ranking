@@ -1,4 +1,4 @@
-import { Input, Radio, Select, Space, Table } from 'antd';
+import { Input, Select, Space, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
@@ -10,19 +10,7 @@ import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
 
-const userTypeOptions = [
-  {
-    label: 'Developers',
-    value: 'user',
-  },
-  {
-    label: 'Organizations',
-    value: 'org',
-  },
-];
-
-const Users: React.FC = () => {
-  const [userType, setUserType] = useState('user');
+const Users: React.FC<{ userType: string }> = ({ userType }) => {
   const [name, setName] = useState<string>();
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>([]);
@@ -70,11 +58,6 @@ const Users: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handleUserTypeChange = (e: any): void => {
-    setUserType(e.target.value);
-    resetPage();
-  };
-
   const handleNameChange = (e: any): void => {
     if (e.target.value === '') {
       setName('');
@@ -105,22 +88,18 @@ const Users: React.FC = () => {
   };
 
   const getTitle = (): JSX.Element => (
-    <Space className="flex justify-center flex-wrap sm:justify-between">
-      <Radio.Group
-        size="large"
-        options={userTypeOptions}
-        onChange={handleUserTypeChange}
-        value={userType}
-        optionType="button"
-        buttonStyle="solid"
-      />
+    <Space className="flex justify-center flex-wrap sm:justify-center">
       <Space className="hidden sm:flex" size="large">
         <Space>
           <span className="text-lg font-light">Name:</span>
           <Input
-            className="w-36"
+            className="w-48"
             size="large"
-            placeholder='Enter name'
+            placeholder={
+              userType === 'developer'
+                ? 'Developer name'
+                : 'Organization name'
+            }
             onChange={handleNameChange}
             onPressEnter={handleNamePressEnter}
             allowClear
@@ -129,12 +108,11 @@ const Users: React.FC = () => {
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
-            className="w-36"
+            className="w-48"
             size="large"
             placeholder="Any"
             onChange={handleLanguageChange}
             options={getLanguagesOptions(languages)}
-            popupMatchSelectWidth={200}
             showSearch
             allowClear
           />
@@ -142,7 +120,7 @@ const Users: React.FC = () => {
         <Space>
           <span className="text-lg font-light">Location:</span>
           <Input
-            className="w-36"
+            className="w-48"
             size="large"
             placeholder="Any"
             onChange={handleLocationChange}

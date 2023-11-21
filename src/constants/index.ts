@@ -31,3 +31,8 @@ export const POPULAR_LANGUAGES = [
 ];
 
 export const EMPTY_EMOJI = '🈳';
+
+export const USER_TYPE = {
+  DEVELOPER: 'developer',
+  ORGANIZATION: 'organization',
+};

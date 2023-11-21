@@ -107,9 +107,9 @@ const Repositories: React.FC = () => {
         <Space>
           <span className="text-lg font-light">Name:</span>
           <Input
-            className="w-36"
+            className="w-48"
             size="large"
-            placeholder="Enter name"
+            placeholder="Repository name"
             onChange={handleNameChange}
             onPressEnter={handleNamePressEnter}
             allowClear
@@ -118,12 +118,11 @@ const Repositories: React.FC = () => {
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
-            className="w-36"
+            className="w-48"
             size="large"
             placeholder="Any"
             onChange={handleLanguageChange}
             options={getLanguagesOptions(languages)}
-            popupMatchSelectWidth={200}
             showSearch
             allowClear
           />
@@ -131,7 +130,7 @@ const Repositories: React.FC = () => {
         <Space>
           <span className="text-lg font-light">Topic:</span>
           <TopicInput
-            className="w-36"
+            className="w-48"
             placeholder="Any"
             value={topic}
             setValue={setTopic}
