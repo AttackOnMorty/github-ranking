@@ -185,7 +185,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       align: 'center',
       render: (rank) => {
         const top3 = getTop3(rank);
-        return top3 !== null ? <span className="text-2xl">{top3}</span> : rank;
+        return top3 !== null ? <span className="text-4xl">{top3}</span> : rank;
       },
       width: 70,
     },
