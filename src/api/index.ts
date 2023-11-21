@@ -59,10 +59,15 @@ export interface Users {
 export const getTopReposAsync = async (
   page: number,
   sort: string,
+  name?: string,
   language?: string,
   topic?: string
 ): Promise<Repos> => {
   let q = `${sort}:>${MIN_COUNT}`;
+
+  if (name !== undefined && name.trim() !== '') {
+    q += ` ${name}`;
+  }
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
@@ -191,10 +196,15 @@ const getUserAsync = async (username: string): Promise<User | null> => {
 export const getTopUsersAsync = async (
   page: number,
   type: string,
+  name?: string,
   language?: string,
   location?: string
 ): Promise<Users> => {
   let q = `type:${type} followers:>${MIN_COUNT}`;
+
+  if (name !== undefined && name.trim() !== '') {
+    q += ` ${name}`;
+  }
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;

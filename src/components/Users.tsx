@@ -5,7 +5,7 @@ import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
 import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
-import { getTop3, getLanguagesOptions, scrollToTop } from '../utils';
+import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
@@ -23,6 +23,7 @@ const userTypeOptions = [
 
 const Users: React.FC = () => {
   const [userType, setUserType] = useState('user');
+  const [name, setName] = useState<string>();
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>([]);
   const [location, setLocation] = useState<string>();
@@ -37,6 +38,7 @@ const Users: React.FC = () => {
       const { totalCount, data } = await getTopUsersAsync(
         currentPage,
         userType,
+        name,
         language,
         location
       );
@@ -50,7 +52,7 @@ const Users: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [currentPage, userType, language, location]);
+  }, [currentPage, userType, name, language, location]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -70,6 +72,18 @@ const Users: React.FC = () => {
 
   const handleUserTypeChange = (e: any): void => {
     setUserType(e.target.value);
+    resetPage();
+  };
+
+  const handleNameChange = (e: any): void => {
+    if (e.target.value === '') {
+      setName('');
+      resetPage();
+    }
+  };
+
+  const handleNamePressEnter = (e: any): void => {
+    setName(e.target.value);
     resetPage();
   };
 
@@ -101,6 +115,17 @@ const Users: React.FC = () => {
         buttonStyle="solid"
       />
       <Space className="hidden sm:flex" size="large">
+        <Space>
+          <span className="text-lg font-light">Name:</span>
+          <Input
+            className="w-36"
+            size="large"
+            placeholder='Enter name'
+            onChange={handleNameChange}
+            onPressEnter={handleNamePressEnter}
+            allowClear
+          />
+        </Space>
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select

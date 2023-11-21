@@ -1,9 +1,9 @@
-import { Radio, Select, Space, Table, Tag } from 'antd';
+import { Input, Radio, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
 import { EMPTY_EMOJI, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
-import { getTop3, getLanguagesOptions, scrollToTop } from '../utils';
+import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -23,6 +23,7 @@ const sortOptions = [
 const Repositories: React.FC = () => {
   const [sort, setSort] = useState('stars');
   const [tableSort, setTableSort] = useState(sort);
+  const [name, setName] = useState<string>();
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>([]);
   const [topic, setTopic] = useState<string>();
@@ -37,6 +38,7 @@ const Repositories: React.FC = () => {
       const { totalCount, data } = await getTopReposAsync(
         currentPage,
         sort,
+        name,
         language,
         topic
       );
@@ -51,7 +53,7 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [currentPage, sort, language, topic]);
+  }, [currentPage, sort, name, language, topic]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -67,6 +69,18 @@ const Repositories: React.FC = () => {
 
   const resetPage = (): void => {
     setCurrentPage(1);
+  };
+
+  const handleNameChange = (e: any): void => {
+    if (e.target.value === '') {
+      setName('');
+      resetPage();
+    }
+  };
+
+  const handleNamePressEnter = (e: any): void => {
+    setName(e.target.value);
+    resetPage();
   };
 
   const handleCategoryChange = (e: any): void => {
@@ -90,6 +104,17 @@ const Repositories: React.FC = () => {
         buttonStyle="solid"
       />
       <Space className="hidden sm:flex" size="large">
+        <Space>
+          <span className="text-lg font-light">Name:</span>
+          <Input
+            className="w-36"
+            size="large"
+            placeholder="Enter name"
+            onChange={handleNameChange}
+            onPressEnter={handleNamePressEnter}
+            allowClear
+          />
+        </Space>
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
