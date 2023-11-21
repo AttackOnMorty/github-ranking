@@ -1,4 +1,10 @@
 import { Input, Select, Space, Table } from 'antd';
+import {
+  MailOutlined,
+  TwitterOutlined,
+  LinkOutlined,
+  MailTwoTone,
+} from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
@@ -216,7 +222,7 @@ function getColumns(userType: string): ColumnsType<User> {
                   <a
                     href={url}
                     target="_black"
-                    className="text-black font-medium float-right"
+                    className="font-medium float-right"
                   >
                     {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
                   </a>
@@ -301,7 +307,12 @@ function renderSocialLinks({
   blog,
   twitter,
 }: User): JSX.Element | string {
-  const emailIcon = email !== null ? <a href={`mailto:${email}`}>📧</a> : null;
+  const emailIcon =
+    email !== null ? (
+      <a href={`mailto:${email}`}>
+        <MailOutlined />
+      </a>
+    ) : null;
 
   const blogIcon =
     blog !== '' ? (
@@ -310,7 +321,7 @@ function renderSocialLinks({
         target="_black"
         rel="noreferrer"
       >
-        🔗
+        <LinkOutlined />
       </a>
     ) : null;
 
@@ -321,7 +332,7 @@ function renderSocialLinks({
         target="_black"
         rel="noreferrer"
       >
-        🐦
+        <TwitterOutlined />
       </a>
     ) : null;
 
@@ -331,8 +342,8 @@ function renderSocialLinks({
 
   return (
     <Space>
-      {emailIcon}
       {blogIcon}
+      {emailIcon}
       {twitterIcon}
     </Space>
   );
