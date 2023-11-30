@@ -3,7 +3,7 @@ import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
 import { PAGE_SIZE } from './../constants/index';
 
-// TODO: Data would be unstable if we filter stars/forks/followers with a small number
+// NOTE: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
 
 const octokit = new Octokit({
@@ -48,7 +48,6 @@ export interface User {
   blog: string;
   bio: string;
   location: string | null;
-  email: string | null;
   twitter: string | null;
 }
 
@@ -60,15 +59,10 @@ export interface Users {
 export const getTopReposAsync = async (
   page: number,
   sort: string,
-  name?: string,
   language?: string,
   topic?: string
 ): Promise<Repos> => {
   let q = `${sort}:>${MIN_COUNT}`;
-
-  if (name !== undefined && name.trim() !== '') {
-    q += ` ${name}`;
-  }
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;
@@ -175,7 +169,6 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     blog,
     bio,
     location,
-    email,
     twitter_username,
   } = res.data;
 
@@ -191,7 +184,6 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     blog,
     bio,
     location,
-    email,
     twitter: twitter_username,
   };
 };
@@ -199,15 +191,10 @@ const getUserAsync = async (username: string): Promise<User | null> => {
 export const getTopUsersAsync = async (
   page: number,
   type: string,
-  name?: string,
   language?: string,
   location?: string
 ): Promise<Users> => {
   let q = `type:${type} followers:>${MIN_COUNT}`;
-
-  if (name !== undefined && name.trim() !== '') {
-    q += ` ${name}`;
-  }
 
   if (language !== undefined && language.trim() !== '') {
     q += ` language:"${language}"`;

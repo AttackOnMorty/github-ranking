@@ -1,8 +1,4 @@
-import {
-  LinkOutlined,
-  MailOutlined,
-  TwitterOutlined
-} from '@ant-design/icons';
+import { LinkOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Input, Select, Space, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
@@ -16,7 +12,6 @@ import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api';
 
 const Users: React.FC<{ userType: string }> = ({ userType }) => {
-  const [name, setName] = useState<string>();
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>([]);
   const [location, setLocation] = useState<string>();
@@ -31,7 +26,6 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
       const { totalCount, data } = await getTopUsersAsync(
         currentPage,
         userType,
-        name,
         language,
         location
       );
@@ -45,7 +39,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
     return () => {
       clearTimeout(id);
     };
-  }, [currentPage, userType, name, language, location]);
+  }, [currentPage, userType, language, location]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -61,18 +55,6 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
 
   const resetPage = (): void => {
     setCurrentPage(1);
-  };
-
-  const handleNameChange = (e: any): void => {
-    if (e.target.value === '') {
-      setName('');
-      resetPage();
-    }
-  };
-
-  const handleNamePressEnter = (e: any): void => {
-    setName(e.target.value);
-    resetPage();
   };
 
   const handleLanguageChange = (value: string): void => {
@@ -93,23 +75,8 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
   };
 
   const getTitle = (): JSX.Element => (
-    <Space className="flex justify-center flex-wrap sm:justify-center">
+    <Space className="flex justify-center flex-wrap sm:justify-end">
       <Space className="hidden sm:flex" size="large">
-        <Space>
-          <span className="text-lg font-light">Name:</span>
-          <Input
-            className="w-48"
-            size="large"
-            placeholder={
-              userType === USER_TYPE.DEVELOPER
-                ? 'Developer name'
-                : 'Organization name'
-            }
-            onChange={handleNameChange}
-            onPressEnter={handleNamePressEnter}
-            allowClear
-          />
-        </Space>
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
@@ -216,7 +183,7 @@ function getColumns(userType: string): ColumnsType<User> {
                   <a
                     href={url}
                     target="_black"
-                    className="font-medium float-right"
+                    className="text-black font-medium float-right"
                   >
                     {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
                   </a>
@@ -228,7 +195,7 @@ function getColumns(userType: string): ColumnsType<User> {
         ]
       : []),
     {
-      title: 'Bio',
+      title: 'Description',
       dataIndex: 'bio',
       key: 'bio',
       render: (bio) =>
@@ -241,10 +208,10 @@ function getColumns(userType: string): ColumnsType<User> {
     },
     {
       title: 'Social Links',
-      dataIndex: 'email',
-      key: 'email',
+      dataIndex: 'socialLinks',
+      key: 'socialLinks',
       render: (_, record) => renderSocialLinks(record),
-      width: 160,
+      width: 120,
       ellipsis: true,
       responsive: ['md'],
     },
@@ -296,21 +263,11 @@ function renderNameColumn({
   );
 }
 
-function renderSocialLinks({
-  email,
-  blog,
-  twitter,
-}: User): JSX.Element | string {
-  const emailIcon =
-    email !== null ? (
-      <a href={`mailto:${email}`}>
-        <MailOutlined />
-      </a>
-    ) : null;
-
+function renderSocialLinks({ blog, twitter }: User): JSX.Element | string {
   const blogIcon =
     blog !== '' ? (
       <a
+        className="text-black"
         href={blog.startsWith('http') ? blog : `https://${blog}`}
         target="_black"
         rel="noreferrer"
@@ -322,6 +279,7 @@ function renderSocialLinks({
   const twitterIcon =
     twitter !== null ? (
       <a
+        className="text-black"
         href={`https://twitter.com/${twitter}`}
         target="_black"
         rel="noreferrer"
@@ -330,14 +288,13 @@ function renderSocialLinks({
       </a>
     ) : null;
 
-  if (emailIcon === null && blogIcon === null && twitterIcon === null) {
+  if (blogIcon === null && twitterIcon === null) {
     return EMPTY;
   }
 
   return (
     <Space>
       {blogIcon}
-      {emailIcon}
       {twitterIcon}
     </Space>
   );

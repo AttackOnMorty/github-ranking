@@ -56,7 +56,7 @@ const Header: React.FC = () => {
         </div>
         <Menu
           className="flex-1 sm:text-lg"
-          style={{ lineHeight: '4rem' }}
+          style={{ lineHeight: '4.5rem' }}
           mode="horizontal"
           selectedKeys={[current]}
           onClick={handleMenuClick}

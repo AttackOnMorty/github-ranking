@@ -1,4 +1,4 @@
-import { Input, Radio, Select, Space, Table, Tag } from 'antd';
+import { Radio, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
@@ -23,7 +23,6 @@ const sortOptions = [
 const Repositories: React.FC = () => {
   const [sort, setSort] = useState('stars');
   const [tableSort, setTableSort] = useState(sort);
-  const [name, setName] = useState<string>();
   const [language, setLanguage] = useState<string>();
   const [languages, setLanguages] = useState<string[]>([]);
   const [topic, setTopic] = useState<string>();
@@ -38,7 +37,6 @@ const Repositories: React.FC = () => {
       const { totalCount, data } = await getTopReposAsync(
         currentPage,
         sort,
-        name,
         language,
         topic
       );
@@ -53,7 +51,7 @@ const Repositories: React.FC = () => {
     return () => {
       clearTimeout(id);
     };
-  }, [currentPage, sort, name, language, topic]);
+  }, [currentPage, sort, language, topic]);
 
   useEffect(() => {
     const getLanguages = async (): Promise<void> => {
@@ -69,18 +67,6 @@ const Repositories: React.FC = () => {
 
   const resetPage = (): void => {
     setCurrentPage(1);
-  };
-
-  const handleNameChange = (e: any): void => {
-    if (e.target.value === '') {
-      setName('');
-      resetPage();
-    }
-  };
-
-  const handleNamePressEnter = (e: any): void => {
-    setName(e.target.value);
-    resetPage();
   };
 
   const handleCategoryChange = (e: any): void => {
@@ -104,17 +90,6 @@ const Repositories: React.FC = () => {
         buttonStyle="solid"
       />
       <Space className="hidden sm:flex" size="large">
-        <Space>
-          <span className="text-lg font-light">Name:</span>
-          <Input
-            className="w-48"
-            size="large"
-            placeholder="Repository name"
-            onChange={handleNameChange}
-            onPressEnter={handleNamePressEnter}
-            allowClear
-          />
-        </Space>
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
@@ -246,11 +221,21 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'language',
       render: (language) =>
         language !== null ? (
-          <Tag className="font-medium" color="blue" key={language}>
+          <Tag
+            className="font-medium"
+            color="processing"
+            bordered={false}
+            key={language}
+          >
             {language}
           </Tag>
         ) : (
-          <Tag className="font-medium" color="orange" key="N/A">
+          <Tag
+            className="font-medium"
+            color="warning"
+            bordered={false}
+            key="N/A"
+          >
             N/A
           </Tag>
         ),
