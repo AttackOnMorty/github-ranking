@@ -80,7 +80,7 @@ const Repositories: React.FC = () => {
   };
 
   const getTitle = (): JSX.Element => (
-    <Space className="flex justify-center flex-wrap sm:justify-between">
+    <Space className="flex justify-center flex-wrap lg:justify-between">
       <Radio.Group
         size="large"
         options={sortOptions}
@@ -89,7 +89,7 @@ const Repositories: React.FC = () => {
         optionType="button"
         buttonStyle="solid"
       />
-      <Space className="hidden sm:flex" size="large">
+      <Space className="hidden lg:flex" size="large">
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
@@ -240,7 +240,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
           </Tag>
         ),
       width: 160,
-      responsive: ['md'],
+      responsive: ['lg'],
     },
   ];
 }

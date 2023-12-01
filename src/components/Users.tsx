@@ -75,8 +75,8 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
   };
 
   const getTitle = (): JSX.Element => (
-    <Space className="flex justify-center flex-wrap sm:justify-end">
-      <Space className="hidden sm:flex" size="large">
+    <Space className="hidden lg:flex lg:justify-end">
+      <Space size="large">
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
@@ -138,6 +138,30 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
 };
 
 function getColumns(userType: string): ColumnsType<User> {
+  const followingColumn: ColumnsType<User> = [
+    {
+      title: 'Following',
+      dataIndex: 'following',
+      key: 'followers',
+      render: (value: number, { username }: User) => {
+        const url = `https://github.com/${username}?tab=following`;
+        return (
+          <div style={{ width: 35 }}>
+            <a
+              href={url}
+              target="_black"
+              className="text-black font-medium float-right"
+            >
+              {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
+            </a>
+          </div>
+        );
+      },
+      width: 100,
+      responsive: ['lg'],
+    },
+  ];
+
   return [
     {
       title: 'Rank',
@@ -169,31 +193,9 @@ function getColumns(userType: string): ColumnsType<User> {
         </div>
       ),
       width: 100,
+      responsive: ['md'],
     },
-    ...(userType === USER_TYPE.DEVELOPER
-      ? [
-          {
-            title: 'Following',
-            dataIndex: 'following',
-            key: 'followers',
-            render: (value: number, { username }: User) => {
-              const url = `https://github.com/${username}?tab=following`;
-              return (
-                <div style={{ width: 35 }}>
-                  <a
-                    href={url}
-                    target="_black"
-                    className="text-black font-medium float-right"
-                  >
-                    {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-                  </a>
-                </div>
-              );
-            },
-            width: 100,
-          },
-        ]
-      : []),
+    ...(userType === USER_TYPE.DEVELOPER ? followingColumn : []),
     {
       title: 'Description',
       dataIndex: 'bio',
@@ -212,8 +214,7 @@ function getColumns(userType: string): ColumnsType<User> {
       key: 'socialLinks',
       render: (_, record) => renderSocialLinks(record),
       width: 120,
-      ellipsis: true,
-      responsive: ['md'],
+      responsive: ['lg'],
     },
   ];
 }
