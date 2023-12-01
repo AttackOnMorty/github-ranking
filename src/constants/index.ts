@@ -33,6 +33,6 @@ export const POPULAR_LANGUAGES = [
 export const EMPTY = '-';
 
 export const USER_TYPE = {
-  DEVELOPER: 'developer',
+  USER: 'user',
   ORGANIZATION: 'organization',
 };

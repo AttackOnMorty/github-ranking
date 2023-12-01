@@ -195,7 +195,7 @@ function getColumns(userType: string): ColumnsType<User> {
       width: 100,
       responsive: ['md'],
     },
-    ...(userType === USER_TYPE.DEVELOPER ? followingColumn : []),
+    ...(userType === USER_TYPE.USER ? followingColumn : []),
     {
       title: 'Description',
       dataIndex: 'bio',

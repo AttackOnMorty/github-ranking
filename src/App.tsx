@@ -11,10 +11,8 @@ const App: React.FC = () => {
         <Route index element={<Repositories />} />
         <Route path="/repositories" element={<Repositories />} />
         <Route
-          path="/developers"
-          element={
-            <Users userType={USER_TYPE.DEVELOPER} key={USER_TYPE.DEVELOPER} />
-          }
+          path="/users"
+          element={<Users userType={USER_TYPE.USER} key={USER_TYPE.USER} />}
         />
         <Route
           path="/organizations"

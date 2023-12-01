@@ -13,8 +13,8 @@ const menuItems = [
     label: <Link to={'/repositories'}>Repositories</Link>,
   },
   {
-    key: '/developers',
-    label: <Link to={'/developers'}>Developers</Link>,
+    key: '/users',
+    label: <Link to={'/users'}>Users</Link>,
   },
   {
     key: '/organizations',
