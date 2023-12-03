@@ -2,6 +2,7 @@ import { GithubOutlined } from '@ant-design/icons';
 import { Button, Menu, Tooltip } from 'antd';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
 import GitHubTrends from '../assets/github-trends.png';
 import Logo from '../assets/logo.png';
 

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Select, Spin } from 'antd';
 import { useState } from 'react';
+
 import { getTopicsAsync } from '../api';
 
-import type { Topic } from '../api';
+import type { Topic } from '../api/types';
 
 const { Option } = Select;
 

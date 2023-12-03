@@ -1,5 +1,6 @@
 import { Radio, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+
 import { getLanguagesAsync, getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
@@ -7,7 +8,7 @@ import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
-import type { Repo } from '../api';
+import type { Repo } from '../api/types';
 
 const sortOptions = [
   {

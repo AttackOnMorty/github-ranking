@@ -1,6 +1,7 @@
 import { LinkOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Input, Select, Space, Table } from 'antd';
 import { useEffect, useState } from 'react';
+
 import { getLanguagesAsync, getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
@@ -9,7 +10,7 @@ import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE, USER_TYPE } from '../constants';
 import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 
 import type { ColumnsType } from 'antd/es/table/interface';
-import type { User } from '../api';
+import type { User } from '../api/types';
 
 const Users: React.FC<{ userType: string }> = ({ userType }) => {
   const [language, setLanguage] = useState<string>();
