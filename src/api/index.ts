@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
+
 import { PAGE_SIZE } from '../constants';
 
-import type { Repos, User, Users, Topic } from './types';
+import type { Repos, Topic, User, Users } from './types';
 
 // NOTE: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
