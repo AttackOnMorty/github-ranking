@@ -1,8 +1,9 @@
 import { LinkOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Input, Select, Space, Table } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { getLanguagesAsync, getTopUsersAsync } from '../api';
+import { LanguagesContext } from '../App';
+import { getTopUsersAsync } from '../api';
 import { ReactComponent as Company } from '../assets/company.svg';
 import { ReactComponent as Location } from '../assets/location.svg';
 import NyanCat from '../assets/nyan-cat.gif';
@@ -13,8 +14,9 @@ import type { ColumnsType } from 'antd/es/table/interface';
 import type { User } from '../api/types';
 
 const Users: React.FC<{ userType: string }> = ({ userType }) => {
+  const languages = useContext(LanguagesContext);
+
   const [language, setLanguage] = useState<string>();
-  const [languages, setLanguages] = useState<string[]>([]);
   const [location, setLocation] = useState<string>();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<User[]>();
@@ -41,18 +43,6 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
       clearTimeout(id);
     };
   }, [currentPage, userType, language, location]);
-
-  useEffect(() => {
-    const getLanguages = async (): Promise<void> => {
-      setLanguages(await getLanguagesAsync());
-    };
-    const id = setTimeout(() => {
-      void getLanguages();
-    }, 1000);
-    return () => {
-      clearTimeout(id);
-    };
-  }, []);
 
   const resetPage = (): void => {
     setCurrentPage(1);

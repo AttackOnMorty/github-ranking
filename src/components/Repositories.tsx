@@ -1,7 +1,8 @@
 import { Radio, Select, Space, Table, Tag } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { getLanguagesAsync, getTopReposAsync } from '../api';
+import { LanguagesContext } from '../App';
+import { getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
 import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
@@ -22,10 +23,11 @@ const sortOptions = [
 ];
 
 const Repositories: React.FC = () => {
+  const languages = useContext(LanguagesContext);
+
   const [sort, setSort] = useState('stars');
   const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
-  const [languages, setLanguages] = useState<string[]>([]);
   const [topic, setTopic] = useState<string>();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<Repo[]>();
@@ -53,18 +55,6 @@ const Repositories: React.FC = () => {
       clearTimeout(id);
     };
   }, [currentPage, sort, language, topic]);
-
-  useEffect(() => {
-    const getLanguages = async (): Promise<void> => {
-      setLanguages(await getLanguagesAsync());
-    };
-    const id = setTimeout(() => {
-      void getLanguages();
-    }, 300);
-    return () => {
-      clearTimeout(id);
-    };
-  }, []);
 
   const resetPage = (): void => {
     setCurrentPage(1);
