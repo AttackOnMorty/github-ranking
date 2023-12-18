@@ -1,14 +1,5 @@
-# GitHub Ranking &middot; [![Azure Static Web Apps CI/CD](https://github.com/AttackOnMorty/github-ranking/actions/workflows/azure-static-web-apps-lively-tree-0d6119110.yml/badge.svg)](https://github.com/AttackOnMorty/github-ranking/actions/workflows/azure-static-web-apps-lively-tree-0d6119110.yml) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE)
+# GitHub Ranking &middot; [![CodeQL](https://github.com/AttackOnMorty/github-ranking/actions/workflows/codeql.yml/badge.svg)](https://github.com/AttackOnMorty/github-ranking/actions/workflows/codeql.yml) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE)
 
-GitHub ranking for repositories, developers and organizations.
+Search GitHub's top repositories, users and organizations.
 
-- Repositories
-
-  - Sort by **stars** or **forks**
-  - Filter by **language** and **topic**
-
-- Developers/Organizations
-  - Sort by **followers**
-  - Filter by **language** and **location**
-
-![Repo Ranking](./docs/repo-ranking.png)
+<img width="1412" alt="image" src="https://github.com/AttackOnMorty/github-ranking/assets/37203901/ccf6e58d-97bf-4b1e-807f-388df9937403">

@@ -1,13 +1,15 @@
 import { Radio, Select, Space, Table, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { getLanguagesAsync, getTopReposAsync } from '../api';
+import { useContext, useEffect, useState } from 'react';
+
+import { LanguagesContext } from '../App';
+import { getTopReposAsync } from '../api';
 import NyanCat from '../assets/nyan-cat.gif';
-import { MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
-import { getLanguagesOptions, scrollToTop } from '../utils';
+import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
+import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
 import type { ColumnsType } from 'antd/es/table/interface';
-import type { Repo } from '../api';
+import type { Repo } from '../api/types';
 
 const sortOptions = [
   {
@@ -21,6 +23,8 @@ const sortOptions = [
 ];
 
 const Repositories: React.FC = () => {
+  const languages = useContext(LanguagesContext);
+
   const [sort, setSort] = useState('stars');
   const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
@@ -53,18 +57,6 @@ const Repositories: React.FC = () => {
     };
   }, [currentPage, sort, language, topics]);
 
-  useEffect(() => {
-    const getLanguages = async (): Promise<void> => {
-      setLanguages(await getLanguagesAsync());
-    };
-    const id = setTimeout(() => {
-      void getLanguages();
-    }, 300);
-    return () => {
-      clearTimeout(id);
-    };
-  }, []);
-
   const resetPage = (): void => {
     setCurrentPage(1);
   };
@@ -80,7 +72,7 @@ const Repositories: React.FC = () => {
   };
 
   const getTitle = (): JSX.Element => (
-    <Space className="flex justify-center flex-wrap sm:justify-between">
+    <Space className="flex justify-center flex-wrap lg:justify-between">
       <Radio.Group
         size="large"
         options={sortOptions}
@@ -89,16 +81,15 @@ const Repositories: React.FC = () => {
         optionType="button"
         buttonStyle="solid"
       />
-      <Space className="hidden sm:flex" size="large">
+      <Space className="hidden lg:flex" size="large">
         <Space>
           <span className="text-lg font-light">Language:</span>
           <Select
-            className="w-36"
+            className="w-48"
             size="large"
             placeholder="Any"
             onChange={handleLanguageChange}
             options={getLanguagesOptions(languages)}
-            dropdownMatchSelectWidth={200}
             showSearch
             allowClear
           />
@@ -106,7 +97,7 @@ const Repositories: React.FC = () => {
         <Space>
           <span className="text-lg font-light">Topic:</span>
           <TopicInput
-            className="w-36"
+            className="w-48"
             placeholder="Any"
             value={topics}
             setValue={setTopic}
@@ -159,6 +150,10 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
+      render: (rank) => {
+        const top3 = getTop3(rank);
+        return top3 !== null ? <span className="text-4xl">{top3}</span> : rank;
+      },
       width: 70,
     },
     {
@@ -191,11 +186,13 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: categoryOption?.value,
       key: categoryOption?.value,
       render: (value) => (
-        <span className="text-xs font-medium">
-          {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-        </span>
+        <div style={{ width: 35 }}>
+          <span className="font-medium float-right">
+            {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
+          </span>
+        </div>
       ),
-      width: 80,
+      width: 100,
       responsive: ['md'],
     },
     {
@@ -206,7 +203,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
         description !== null ? (
           <span className="font-light">{description}</span>
         ) : (
-          '-'
+          EMPTY
         ),
       responsive: ['md'],
     },
@@ -216,16 +213,26 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'language',
       render: (language) =>
         language !== null ? (
-          <Tag className="font-medium" color="rgb(14 165 233)" key={language}>
+          <Tag
+            className="font-medium"
+            color="processing"
+            bordered={false}
+            key={language}
+          >
             {language}
           </Tag>
         ) : (
-          <Tag className="font-medium" color="rgb(251 146 60)" key="N/A">
+          <Tag
+            className="font-medium"
+            color="warning"
+            bordered={false}
+            key="N/A"
+          >
             N/A
           </Tag>
         ),
       width: 160,
-      responsive: ['md'],
+      responsive: ['lg'],
     },
   ];
 }

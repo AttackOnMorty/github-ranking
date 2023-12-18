@@ -1,58 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
-import { PAGE_SIZE } from './../constants/index';
 
-// TODO: Data would be unstable if we filter stars/forks/followers with a small number
+import { PAGE_SIZE } from '../constants';
+
+import type { Repos, Topic, User, Users } from './types';
+
+// NOTE: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
 
 const octokit = new Octokit({
   auth: process.env.REACT_APP_GITHUB_ACCESS_TOKEN,
 });
-
-export interface Repo {
-  id: string;
-  rank: number;
-  name: string;
-  url: string;
-  owner: {
-    avatarUrl: string;
-    url: string;
-  };
-  stars: number;
-  forks: number;
-  description: string;
-  language: string;
-}
-
-export interface Repos {
-  totalCount: number;
-  data: Repo[];
-}
-
-export interface Topic {
-  name: string;
-  description: string;
-}
-
-export interface User {
-  id: number;
-  rank?: number;
-  avatarUrl: string;
-  url: string;
-  username: string;
-  name: string | null;
-  followers: number;
-  company: string | null;
-  blog: string;
-  bio: string;
-  location: string | null;
-}
-
-export interface Users {
-  totalCount: number;
-  data: User[];
-}
 
 export const getTopReposAsync = async (
   page: number,
@@ -81,33 +40,20 @@ export const getTopReposAsync = async (
     return { totalCount: 0, data: [] };
   }
 
-  const data = res.data.items.map((repo: any, index: number) => {
-    const {
-      id,
-      name,
-      html_url,
-      owner,
-      stargazers_count,
-      forks,
-      description,
-      language,
-    } = repo;
-
-    return {
-      id,
-      rank: (page - 1) * PAGE_SIZE + index + 1,
-      name,
-      url: html_url,
-      owner: {
-        avatarUrl: owner.avatar_url,
-        url: owner.html_url,
-      },
-      stars: stargazers_count,
-      forks,
-      description,
-      language,
-    };
-  });
+  const data = res.data.items.map((repo: any, index: number) => ({
+    id: repo.id,
+    rank: (page - 1) * PAGE_SIZE + index + 1,
+    name: repo.name,
+    url: repo.html_url,
+    owner: {
+      avatarUrl: repo.owner.avatar_url,
+      url: repo.owner.html_url,
+    },
+    stars: repo.stargazers_count,
+    forks: repo.forks,
+    description: repo.description,
+    language: repo.language,
+  }));
 
   return {
     totalCount: res.data.total_count,
@@ -139,47 +85,10 @@ export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
     return [];
   }
 
-  return res.data.items.map((topic: any) => {
-    const { name, short_description } = topic;
-
-    return {
-      name,
-      description: short_description,
-    };
-  });
-};
-
-const getUserAsync = async (username: string): Promise<User | null> => {
-  const res = await octokit.request(`GET /users/${username}`);
-
-  if (res.status !== 200) {
-    return null;
-  }
-
-  const {
-    id,
-    avatar_url,
-    html_url,
-    name,
-    followers,
-    company,
-    blog,
-    bio,
-    location,
-  } = res.data;
-
-  return {
-    id,
-    avatarUrl: avatar_url,
-    url: html_url,
-    username,
-    name,
-    followers,
-    company,
-    blog,
-    bio,
-    location,
-  };
+  return res.data.items.map((topic: any) => ({
+    name: topic.name,
+    description: topic.short_description,
+  }));
 };
 
 export const getTopUsersAsync = async (
@@ -219,5 +128,30 @@ export const getTopUsersAsync = async (
   return {
     totalCount: res.data.total_count,
     data,
+  };
+};
+
+const getUserAsync = async (username: string): Promise<User | null> => {
+  const res = await octokit.request(`GET /users/${username}`);
+
+  if (res.status !== 200) {
+    return null;
+  }
+
+  const { data } = res;
+
+  return {
+    id: data.id,
+    avatarUrl: data.avatar_url,
+    url: data.html_url,
+    username: data.username,
+    name: data.name,
+    followers: data.followers,
+    following: data.following,
+    company: data.company,
+    blog: data.blog,
+    bio: data.bio,
+    location: data.location,
+    twitter: data.twitter_username,
   };
 };

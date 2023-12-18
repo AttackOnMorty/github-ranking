@@ -1,4 +1,30 @@
-import { POPULAR_LANGUAGES } from '../constants';
+const POPULAR_LANGUAGES = [
+  'C',
+  'C#',
+  'C++',
+  'CoffeeScript',
+  'CSS',
+  'Dart',
+  'DM',
+  'Elixir',
+  'Go',
+  'Groovy',
+  'HTML',
+  'Java',
+  'JavaScript',
+  'Kotlin',
+  'Objective-C',
+  'Perl',
+  'PHP',
+  'PowerShell',
+  'Python',
+  'Ruby',
+  'Rust',
+  'Scala',
+  'Shell',
+  'Swift',
+  'TypeScript',
+];
 
 export function getLanguagesOptions(languages: string[]): any[] {
   const popularLanguageOptions = POPULAR_LANGUAGES.map((value) => ({
@@ -31,4 +57,18 @@ export function scrollToTop(): void {
     top: 0,
     behavior: 'smooth',
   });
+}
+
+export function getTop3(rank: number): string | null {
+  let top3 = null;
+
+  if (rank === 1) {
+    top3 = '🥇';
+  } else if (rank === 2) {
+    top3 = '🥈';
+  } else if (rank === 3) {
+    top3 = '🥉';
+  }
+
+  return top3;
 }

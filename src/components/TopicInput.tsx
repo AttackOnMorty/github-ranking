@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Select, Spin } from 'antd';
 import { useState } from 'react';
+
 import { getTopicsAsync } from '../api';
 
-import type { Topic } from '../api';
+import type { Topic } from '../api/types';
 
 const { Option } = Select;
 
@@ -85,7 +86,7 @@ const SearchInput: React.FC<{
       onChange={handleChange}
       notFoundContent={loading ? <Spin size="small" /> : null}
       optionLabelProp="label"
-      dropdownMatchSelectWidth={300}
+      popupMatchSelectWidth={300}
     >
       {renderOptions(data)}
     </Select>
