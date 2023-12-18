@@ -63,7 +63,7 @@ const Header: React.FC = () => {
       </div>
       <a
         className="hidden lg:block"
-        href="https://www.github-trends.com/"
+        href="https://www.github-trends.dev/"
         target="_black"
         rel="noreferrer"
       >
