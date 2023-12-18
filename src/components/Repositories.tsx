@@ -28,8 +28,7 @@ const Repositories: React.FC = () => {
   const [sort, setSort] = useState('stars');
   const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
-  const [languages, setLanguages] = useState<string[]>([]);
-  const [topics, setTopic] = useState<string[]>([]);
+  const [topics, setTopics] = useState<string[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [data, setData] = useState<Repo[]>();
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,7 +99,7 @@ const Repositories: React.FC = () => {
             className="w-48"
             placeholder="Any"
             value={topics}
-            setValue={setTopic}
+            setValue={setTopics}
             resetPage={resetPage}
           />
         </Space>
