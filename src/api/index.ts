@@ -144,7 +144,7 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     id: data.id,
     avatarUrl: data.avatar_url,
     url: data.html_url,
-    username: data.username,
+    username: data.login,
     name: data.name,
     followers: data.followers,
     following: data.following,
