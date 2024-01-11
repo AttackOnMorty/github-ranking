@@ -17,7 +17,7 @@ export const getTopReposAsync = async (
   page: number,
   sort: string,
   language?: string,
-  topic?: string
+  topics?: string[],
 ): Promise<Repos> => {
   let q = `${sort}:>${MIN_COUNT}`;
 
@@ -25,8 +25,8 @@ export const getTopReposAsync = async (
     q += ` language:"${language}"`;
   }
 
-  if (topic !== undefined && topic.trim() !== '') {
-    q += ` topic:${topic}`;
+  if (topics !== undefined && topics.length > 0) {
+    q += ` ${topics.map((topic) => `topic:${topic}`).join(' ')}`;
   }
 
   const res = await octokit.request('GET /search/repositories{?q}', {
@@ -63,7 +63,7 @@ export const getTopReposAsync = async (
 
 export const getLanguagesAsync = async (): Promise<string[]> => {
   const res = await fetch(
-    'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml'
+    'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml',
   );
 
   if (res.status !== 200) {
@@ -95,7 +95,7 @@ export const getTopUsersAsync = async (
   page: number,
   type: string,
   language?: string,
-  location?: string
+  location?: string,
 ): Promise<Users> => {
   let q = `type:${type} followers:>${MIN_COUNT}`;
 
