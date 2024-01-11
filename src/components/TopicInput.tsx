@@ -40,7 +40,7 @@ const fetch = (
 const SearchInput: React.FC<{
   className: string;
   placeholder: string;
-  value?: string;
+  value?: string[];
   setValue: Function;
   resetPage: Function;
 }> = ({ className, placeholder, value, setValue, resetPage }) => {
@@ -55,7 +55,7 @@ const SearchInput: React.FC<{
     }
   };
 
-  const handleChange = (newValue: string): void => {
+  const handleChange = (newValue: string[]): void => {
     setValue(newValue);
     resetPage();
   };
@@ -73,6 +73,7 @@ const SearchInput: React.FC<{
   return (
     <Select
       className={className}
+      mode="multiple"
       showSearch
       allowClear={true}
       size="large"
