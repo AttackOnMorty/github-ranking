@@ -1,4 +1,5 @@
 import { Radio, Select, Space, Table, Tag } from 'antd';
+import { nameToEmoji } from 'gemoji';
 import { useContext, useEffect, useState } from 'react';
 
 import { LanguagesContext } from '../App';
@@ -8,8 +9,14 @@ import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '../constants';
 import { getLanguagesOptions, getTop3, scrollToTop } from '../utils';
 import TopicInput from './TopicInput';
 
-import type { ColumnsType } from 'antd/es/table/interface';
+import type { ColumnsType } from 'antd/es/table';
 import type { Repo } from '../api/types';
+
+function convertTextToEmoji(text: string): string {
+  return text.replaceAll(/:(\w+):/g, (sub, emojiText) => {
+    return nameToEmoji[emojiText] === undefined ? sub : nameToEmoji[emojiText];
+  });
+}
 
 const sortOptions = [
   {
@@ -200,7 +207,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       key: 'description',
       render: (description) =>
         description !== null ? (
-          <span className="font-light">{description}</span>
+          <span className="font-light">{convertTextToEmoji(description)}</span>
         ) : (
           EMPTY
         ),
