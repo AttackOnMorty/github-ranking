@@ -48,7 +48,7 @@ const Repositories: React.FC = () => {
         currentPage,
         sort,
         language,
-        topics
+        topics,
       );
       setTotalCount(totalCount);
       setData(data);
@@ -170,7 +170,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
         <div className="flex items-center">
           <a href={owner.url} target="_black" rel="noreferrer">
             <img
-              className="w-8 mr-2 rounded-full"
+              className="w-10 h-10 mr-4 rounded-full"
               src={owner.avatarUrl}
               alt="avatar"
             />

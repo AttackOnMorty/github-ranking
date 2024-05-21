@@ -26,7 +26,7 @@ const menuItems = [
 const Header: React.FC = () => {
   const location = useLocation();
   const [current, setCurrent] = useState(
-    location.pathname === '/' ? '/repositories' : location.pathname
+    location.pathname === '/' ? '/repositories' : location.pathname,
   );
 
   const handleTitleClick = (): void => {
@@ -69,7 +69,11 @@ const Header: React.FC = () => {
       >
         <Tooltip title="Compare repos via GitHub Trends">
           <Button type="text">
-            <img src={GitHubTrends} style={{ width: 20, height: 20 }} />
+            <img
+              alt="GitHub Trends"
+              src={GitHubTrends}
+              style={{ width: 20, height: 20 }}
+            />
           </Button>
         </Tooltip>
       </a>

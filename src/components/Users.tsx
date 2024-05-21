@@ -30,7 +30,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
         currentPage,
         userType,
         language,
-        location
+        location,
       );
       setTotalCount(totalCount);
       setData(data);
@@ -220,7 +220,11 @@ function renderNameColumn({
 }: User): JSX.Element {
   return (
     <div className="flex items-center">
-      <img className="w-10 mr-4 rounded-full" src={avatarUrl} alt="avatar" />
+      <img
+        className="w-10 h-10 mr-4 rounded-full"
+        src={avatarUrl}
+        alt="avatar"
+      />
       <div>
         <a
           className="text-base font-medium"

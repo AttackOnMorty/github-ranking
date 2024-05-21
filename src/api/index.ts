@@ -30,6 +30,9 @@ export const getTopReposAsync = async (
   }
 
   const res = await octokit.request('GET /search/repositories{?q}', {
+    headers: {
+      accept: 'application/vnd.github+json',
+    },
     q,
     sort,
     per_page: PAGE_SIZE,
