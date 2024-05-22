@@ -11,15 +11,15 @@ import type { MenuProps } from 'antd';
 const menuItems = [
   {
     key: '/repositories',
-    label: <Link to={'/repositories'}>Repositories</Link>,
+    label: <Link className='font-mono text-base' to={'/repositories'}>Repositories</Link>,
   },
   {
     key: '/users',
-    label: <Link to={'/users'}>Users</Link>,
+    label: <Link className='font-mono text-base' to={'/users'}>Users</Link>,
   },
   {
     key: '/organizations',
-    label: <Link to={'/organizations'}>Organizations</Link>,
+    label: <Link className='font-mono text-base' to={'/organizations'}>Organizations</Link>,
   },
 ];
 

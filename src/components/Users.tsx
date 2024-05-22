@@ -69,7 +69,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
     <Space className="hidden lg:flex lg:justify-end">
       <Space size="large">
         <Space>
-          <span className="text-lg font-light">Language:</span>
+          <span className="text-lg font-light font-mono">Language:</span>
           <Select
             className="w-48"
             size="large"
@@ -81,7 +81,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
           />
         </Space>
         <Space>
-          <span className="text-lg font-light">Location:</span>
+          <span className="text-lg font-light font-mono">Location:</span>
           <Input
             className="w-48"
             size="large"
@@ -107,6 +107,15 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
             setCurrentPage(page);
             scrollToTop();
           },
+          itemRender: (page: any, type: any, originalElement: any) => {
+            if (type === 'prev') {
+              return <a className="font-mono">{'<'}</a>;
+            }
+            if (type === 'next') {
+              return <a className="font-mono">{'>'}</a>;
+            }
+            return <span className="font-mono">{originalElement}</span>;
+          },
         };
 
   return data === undefined ? (
@@ -131,7 +140,7 @@ const Users: React.FC<{ userType: string }> = ({ userType }) => {
 function getColumns(userType: string): ColumnsType<User> {
   const followingColumn: ColumnsType<User> = [
     {
-      title: 'Following',
+      title: <span className="font-mono">Following</span>,
       dataIndex: 'following',
       key: 'followers',
       render: (value: number, { username }: User) => {
@@ -141,7 +150,7 @@ function getColumns(userType: string): ColumnsType<User> {
             <a
               href={url}
               target="_black"
-              className="text-black font-medium float-right"
+              className="text-black font-medium float-right font-mono"
             >
               {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
             </a>
@@ -155,30 +164,30 @@ function getColumns(userType: string): ColumnsType<User> {
 
   return [
     {
-      title: 'Rank',
+      title: <span className="font-mono">Rank</span>,
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
       render: (rank) => {
         const top3 = getTop3(rank);
-        return top3 !== null ? <span className="text-4xl">{top3}</span> : rank;
+        return top3 !== null ? <span className="text-4xl">{top3}</span> : <span className="font-mono">{rank}</span>;
       },
       width: 70,
     },
     {
-      title: 'Name',
+      title: <span className="font-mono">Name</span>,
       dataIndex: 'name',
       key: 'name',
       render: (_, record) => renderNameColumn(record),
-      width: 260,
+      width: 250,
     },
     {
-      title: 'Followers',
+      title: <span className="font-mono">Followers</span>,
       dataIndex: 'followers',
       key: 'followers',
       render: (value) => (
         <div style={{ width: 35 }}>
-          <span className="font-medium float-right">
+          <span className="font-medium float-right font-mono">
             {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
           </span>
         </div>
@@ -188,23 +197,23 @@ function getColumns(userType: string): ColumnsType<User> {
     },
     ...(userType === USER_TYPE.USER ? followingColumn : []),
     {
-      title: 'Description',
+      title: <span className="font-mono">Description</span>,
       dataIndex: 'bio',
       key: 'bio',
       render: (bio) =>
         bio !== null ? (
-          <span className="text-sm font-light">{bio}</span>
+          <span className="font-light font-mono">{bio}</span>
         ) : (
           EMPTY
         ),
       responsive: ['md'],
     },
     {
-      title: 'Social Links',
+      title: <span className="font-mono">Links</span>,
       dataIndex: 'socialLinks',
       key: 'socialLinks',
       render: (_, record) => renderSocialLinks(record),
-      width: 120,
+      width: 100,
       responsive: ['lg'],
     },
   ];
@@ -227,7 +236,7 @@ function renderNameColumn({
       />
       <div>
         <a
-          className="text-base font-medium"
+          className="font-medium font-mono"
           href={url}
           target="_black"
           rel="noreferrer"

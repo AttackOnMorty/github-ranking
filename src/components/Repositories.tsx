@@ -20,11 +20,11 @@ function convertTextToEmoji(text: string): string {
 
 const sortOptions = [
   {
-    label: 'Stars',
+    label: <span className="font-mono">Stars</span>,
     value: 'stars',
   },
   {
-    label: 'Forks',
+    label: <span className="font-mono">Forks</span>,
     value: 'forks',
   },
 ];
@@ -89,7 +89,7 @@ const Repositories: React.FC = () => {
       />
       <Space className="hidden lg:flex" size="large">
         <Space>
-          <span className="text-lg font-light">Language:</span>
+          <span className="text-lg font-light font-mono">Language:</span>
           <Select
             className="w-48"
             size="large"
@@ -101,7 +101,7 @@ const Repositories: React.FC = () => {
           />
         </Space>
         <Space>
-          <span className="text-lg font-light">Topics:</span>
+          <span className="text-lg font-light font-mono">Topics:</span>
           <TopicInput
             className="w-48"
             placeholder="Any"
@@ -125,6 +125,15 @@ const Repositories: React.FC = () => {
           onChange(page: number) {
             setCurrentPage(page);
             scrollToTop();
+          },
+          itemRender: (page: any, type: any, originalElement: any) => {
+            if (type === 'prev') {
+              return <a className="font-mono">{"<"}</a>;
+            }
+            if (type === 'next') {
+              return <a className="font-mono">{">"}</a>;
+            }
+            return <span className="font-mono">{originalElement}</span>;
           },
         };
 
@@ -152,18 +161,22 @@ function getColumns(sorter: string): ColumnsType<Repo> {
 
   return [
     {
-      title: 'Rank',
+      title: <span className="font-mono">Rank</span>,
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
       render: (rank) => {
         const top3 = getTop3(rank);
-        return top3 !== null ? <span className="text-4xl">{top3}</span> : rank;
+        return top3 !== null ? (
+          <span className="text-4xl">{top3}</span>
+        ) : (
+          <span className="font-mono">{rank}</span>
+        );
       },
       width: 70,
     },
     {
-      title: 'Name',
+      title: <span className="font-mono">Name</span>,
       dataIndex: 'name',
       key: 'name',
       render: (name, { owner, url }) => (
@@ -176,7 +189,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
             />
           </a>
           <a
-            className="font-medium"
+            className="font-medium font-mono"
             href={url}
             target="_black"
             rel="noreferrer"
@@ -185,15 +198,15 @@ function getColumns(sorter: string): ColumnsType<Repo> {
           </a>
         </div>
       ),
-      width: 260,
+      width: 280,
     },
     {
-      title: categoryOption?.label,
+      title: <span className="font-mono">{categoryOption?.label}</span>,
       dataIndex: categoryOption?.value,
       key: categoryOption?.value,
       render: (value) => (
         <div style={{ width: 35 }}>
-          <span className="font-medium float-right">
+          <span className="font-medium float-right font-mono">
             {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
           </span>
         </div>
@@ -202,25 +215,27 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       responsive: ['md'],
     },
     {
-      title: 'Description',
+      title: <span className="font-mono">Description</span>,
       dataIndex: 'description',
       key: 'description',
       render: (description) =>
         description !== null ? (
-          <span className="font-light">{convertTextToEmoji(description)}</span>
+          <span className="font-light font-mono">
+            {convertTextToEmoji(description)}
+          </span>
         ) : (
           EMPTY
         ),
       responsive: ['md'],
     },
     {
-      title: 'Language',
+      title: <span className="font-mono">Language</span>,
       key: 'language',
       dataIndex: 'language',
       render: (language) =>
         language !== null ? (
           <Tag
-            className="font-medium"
+            className="font-medium font-mono"
             color="processing"
             bordered={false}
             key={language}
@@ -229,7 +244,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
           </Tag>
         ) : (
           <Tag
-            className="font-medium"
+            className="font-medium font-mono"
             color="warning"
             bordered={false}
             key="N/A"
