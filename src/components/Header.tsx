@@ -67,7 +67,7 @@ const Header: React.FC = () => {
         target="_black"
         rel="noreferrer"
       >
-        <Tooltip title="Compare repos via GitHub Trends">
+        <Tooltip title="Compare repositories via GitHub Trends">
           <Button type="text">
             <img
               alt="GitHub Trends"
