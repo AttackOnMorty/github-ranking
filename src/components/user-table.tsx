@@ -9,7 +9,7 @@ import { getTopUsersAsync } from '@/api';
 import Loading from '@/components/loading';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE, USER_TYPE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
-import { getLanguagesOptions, getTop3, scrollToTop } from '@/utils';
+import { getLanguagesOptions, renderRank, scrollToTop } from '@/utils';
 
 import type { User } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -73,10 +73,10 @@ export default function UserTable({ userType }: { userType: string }) {
     <Space className="w-full lg:flex lg:justify-end">
       <Space size="large">
         <Space>
-          <span className="text-lg font-light font-mono">Language:</span>
+          <span>Language:</span>
           <Select
             className="w-48"
-            size="large"
+            // size="large"
             placeholder="Any"
             onChange={handleLanguageChange}
             options={getLanguagesOptions(languages)}
@@ -85,10 +85,10 @@ export default function UserTable({ userType }: { userType: string }) {
           />
         </Space>
         <Space>
-          <span className="text-lg font-light font-mono">Location:</span>
+          <span>Location:</span>
           <Input
             className="w-48"
-            size="large"
+            // size="large"
             placeholder="Any"
             onChange={handleLocationChange}
             onPressEnter={handleLocationPressEnter}
@@ -128,7 +128,7 @@ export default function UserTable({ userType }: { userType: string }) {
 function getColumns(userType: string): ColumnsType<User> {
   const followingColumn: ColumnsType<User> = [
     {
-      title: <span className="font-mono">Following</span>,
+      title: 'Following',
       dataIndex: 'following',
       key: 'followers',
       render: (value: number, { username }: User) => {
@@ -136,9 +136,10 @@ function getColumns(userType: string): ColumnsType<User> {
         return (
           <div style={{ width: 35 }}>
             <a
+              className="float-right"
               href={url}
               target="_black"
-              className="text-black font-medium float-right font-mono"
+              rel="noreferrer"
             >
               {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
             </a>
@@ -152,34 +153,27 @@ function getColumns(userType: string): ColumnsType<User> {
 
   return [
     {
-      title: <span className="font-mono">Rank</span>,
+      title: 'Rank',
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
-      render: (rank) => {
-        const top3 = getTop3(rank);
-        return top3 !== null ? (
-          <span className="text-4xl">{top3}</span>
-        ) : (
-          <span className="font-mono">{rank}</span>
-        );
-      },
+      render: (rank) => renderRank(rank),
       width: 70,
     },
     {
-      title: <span className="font-mono">Name</span>,
+      title: 'Name',
       dataIndex: 'name',
       key: 'name',
       render: (_, record) => renderNameColumn(record),
       width: 250,
     },
     {
-      title: <span className="font-mono">Followers</span>,
+      title: 'Followers',
       dataIndex: 'followers',
       key: 'followers',
       render: (value) => (
         <div style={{ width: 35 }}>
-          <span className="font-medium float-right font-mono">
+          <span className="float-right">
             {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
           </span>
         </div>
@@ -189,19 +183,14 @@ function getColumns(userType: string): ColumnsType<User> {
     },
     ...(userType === USER_TYPE.USER ? followingColumn : []),
     {
-      title: <span className="font-mono">Description</span>,
+      title: 'Description',
       dataIndex: 'bio',
       key: 'bio',
-      render: (bio) =>
-        bio !== null ? (
-          <span className="font-light font-mono">{bio}</span>
-        ) : (
-          EMPTY
-        ),
+      render: (bio) => bio ?? EMPTY,
       responsive: ['md'],
     },
     {
-      title: <span className="font-mono">Links</span>,
+      title: 'Links',
       dataIndex: 'socialLinks',
       key: 'socialLinks',
       render: (_, record) => renderSocialLinks(record),
@@ -229,12 +218,7 @@ function renderNameColumn({
         alt="avatar"
       />
       <div>
-        <a
-          className="font-medium font-mono"
-          href={url}
-          target="_black"
-          rel="noreferrer"
-        >
+        <a href={url} target="_black" rel="noreferrer">
           {name ?? username}
         </a>
         <div className="flex items-center text-xs font-extralight">

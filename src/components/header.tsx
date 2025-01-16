@@ -14,7 +14,7 @@ const menuItems = [
   {
     key: '/repositories',
     label: (
-      <Link className="font-mono text-base" href="/repositories">
+      <Link href="/repositories" className="text-base">
         Repositories
       </Link>
     ),
@@ -22,7 +22,7 @@ const menuItems = [
   {
     key: '/users',
     label: (
-      <Link className="font-mono text-base" href="/users">
+      <Link href="/users" className="text-base">
         Users
       </Link>
     ),
@@ -30,7 +30,7 @@ const menuItems = [
   {
     key: '/organizations',
     label: (
-      <Link className="font-mono text-base" href="/organizations">
+      <Link href="/organizations" className="text-base">
         Organizations
       </Link>
     ),
@@ -54,7 +54,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="px-6 py-6 sm:py-0 sm:px-14 flex items-center">
-      <div className="flex flex-1 items-center">
+      <div className="flex flex-1 items-center space-x-10">
         <div className="flex items-center">
           <Image
             className="mr-4"
@@ -63,15 +63,9 @@ const Header: React.FC = () => {
             height={40}
             alt="logo"
           />
-          <span className="mr-4 text-2xl font-mono cursor-pointer whitespace-nowrap">
-            <Link
-              className="text-black hover:text-black no-underline"
-              href="/"
-              onClick={handleTitleClick}
-            >
-              GitHub Ranking
-            </Link>
-          </span>
+          <Link className="text-xl" href="/" onClick={handleTitleClick}>
+            GitHub Ranking
+          </Link>
         </div>
         <Menu
           className="hidden sm:block sm:text-lg flex-1"

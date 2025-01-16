@@ -20,6 +20,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@eslint/eslintrc": "^3",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",

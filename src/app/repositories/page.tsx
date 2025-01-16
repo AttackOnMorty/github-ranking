@@ -10,19 +10,19 @@ import Loading from '@/components/loading';
 import TopicInput from '@/components/topic-input';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
-import { getLanguagesOptions, getTop3, scrollToTop } from '@/utils';
+import { getLanguagesOptions, renderRank, scrollToTop } from '@/utils';
 
 import type { Repo } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table';
 
 const sortOptions = [
   {
-    label: <span className="font-mono">Stars</span>,
     value: 'stars',
+    label: 'Stars',
   },
   {
-    label: <span className="font-mono">Forks</span>,
     value: 'forks',
+    label: 'Forks',
   },
 ];
 
@@ -77,7 +77,6 @@ export default function Repositories() {
   const getTitle = (): JSX.Element => (
     <Space className="w-full flex justify-center flex-wrap lg:justify-between">
       <Radio.Group
-        size="large"
         options={sortOptions}
         onChange={handleCategoryChange}
         value={sort}
@@ -86,10 +85,9 @@ export default function Repositories() {
       />
       <Space className="hidden lg:flex" size="large">
         <Space>
-          <span className="text-lg font-light font-mono">Language:</span>
+          <span>Language:</span>
           <Select
             className="w-48"
-            size="large"
             placeholder="Any"
             onChange={handleLanguageChange}
             options={getLanguagesOptions(languages)}
@@ -98,7 +96,7 @@ export default function Repositories() {
           />
         </Space>
         <Space>
-          <span className="text-lg font-light font-mono">Topics:</span>
+          <span>Topics:</span>
           <TopicInput
             className="w-48"
             placeholder="Any"
@@ -142,22 +140,15 @@ function getColumns(sorter: string): ColumnsType<Repo> {
 
   return [
     {
-      title: <span className="font-mono">Rank</span>,
+      title: 'Rank',
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
-      render: (rank) => {
-        const top3 = getTop3(rank);
-        return top3 !== null ? (
-          <span className="text-4xl">{top3}</span>
-        ) : (
-          <span className="font-mono">{rank}</span>
-        );
-      },
+      render: (rank) => renderRank(rank),
       width: 70,
     },
     {
-      title: <span className="font-mono">Name</span>,
+      title: 'Name',
       dataIndex: 'name',
       key: 'name',
       render: (name, { owner, url }) => (
@@ -171,12 +162,7 @@ function getColumns(sorter: string): ColumnsType<Repo> {
               alt="avatar"
             />
           </a>
-          <a
-            className="font-medium font-mono"
-            href={url}
-            target="_black"
-            rel="noreferrer"
-          >
+          <a href={url} target="_black" rel="noreferrer">
             {name}
           </a>
         </div>
@@ -184,12 +170,12 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       width: 280,
     },
     {
-      title: <span className="font-mono">{categoryOption?.label}</span>,
+      title: <span>{categoryOption?.label}</span>,
       dataIndex: categoryOption?.value,
       key: categoryOption?.value,
       render: (value) => (
         <div style={{ width: 35 }}>
-          <span className="font-medium float-right font-mono">
+          <span className="float-right">
             {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
           </span>
         </div>
@@ -198,40 +184,24 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       responsive: ['md'],
     },
     {
-      title: <span className="font-mono">Description</span>,
+      title: 'Description',
       dataIndex: 'description',
       key: 'description',
       render: (description) =>
-        description !== null ? (
-          <span className="font-light font-mono">
-            {convertTextToEmoji(description)}
-          </span>
-        ) : (
-          EMPTY
-        ),
+        description !== null ? convertTextToEmoji(description) : EMPTY,
       responsive: ['md'],
     },
     {
-      title: <span className="font-mono">Language</span>,
+      title: 'Language',
       key: 'language',
       dataIndex: 'language',
       render: (language) =>
         language !== null ? (
-          <Tag
-            className="font-medium font-mono"
-            color="processing"
-            bordered={false}
-            key={language}
-          >
+          <Tag color="processing" key={language} bordered={false}>
             {language}
           </Tag>
         ) : (
-          <Tag
-            className="font-medium font-mono"
-            color="warning"
-            bordered={false}
-            key="N/A"
-          >
+          <Tag color="orange" key="N/A" bordered={false}>
             N/A
           </Tag>
         ),

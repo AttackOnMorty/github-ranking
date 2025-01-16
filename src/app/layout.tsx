@@ -1,22 +1,18 @@
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { ConfigProvider } from 'antd';
 import { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Fira_Code } from 'next/font/google';
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import LanguageProvider from '@/context/language-provider';
 
+// NOTE: https://ant.design/docs/react/v5-for-19
+import '@ant-design/v5-patch-for-react-19';
+
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+export const firaCode = Fira_Code({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Github Ranking',
@@ -30,23 +26,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${firaCode.className} antialiased`}>
         <AntdRegistry>
-          <LanguageProvider>
-            <div className="h-full flex flex-col">
-              <Header />
-              <div className="flex flex-1 flex-col bg-[#f5f5f5]">
-                <main className="flex flex-1 justify-center">
-                  <div className="max-w-6xl px-6 py-6 flex flex-1">
-                    {children}
-                  </div>
-                </main>
-                <Footer />
+          <ConfigProvider
+            theme={{
+              token: {
+                fontFamily: 'inherit',
+              },
+            }}
+          >
+            <LanguageProvider>
+              <div className="h-full flex flex-col">
+                <Header />
+                <div className="flex flex-1 flex-col bg-[#f5f5f5]">
+                  <main className="flex flex-1 justify-center">
+                    <div className="max-w-6xl px-6 py-6 flex flex-1">
+                      {children}
+                    </div>
+                  </main>
+                  <Footer />
+                </div>
               </div>
-            </div>
-          </LanguageProvider>
+            </LanguageProvider>
+          </ConfigProvider>
         </AntdRegistry>
       </body>
     </html>

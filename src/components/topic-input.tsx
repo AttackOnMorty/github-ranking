@@ -76,7 +76,6 @@ const SearchInput: React.FC<{
       maxTagCount={1}
       showSearch
       allowClear={true}
-      size="large"
       value={value}
       placeholder={placeholder}
       defaultActiveFirstOption={false}
