@@ -6,16 +6,16 @@ import Image from 'next/image';
 import { ChangeEvent, JSX, useContext, useEffect, useState } from 'react';
 
 import { getTopUsersAsync } from '@/api';
-import { LanguagesContext } from '@/app/layout';
 import Loading from '@/components/loading';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE, USER_TYPE } from '@/constants';
+import { LanguageContext } from '@/context/language-provider';
 import { getLanguagesOptions, getTop3, scrollToTop } from '@/utils';
 
 import type { User } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table/interface';
 
 export default function UserTable({ userType }: { userType: string }) {
-  const languages = useContext(LanguagesContext);
+  const languages = useContext(LanguageContext);
 
   const [language, setLanguage] = useState<string>();
   const [location, setLocation] = useState<string>();

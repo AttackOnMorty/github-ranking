@@ -1,12 +1,10 @@
-'use client';
-
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { createContext, useEffect, useState } from 'react';
 
-import { getLanguagesAsync } from '@/api';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
+import LanguageProvider from '@/context/language-provider';
 
 import './globals.css';
 
@@ -20,42 +18,23 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-// TODO: set metadata
-// export const metadata: Metadata = {
-//   title: 'Github Ranking',
-//   description: 'GitHub ranking for repositories, users, and organizations.',
-// };
-
-// TODO: Should I put context in layout?
-export const LanguagesContext = createContext<string[]>([]);
+export const metadata: Metadata = {
+  title: 'Github Ranking',
+  description: 'GitHub ranking for repositories, users, and organizations.',
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [languages, setLanguages] = useState<string[]>([]);
-
-  // TODO: why clearTimeout?
-  useEffect(() => {
-    const getLanguages = async (): Promise<void> => {
-      setLanguages(await getLanguagesAsync());
-    };
-    const id = setTimeout(() => {
-      void getLanguages();
-    }, 300);
-    return () => {
-      clearTimeout(id);
-    };
-  }, []);
-
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LanguagesContext.Provider value={languages}>
-          <AntdRegistry>
+        <AntdRegistry>
+          <LanguageProvider>
             <div className="h-full flex flex-col">
               <Header />
               <div className="flex flex-1 flex-col bg-[#f5f5f5]">
@@ -67,8 +46,8 @@ export default function RootLayout({
                 <Footer />
               </div>
             </div>
-          </AntdRegistry>
-        </LanguagesContext.Provider>
+          </LanguageProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

@@ -6,10 +6,10 @@ import Image from 'next/image';
 import { JSX, useContext, useEffect, useState } from 'react';
 
 import { getTopReposAsync } from '@/api';
-import { LanguagesContext } from '@/app/layout';
 import Loading from '@/components/loading';
 import TopicInput from '@/components/topic-input';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
+import { LanguageContext } from '@/context/language-provider';
 import { getLanguagesOptions, getTop3, scrollToTop } from '@/utils';
 
 import type { Repo } from '@/api/types';
@@ -27,7 +27,7 @@ const sortOptions = [
 ];
 
 export default function Repositories() {
-  const languages = useContext(LanguagesContext);
+  const languages = useContext(LanguageContext);
 
   const [sort, setSort] = useState('stars');
   const [tableSort, setTableSort] = useState(sort);
