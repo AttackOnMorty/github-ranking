@@ -19,3 +19,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* NOTE: Custom CSS */
+html,
+body {
+  height: 100%;
+}

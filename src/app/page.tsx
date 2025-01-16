@@ -1,10 +1,5 @@
-import React from 'react';
-import { Button } from 'antd';
+import { redirect } from 'next/navigation';
 
-const Home = () => (
-  <div className="App">
-    <Button type="primary">Button</Button>
-  </div>
-);
-
-export default Home;
+export default function Home() {
+  redirect('/repositories');
+}
