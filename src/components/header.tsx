@@ -53,7 +53,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="px-6 py-6 sm:py-0 sm:px-14 flex items-center">
+    <header className="px-6 py-4 sm:py-0 flex items-center">
       <div className="flex flex-1 items-center space-x-10">
         <div className="flex items-center">
           <Image
@@ -67,14 +67,15 @@ const Header: React.FC = () => {
             GitHub Ranking
           </Link>
         </div>
-        <Menu
-          className="hidden sm:block sm:text-lg flex-1"
-          style={{ lineHeight: '4.5rem' }}
-          mode="horizontal"
-          selectedKeys={[current]}
-          onClick={handleMenuClick}
-          items={menuItems}
-        />
+        <div className="hidden sm:block flex-1">
+          <Menu
+            style={{ lineHeight: '4.5rem' }}
+            mode="horizontal"
+            selectedKeys={[current]}
+            onClick={handleMenuClick}
+            items={menuItems}
+          />
+        </div>
       </div>
       <a
         className="hidden lg:block"

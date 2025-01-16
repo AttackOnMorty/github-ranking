@@ -10,7 +10,7 @@ import Loading from '@/components/loading';
 import TopicInput from '@/components/topic-input';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
-import { getLanguagesOptions, renderRank, scrollToTop } from '@/utils';
+import { getLanguagesOptions, getTop3, scrollToTop } from '@/utils';
 
 import type { Repo } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table';
@@ -83,29 +83,31 @@ export default function Repositories() {
         optionType="button"
         buttonStyle="solid"
       />
-      <Space className="hidden lg:flex" size="large">
-        <Space>
-          <span>Language:</span>
-          <Select
-            className="w-48"
-            placeholder="Any"
-            onChange={handleLanguageChange}
-            options={getLanguagesOptions(languages)}
-            showSearch
-            allowClear
-          />
+      <div className="hidden lg:block">
+        <Space size="large">
+          <Space>
+            <span>Language:</span>
+            <Select
+              className="w-48"
+              placeholder="Any"
+              onChange={handleLanguageChange}
+              options={getLanguagesOptions(languages)}
+              showSearch
+              allowClear
+            />
+          </Space>
+          <Space>
+            <span>Topics:</span>
+            <TopicInput
+              className="w-48"
+              placeholder="Any"
+              value={topics}
+              setValue={setTopics}
+              resetPage={resetPage}
+            />
+          </Space>
         </Space>
-        <Space>
-          <span>Topics:</span>
-          <TopicInput
-            className="w-48"
-            placeholder="Any"
-            value={topics}
-            setValue={setTopics}
-            resetPage={resetPage}
-          />
-        </Space>
-      </Space>
+      </div>
     </Space>
   );
 
@@ -144,7 +146,10 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
-      render: (rank) => renderRank(rank),
+      render: (rank) => {
+        const top3 = getTop3(rank);
+        return top3 !== null ? <span className="text-3xl">{top3}</span> : rank;
+      },
       width: 70,
     },
     {
