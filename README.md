@@ -2,7 +2,7 @@
 
 Search GitHub's top repositories, users and organizations.
 
-<img width="1413" alt="image" src="https://github.com/AttackOnMorty/github-ranking/assets/37203901/09b64de0-915a-4908-b565-7e7ccc7ed7ea">
+<img width="1483" alt="image" src="https://github.com/user-attachments/assets/340a2c39-d86b-4298-b1b8-0259e99ee5da" />
 
 ## Getting Started
 
