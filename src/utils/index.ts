@@ -26,6 +26,8 @@ const POPULAR_LANGUAGES = [
   'TypeScript',
 ];
 
+// TODO: Add types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getLanguagesOptions(languages: string[]): any[] {
   const popularLanguageOptions = POPULAR_LANGUAGES.map((value) => ({
     value,
