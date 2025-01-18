@@ -1,4 +1,5 @@
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { Analytics } from '@vercel/analytics/next';
 import { ConfigProvider } from 'antd';
 import { Metadata } from 'next';
 import { Fira_Code } from 'next/font/google';
@@ -50,6 +51,7 @@ export default function RootLayout({
             </LanguageProvider>
           </ConfigProvider>
         </AntdRegistry>
+        <Analytics />
       </body>
     </html>
   );

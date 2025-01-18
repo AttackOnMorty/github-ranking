@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
     "@ant-design/nextjs-registry": "^1.0.2",
+    "@vercel/analytics": "^1.4.1",
     "antd": "^5.23.1",
     "gemoji": "^8.1.0",
     "js-yaml": "^4.1.0",
