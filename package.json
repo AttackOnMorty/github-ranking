@@ -4,33 +4,31 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.5.2",
-    "@ant-design/nextjs-registry": "^1.0.2",
-    "@vercel/analytics": "^1.4.1",
-    "antd": "^5.23.1",
+    "@ant-design/icons": "~5.6.1",
+    "@ant-design/nextjs-registry": "^1.1.0",
+    "@vercel/analytics": "^1.5.0",
+    "antd": "^5.27.3",
     "gemoji": "^8.1.0",
     "js-yaml": "^4.1.0",
-    "next": "15.1.5",
-    "octokit": "^4.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "15.5.2",
+    "octokit": "^5.0.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@eslint/eslintrc": "^3",
-    "@types/js-yaml": "^4.0.9",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.1.5",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.17",
+    "eslint-config-next": "15.5.2",
+    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }

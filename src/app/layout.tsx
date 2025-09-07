@@ -8,16 +8,13 @@ import Footer from '@/components/footer';
 import Header from '@/components/header';
 import LanguageProvider from '@/context/language-provider';
 
-// NOTE: https://ant.design/docs/react/v5-for-19
-import '@ant-design/v5-patch-for-react-19';
-
 import './globals.css';
 
 export const firaCode = Fira_Code({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Github Ranking',
-  description: 'GitHub ranking for repositories, users, and organizations.',
+  title: 'GitHub Ranking',
+  description: 'Top GitHub repositories, users and organizations',
 };
 
 export default function RootLayout({
