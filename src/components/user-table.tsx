@@ -9,7 +9,12 @@ import { getTopUsersAsync } from '@/api';
 import Loading from '@/components/loading';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE, USER_TYPE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
-import { getLanguagesOptions, getTop3, scrollToTop } from '@/utils';
+import {
+  convertTextToEmoji,
+  getLanguagesOptions,
+  getTop3,
+  scrollToTop,
+} from '@/utils';
 
 import type { User } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -189,7 +194,7 @@ function getColumns(userType: string): ColumnsType<User> {
       title: 'Description',
       dataIndex: 'bio',
       key: 'bio',
-      render: (bio) => bio ?? EMPTY,
+      render: (bio) => (bio !== null ? convertTextToEmoji(bio) : EMPTY),
       responsive: ['md'],
     },
     {

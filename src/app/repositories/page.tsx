@@ -1,7 +1,6 @@
 'use client';
 
 import { Radio, RadioChangeEvent, Select, Space, Table, Tag } from 'antd';
-import { nameToEmoji } from 'gemoji';
 import Image from 'next/image';
 import { JSX, useContext, useEffect, useState } from 'react';
 
@@ -10,7 +9,12 @@ import Loading from '@/components/loading';
 import TopicInput from '@/components/topic-input';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
-import { getLanguagesOptions, getTop3, scrollToTop } from '@/utils';
+import {
+  convertTextToEmoji,
+  getLanguagesOptions,
+  getTop3,
+  scrollToTop,
+} from '@/utils';
 
 import type { Repo } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table';
@@ -214,10 +218,4 @@ function getColumns(sorter: string): ColumnsType<Repo> {
       responsive: ['lg'],
     },
   ];
-}
-
-function convertTextToEmoji(text: string): string {
-  return text.replaceAll(/:(\w+):/g, (sub, emojiText) => {
-    return nameToEmoji[emojiText] === undefined ? sub : nameToEmoji[emojiText];
-  });
 }

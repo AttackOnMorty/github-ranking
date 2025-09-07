@@ -1,3 +1,5 @@
+import { nameToEmoji } from 'gemoji';
+
 const POPULAR_LANGUAGES = [
   'C',
   'C#',
@@ -73,4 +75,10 @@ export function getTop3(rank: number): string | null {
   }
 
   return top3;
+}
+
+export function convertTextToEmoji(text: string): string {
+  return text.replaceAll(/:(\w+):/g, (sub, emojiText) => {
+    return nameToEmoji[emojiText] === undefined ? sub : nameToEmoji[emojiText];
+  });
 }
