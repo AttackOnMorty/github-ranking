@@ -6,7 +6,7 @@ import { JSX, useContext, useEffect, useState } from 'react';
 
 import { getTopReposAsync } from '@/api';
 import Loading from '@/components/loading';
-import TopicInput from '@/components/topic-input';
+import TopicInput from '@/app/repositories/_components/topic-input';
 import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
 import {

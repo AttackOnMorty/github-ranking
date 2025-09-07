@@ -1,9 +1,9 @@
 import { Select, Spin } from 'antd';
 import { useState } from 'react';
 
-import { getTopicsAsync } from '../api';
+import { getTopicsAsync } from '@/api';
 
-import type { Topic } from '../api/types';
+import type { Topic } from '@/api/types';
 
 const { Option } = Select;
 
@@ -13,7 +13,7 @@ let currentValue: string;
 const fetch = (
   value: string,
   setData: (data: Topic[]) => void,
-  setLoading: (loading: boolean) => void,
+  setLoading: (loading: boolean) => void
 ): void => {
   if (timeout != null) {
     clearTimeout(timeout);

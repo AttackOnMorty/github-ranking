@@ -1,6 +1,6 @@
 'use client';
 
-import UserTable from '@/components/user-table';
+import UserTable from '@/app/users/user-table';
 import { USER_TYPE } from '@/constants';
 
 export default function Users() {

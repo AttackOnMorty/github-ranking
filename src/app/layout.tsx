@@ -8,7 +8,7 @@ import Footer from '@/components/footer';
 import Header from '@/components/header';
 import LanguageProvider from '@/context/language-provider';
 
-import './globals.css';
+import '@/app/globals.css';
 
 export const firaCode = Fira_Code({ subsets: ['latin'] });
 
