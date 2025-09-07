@@ -4,7 +4,7 @@ import { Input, Select, Space, Table } from 'antd';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 import { getTopUsersAsync } from '@/api';
-import { getColumns } from '@/app/users/columns';
+import { columns } from '@/app/users/columns';
 import Loading from '@/components/loading';
 import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
@@ -106,7 +106,7 @@ export default function UserTable({ userType }: { userType: string }) {
         rowKey="id"
         title={getTitle}
         loading={loading}
-        columns={getColumns(userType)}
+        columns={columns}
         dataSource={data}
         pagination={{
           current: currentPage,

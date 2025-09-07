@@ -63,18 +63,22 @@ export function scrollToTop(): void {
   });
 }
 
-export function getTop3(rank: number): string | null {
-  let top3 = null;
+export function getMedalEmoji(rank: number): string | null {
+  let result = null;
 
   if (rank === 1) {
-    top3 = '🥇';
+    result = '🥇';
   } else if (rank === 2) {
-    top3 = '🥈';
+    result = '🥈';
   } else if (rank === 3) {
-    top3 = '🥉';
+    result = '🥉';
   }
 
-  return top3;
+  return result;
+}
+
+export function formatNumber(value: number): string | number {
+  return value >= 1000 ? `${Math.floor(value / 1000)}k` : value;
 }
 
 export function convertTextToEmoji(text: string): string {

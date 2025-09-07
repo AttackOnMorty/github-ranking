@@ -79,7 +79,7 @@ const Header: React.FC = () => {
       <a
         className="hidden lg:block"
         href="https://www.github-trends.dev/"
-        target="_black"
+        target="_blank"
         rel="noreferrer"
       >
         <Tooltip title="Compare repositories via GitHub Trends">
@@ -96,7 +96,7 @@ const Header: React.FC = () => {
       <a
         className="hidden lg:block"
         href="https://github.com/AttackOnMorty/github-ranking"
-        target="_black"
+        target="_blank"
         rel="noreferrer"
       >
         <Button type="text">

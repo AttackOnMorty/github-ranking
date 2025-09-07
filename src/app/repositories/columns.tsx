@@ -2,7 +2,7 @@ import { Tag } from 'antd';
 import Image from 'next/image';
 
 import { EMPTY } from '@/constants';
-import { convertTextToEmoji, getTop3 } from '@/utils';
+import { convertTextToEmoji, formatNumber, getMedalEmoji } from '@/utils';
 
 import type { Repo } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table';
@@ -28,8 +28,12 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
       key: 'rank',
       align: 'center',
       render: (rank) => {
-        const top3 = getTop3(rank);
-        return top3 !== null ? <span className="text-3xl">{top3}</span> : rank;
+        const medalEmoji = getMedalEmoji(rank);
+        return medalEmoji !== null ? (
+          <span className="text-3xl">{medalEmoji}</span>
+        ) : (
+          rank
+        );
       },
       width: 70,
     },
@@ -39,7 +43,7 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
       key: 'name',
       render: (name, { owner, url }) => (
         <div className="flex items-center">
-          <a href={owner.url} target="_black" rel="noreferrer">
+          <a href={owner.url} target="_blank" rel="noreferrer">
             <Image
               className="mr-4 rounded-full"
               src={owner.avatarUrl}
@@ -48,7 +52,7 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
               alt="avatar"
             />
           </a>
-          <a href={url} target="_black" rel="noreferrer">
+          <a href={url} target="_blank" rel="noreferrer">
             {name}
           </a>
         </div>
@@ -61,9 +65,7 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
       key: categoryOption?.value,
       render: (value) => (
         <div style={{ width: 35 }}>
-          <span className="float-right">
-            {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-          </span>
+          <span className="float-right">{formatNumber(value)}</span>
         </div>
       ),
       width: 100,

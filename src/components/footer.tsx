@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
         <a
           className="text-blue-500 hover:underline no-underline"
           href="https://github.com/AttackOnMorty"
-          target="_black"
+          target="_blank"
           rel="noreferrer"
         >
           Luke Mao

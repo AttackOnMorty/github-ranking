@@ -3,89 +3,63 @@ import { Space } from 'antd';
 import Image from 'next/image';
 import { JSX } from 'react';
 
-import { EMPTY, USER_TYPE } from '@/constants';
-import { convertTextToEmoji, getTop3 } from '@/utils';
+import { EMPTY } from '@/constants';
+import { convertTextToEmoji, formatNumber, getMedalEmoji } from '@/utils';
 
 import type { User } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table/interface';
 
-export function getColumns(userType: string): ColumnsType<User> {
-  const followingColumn: ColumnsType<User> = [
-    {
-      title: 'Following',
-      dataIndex: 'following',
-      key: 'followers',
-      render: (value: number, { username }: User) => {
-        const url = `https://github.com/${username}?tab=following`;
-        return (
-          <div style={{ width: 35 }}>
-            <a
-              className="float-right"
-              href={url}
-              target="_black"
-              rel="noreferrer"
-            >
-              {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-            </a>
-          </div>
-        );
-      },
-      width: 100,
-      responsive: ['lg'],
+export const columns: ColumnsType<User> = [
+  {
+    title: 'Rank',
+    dataIndex: 'rank',
+    key: 'rank',
+    align: 'center',
+    render: (rank) => {
+      const medalEmoji = getMedalEmoji(rank);
+      return medalEmoji !== null ? (
+        <span className="text-3xl">{medalEmoji}</span>
+      ) : (
+        rank
+      );
     },
-  ];
-
-  return [
-    {
-      title: 'Rank',
-      dataIndex: 'rank',
-      key: 'rank',
-      align: 'center',
-      render: (rank) => {
-        const top3 = getTop3(rank);
-        return top3 !== null ? <span className="text-3xl">{top3}</span> : rank;
-      },
-      width: 70,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (_, record) => renderNameColumn(record),
-      width: 250,
-    },
-    {
-      title: 'Followers',
-      dataIndex: 'followers',
-      key: 'followers',
-      render: (value) => (
-        <div style={{ width: 35 }}>
-          <span className="float-right">
-            {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-          </span>
-        </div>
-      ),
-      width: 100,
-      responsive: ['md'],
-    },
-    ...(userType === USER_TYPE.USER ? followingColumn : []),
-    {
-      title: 'Description',
-      dataIndex: 'bio',
-      key: 'bio',
-      render: (bio) => (bio !== null ? convertTextToEmoji(bio) : EMPTY),
-      responsive: ['md'],
-    },
-    {
-      title: 'Links',
-      dataIndex: 'socialLinks',
-      key: 'socialLinks',
-      render: (_, record) => renderSocialLinks(record),
-      width: 100,
-      responsive: ['lg'],
-    },
-  ];
-}
+    width: 70,
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: (_, record) => renderNameColumn(record),
+    width: 250,
+  },
+  {
+    title: 'Followers',
+    dataIndex: 'followers',
+    key: 'followers',
+    render: (value) => (
+      <div style={{ width: 35 }}>
+        <span className="float-right">{formatNumber(value)}</span>
+      </div>
+    ),
+    width: 100,
+    responsive: ['md'],
+  },
+  {
+    title: 'Description',
+    dataIndex: 'bio',
+    key: 'bio',
+    render: (bio) => (bio !== null ? convertTextToEmoji(bio) : EMPTY),
+    responsive: ['md'],
+  },
+  {
+    title: 'Links',
+    dataIndex: 'socialLinks',
+    key: 'socialLinks',
+    render: (_, record) => renderSocialLinks(record),
+    width: 100,
+    responsive: ['lg'],
+  },
+];
 
 export function renderNameColumn({
   name,
@@ -140,7 +114,7 @@ export function renderSocialLinks({
       <a
         className="text-black"
         href={blog.startsWith('http') ? blog : `https://${blog}`}
-        target="_black"
+        target="_blank"
         rel="noreferrer"
       >
         <LinkOutlined />
@@ -152,7 +126,7 @@ export function renderSocialLinks({
       <a
         className="text-black"
         href={`https://twitter.com/${twitter}`}
-        target="_black"
+        target="_blank"
         rel="noreferrer"
       >
         <TwitterOutlined />
