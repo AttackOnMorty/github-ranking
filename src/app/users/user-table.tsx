@@ -1,23 +1,16 @@
 'use client';
 
-import { LinkOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Input, Select, Space, Table } from 'antd';
-import Image from 'next/image';
-import { ChangeEvent, JSX, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 import { getTopUsersAsync } from '@/api';
+import { getColumns } from '@/app/users/columns';
 import Loading from '@/components/loading';
-import { EMPTY, MAX_DATA_COUNT, PAGE_SIZE, USER_TYPE } from '@/constants';
+import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
-import {
-  convertTextToEmoji,
-  getLanguagesOptions,
-  getTop3,
-  scrollToTop,
-} from '@/utils';
+import { getLanguagesOptions, scrollToTop } from '@/utils';
 
 import type { User } from '@/api/types';
-import type { ColumnsType } from 'antd/es/table/interface';
 
 export default function UserTable({ userType }: { userType: string }) {
   const languages = useContext(LanguageContext);
@@ -74,7 +67,7 @@ export default function UserTable({ userType }: { userType: string }) {
     resetPage();
   };
 
-  const getTitle = (): JSX.Element => (
+  const getTitle = (): React.ReactElement => (
     <Space className="w-full lg:flex lg:justify-end">
       <div className="hidden lg:block">
         <Space size="large">
@@ -127,164 +120,5 @@ export default function UserTable({ userType }: { userType: string }) {
         }}
       />
     </div>
-  );
-}
-
-function getColumns(userType: string): ColumnsType<User> {
-  const followingColumn: ColumnsType<User> = [
-    {
-      title: 'Following',
-      dataIndex: 'following',
-      key: 'followers',
-      render: (value: number, { username }: User) => {
-        const url = `https://github.com/${username}?tab=following`;
-        return (
-          <div style={{ width: 35 }}>
-            <a
-              className="float-right"
-              href={url}
-              target="_black"
-              rel="noreferrer"
-            >
-              {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-            </a>
-          </div>
-        );
-      },
-      width: 100,
-      responsive: ['lg'],
-    },
-  ];
-
-  return [
-    {
-      title: 'Rank',
-      dataIndex: 'rank',
-      key: 'rank',
-      align: 'center',
-      render: (rank) => {
-        const top3 = getTop3(rank);
-        return top3 !== null ? <span className="text-3xl">{top3}</span> : rank;
-      },
-      width: 70,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (_, record) => renderNameColumn(record),
-      width: 250,
-    },
-    {
-      title: 'Followers',
-      dataIndex: 'followers',
-      key: 'followers',
-      render: (value) => (
-        <div style={{ width: 35 }}>
-          <span className="float-right">
-            {value >= 1000 ? `${Math.floor(value / 1000)}k` : value}
-          </span>
-        </div>
-      ),
-      width: 100,
-      responsive: ['md'],
-    },
-    ...(userType === USER_TYPE.USER ? followingColumn : []),
-    {
-      title: 'Description',
-      dataIndex: 'bio',
-      key: 'bio',
-      render: (bio) => (bio !== null ? convertTextToEmoji(bio) : EMPTY),
-      responsive: ['md'],
-    },
-    {
-      title: 'Links',
-      dataIndex: 'socialLinks',
-      key: 'socialLinks',
-      render: (_, record) => renderSocialLinks(record),
-      width: 100,
-      responsive: ['lg'],
-    },
-  ];
-}
-
-function renderNameColumn({
-  name,
-  avatarUrl,
-  url,
-  username,
-  location,
-  company,
-}: User): JSX.Element {
-  return (
-    <div className="flex items-center">
-      <Image
-        className="mr-4 rounded-full"
-        src={avatarUrl}
-        width={40}
-        height={40}
-        alt="avatar"
-      />
-      <div>
-        <a href={url} target="_black" rel="noreferrer">
-          {name ?? username}
-        </a>
-        <div className="flex items-center text-xs font-extralight">
-          {company !== null && (
-            <>
-              {/* TODO: */}
-              {/* <Company className="mr-1" /> */}
-              <span>{company}</span>
-            </>
-          )}
-        </div>
-        <div className="flex items-center text-xs font-extralight">
-          {location !== null && (
-            <>
-              {/* TODO: */}
-              {/* <Location className="mr-1" /> */}
-              <span>{location}</span>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function renderSocialLinks({ blog, twitter }: User): JSX.Element | string {
-  const blogIcon =
-    blog !== '' ? (
-      <a
-        className="text-black"
-        href={blog.startsWith('http') ? blog : `https://${blog}`}
-        target="_black"
-        rel="noreferrer"
-      >
-        <LinkOutlined />
-      </a>
-    ) : null;
-
-  const twitterIcon =
-    twitter !== null ? (
-      <a
-        className="text-black"
-        href={`https://twitter.com/${twitter}`}
-        target="_black"
-        rel="noreferrer"
-      >
-        <TwitterOutlined />
-      </a>
-    ) : null;
-
-  if (blogIcon === null && twitterIcon === null) {
-    return EMPTY;
-  }
-
-  return (
-    <Space>
-      {blogIcon}
-      {twitterIcon}
-    </Space>
   );
 }
