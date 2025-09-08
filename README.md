@@ -1,5 +1,7 @@
 # GitHub Ranking
 
+<img width="1491" height="844" alt="image" src="https://github.com/user-attachments/assets/36118d0a-a436-41ac-ba86-8ecae3c229d7" />
+
 ## Project Overview
 
 GitHub Ranking is a Next.js application that searches and displays GitHub's top repositories, users, and organizations. It uses the GitHub API with Octokit, Ant Design for UI components, SWR for data fetching, and Tailwind CSS for styling.
