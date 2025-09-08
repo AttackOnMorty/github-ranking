@@ -3,7 +3,7 @@ import { JSX } from 'react';
 import { SocialLinks } from '@/components/social-links';
 import { UserAvatar } from '@/components/user-avatar';
 import { EMPTY } from '@/constants';
-import { convertTextToEmoji, formatNumber, getMedalEmoji } from '@/utils';
+import { convertTextToEmoji, formatNumber } from '@/utils';
 
 import type { User } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table/interface';
@@ -14,14 +14,6 @@ export const columns: ColumnsType<User> = [
     dataIndex: 'rank',
     key: 'rank',
     align: 'center',
-    render: (rank) => {
-      const medalEmoji = getMedalEmoji(rank);
-      return medalEmoji !== null ? (
-        <span className="text-3xl">{medalEmoji}</span>
-      ) : (
-        rank
-      );
-    },
     width: 80,
   },
   {

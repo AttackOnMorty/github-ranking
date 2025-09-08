@@ -2,7 +2,7 @@ import { Tag } from 'antd';
 
 import { UserAvatar } from '@/components/user-avatar';
 import { EMPTY } from '@/constants';
-import { convertTextToEmoji, formatNumber, getMedalEmoji } from '@/utils';
+import { convertTextToEmoji, formatNumber } from '@/utils';
 
 import type { Repo } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table';
@@ -27,14 +27,6 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'rank',
       key: 'rank',
       align: 'center',
-      render: (rank) => {
-        const medalEmoji = getMedalEmoji(rank);
-        return medalEmoji !== null ? (
-          <span className="text-3xl">{medalEmoji}</span>
-        ) : (
-          rank
-        );
-      },
       width: 80,
     },
     {

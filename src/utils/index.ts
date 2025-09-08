@@ -63,20 +63,6 @@ export function scrollToTop(): void {
   });
 }
 
-export function getMedalEmoji(rank: number): string | null {
-  let result = null;
-
-  if (rank === 1) {
-    result = '🥇';
-  } else if (rank === 2) {
-    result = '🥈';
-  } else if (rank === 3) {
-    result = '🥉';
-  }
-
-  return result;
-}
-
 export function formatNumber(value: number): string | number {
   return value >= 1000 ? `${Math.floor(value / 1000)}k` : value;
 }
