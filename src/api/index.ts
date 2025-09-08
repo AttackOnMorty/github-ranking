@@ -95,6 +95,7 @@ export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
 
   return res.data.items.map((topic: TopicResponse) => ({
     name: topic.name,
+    displayName: topic.display_name,
     description: topic.short_description,
   }));
 };
@@ -166,4 +167,22 @@ const getUserAsync = async (username: string): Promise<User | null> => {
     location: data.location,
     twitter: data.twitter_username,
   };
+};
+
+export const getFeaturedTopicsAsync = async (): Promise<Topic[]> => {
+  const res = await octokit.rest.search.topics({
+    q: 'is:featured',
+  });
+
+  console.log(res);
+
+  if (res.status !== 200) {
+    return [];
+  }
+
+  return res.data.items.map((topic: TopicResponse) => ({
+    name: topic.name,
+    displayName: topic.display_name,
+    description: topic.short_description,
+  }));
 };

@@ -23,6 +23,7 @@ export interface Repos {
 
 export interface Topic {
   name: string;
+  displayName: string | null;
   description: string | null;
 }
 

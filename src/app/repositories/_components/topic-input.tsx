@@ -60,9 +60,9 @@ const SearchInput: React.FC<{
   };
 
   const renderOptions = (data: Topic[]) =>
-    data.map(({ name, description }) => (
-      <Option key={name} value={name} label={name}>
-        <div className="font-medium">{name}</div>
+    data.map(({ name, displayName, description }) => (
+      <Option key={name} value={name} label={displayName}>
+        <div className="font-medium">{displayName}</div>
         {description !== null && (
           <div className="font-extralight whitespace-normal">{description}</div>
         )}
