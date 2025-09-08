@@ -3,7 +3,7 @@ import { HeartFilled } from '@ant-design/icons';
 const Footer: React.FC = () => {
   return (
     <footer className="pb-6 flex justify-center">
-      <span className="text-xs sm:text-sm font-light">
+      <span className="text-xs sm:text-sm font-light text-black">
         Crafted with <HeartFilled style={{ color: '#eb2f96' }} /> by{' '}
         <a
           className="text-blue-500 hover:underline no-underline"

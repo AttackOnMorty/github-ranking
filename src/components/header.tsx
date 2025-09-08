@@ -52,7 +52,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="px-6 py-4 sm:py-0 flex items-center">
+    <header className="px-6 py-4 sm:py-0 flex items-center bg-white">
       <div className="flex flex-1 items-center space-x-10">
         <div className="flex items-center">
           <Image
@@ -62,7 +62,11 @@ const Header: React.FC = () => {
             height={40}
             alt="logo"
           />
-          <Link className="text-xl" href="/" onClick={handleTitleClick}>
+          <Link
+            className="text-xl text-black"
+            href="/"
+            onClick={handleTitleClick}
+          >
             GitHub Ranking
           </Link>
         </div>
