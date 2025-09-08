@@ -1,8 +1,12 @@
 'use client';
 
-import { Input, Select, Skeleton, Space, Table } from 'antd';
+import { Input, Select, Space, Table } from 'antd';
 import { ChangeEvent, useContext, useState } from 'react';
 
+import {
+  UsersSkeleton,
+  generateSkeletonRows,
+} from '@/app/users/_components/loading';
 import { columns } from '@/app/users/columns';
 import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
@@ -27,38 +31,6 @@ export default function UserTable({ userType }: { userType: string }) {
 
   const resetPage = (): void => {
     setCurrentPage(1);
-  };
-
-  const getSkeletonColumns = () => {
-    return columns.map((column) => ({
-      ...column,
-      render: () => {
-        switch (column.key) {
-          case 'rank':
-            return <Skeleton.Button active size="small" />;
-          case 'name':
-            return (
-              <div className="flex items-center space-x-4">
-                <Skeleton.Avatar active size={40} />
-                <div className="space-y-2">
-                  <Skeleton.Input active size="small" />
-                  <Skeleton.Input active size="small" />
-                </div>
-              </div>
-            );
-          case 'followers':
-            return <Skeleton.Button active size="small" />;
-          case 'bio':
-            return (
-              <Skeleton.Input active size="small" style={{ width: 500 }} />
-            );
-          case 'socialLinks':
-            return <Skeleton.Button active size="small" />;
-          default:
-            return <Skeleton.Input active size="small" />;
-        }
-      },
-    }));
   };
 
   const handleLanguageChange = (value: string): void => {
@@ -118,37 +90,13 @@ export default function UserTable({ userType }: { userType: string }) {
     );
   }
 
-  const generateSkeletonRows = () => {
-    const skeletonRows = [];
-    for (let i = 0; i < PAGE_SIZE; i++) {
-      skeletonRows.push({
-        id: 1000000 + i,
-        rank: i + 1,
-        avatarUrl: '',
-        url: '#',
-        username: `skeleton-user-${i + 1}`,
-        name: 'Skeleton User',
-        followers: 0,
-        following: 0,
-        company: 'Skeleton Company',
-        blog: '',
-        bio: 'Skeleton bio',
-        location: 'Skeleton Location',
-        twitter: '',
-      });
-    }
-    return skeletonRows;
-  };
-
   return (
     <div className="flex-1">
       <Table
         className="shadow-lg"
         rowKey="id"
         title={getTitle}
-        columns={
-          isLoading && data.length === 0 ? getSkeletonColumns() : columns
-        }
+        columns={isLoading && data.length === 0 ? UsersSkeleton() : columns}
         dataSource={
           isLoading && data.length === 0 ? generateSkeletonRows() : data
         }
