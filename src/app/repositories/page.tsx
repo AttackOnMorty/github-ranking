@@ -1,6 +1,6 @@
 'use client';
 
-import { Radio, RadioChangeEvent, Select, Space, Table } from 'antd';
+import { Radio, RadioChangeEvent, Select, Skeleton, Space, Table } from 'antd';
 import { JSX, useContext, useState } from 'react';
 
 import TopicInput from '@/app/repositories/_components/topic-input';
@@ -31,6 +31,36 @@ export default function Repositories() {
 
   const resetPage = (): void => {
     setCurrentPage(1);
+  };
+
+  const getSkeletonColumns = () => {
+    return getColumns(sort).map((column) => ({
+      ...column,
+      render: () => {
+        switch (column.key) {
+          case 'rank':
+            return <Skeleton.Button active size="small" />;
+          case 'name':
+            return (
+              <div className="flex items-center space-x-4">
+                <Skeleton.Avatar active size={40} />
+                <Skeleton.Input active size="small" style={{ width: 180 }} />
+              </div>
+            );
+          case 'stars':
+          case 'forks':
+            return <Skeleton.Button active size="small" />;
+          case 'description':
+            return (
+              <Skeleton.Input active size="small" style={{ width: 400 }} />
+            );
+          case 'language':
+            return <Skeleton.Input active size="small" />;
+          default:
+            return <Skeleton.Input active size="small" />;
+        }
+      },
+    }));
   };
 
   const handleCategoryChange = (e: RadioChangeEvent): void => {
@@ -89,15 +119,39 @@ export default function Repositories() {
     );
   }
 
+  const generateSkeletonRows = () => {
+    const skeletonRows = [];
+    for (let i = 0; i < PAGE_SIZE; i++) {
+      skeletonRows.push({
+        id: `skeleton-${i}`,
+        rank: i + 1,
+        name: `Skeleton Repo ${i + 1}`,
+        url: '#',
+        owner: { login: 'skeleton', avatarUrl: '', url: '#' },
+        stars: 0,
+        forks: 0,
+        description: 'Skeleton description',
+        language: 'Skeleton',
+        updatedAt: new Date().toISOString(),
+      });
+    }
+    return skeletonRows;
+  };
+
   return (
     <div className="flex-1">
       <Table
         className="shadow-lg"
         rowKey="id"
         title={getTitle}
-        loading={isLoading}
-        columns={getColumns(sort)}
-        dataSource={data}
+        columns={
+          isLoading && data.length === 0
+            ? getSkeletonColumns()
+            : getColumns(sort)
+        }
+        dataSource={
+          isLoading && data.length === 0 ? generateSkeletonRows() : data
+        }
         pagination={{
           current: currentPage,
           pageSize: PAGE_SIZE,

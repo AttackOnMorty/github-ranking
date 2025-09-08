@@ -35,7 +35,7 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
           rank
         );
       },
-      width: 70,
+      width: 80,
     },
     {
       title: 'Name',

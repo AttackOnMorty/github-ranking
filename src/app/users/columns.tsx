@@ -22,7 +22,7 @@ export const columns: ColumnsType<User> = [
         rank
       );
     },
-    width: 70,
+    width: 80,
   },
   {
     title: 'Name',
