@@ -3,6 +3,7 @@ import { Tag } from 'antd';
 import { UserAvatar } from '@/components/user-avatar';
 import { EMPTY } from '@/constants';
 import { convertTextToEmoji, formatNumber } from '@/utils';
+import { ForkOutlined, StarOutlined } from '@ant-design/icons';
 
 import type { Repo } from '@/api/types';
 import type { ColumnsType } from 'antd/es/table';
@@ -10,11 +11,13 @@ import type { ColumnsType } from 'antd/es/table';
 export const sortOptions = [
   {
     value: 'stars',
-    label: 'Stars',
+    label: <StarOutlined />,
+    name: 'Stars',
   },
   {
     value: 'forks',
-    label: 'Forks',
+    label: <ForkOutlined />,
+    name: 'Forks',
   },
 ];
 
@@ -48,7 +51,7 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
       width: 280,
     },
     {
-      title: <span>{categoryOption?.label}</span>,
+      title: <span>{categoryOption?.name}</span>,
       dataIndex: categoryOption?.value,
       key: categoryOption?.value,
       render: (value) => (
