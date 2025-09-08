@@ -1,48 +1,29 @@
 'use client';
 
 import { Input, Select, Space, Table } from 'antd';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
 
-import { getTopUsersAsync } from '@/api';
 import { columns } from '@/app/users/columns';
-import Loading from '@/components/loading';
 import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
+import { useTopUsers } from '@/hooks/use-github-api';
 import { getLanguagesOptions, scrollToTop } from '@/utils';
-
-import type { User } from '@/api/types';
 
 export default function UserTable({ userType }: { userType: string }) {
   const languages = useContext(LanguageContext);
 
   const [language, setLanguage] = useState<string>();
   const [location, setLocation] = useState<string>();
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [data, setData] = useState<User[]>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const getTopUsers = async (): Promise<void> => {
-      setLoading(true);
-      const { totalCount, data } = await getTopUsersAsync(
-        currentPage,
-        userType,
-        language,
-        location
-      );
-      setTotalCount(totalCount);
-      setData(data);
-      setLoading(false);
-    };
-    // TODO: why setTimeout?
-    const id = setTimeout(() => {
-      void getTopUsers();
-    }, 1000);
-    return () => {
-      clearTimeout(id);
-    };
-  }, [currentPage, userType, language, location]);
+  const {
+    data: usersData,
+    isLoading,
+    error,
+  } = useTopUsers(currentPage, userType, language, location);
+
+  const data = usersData?.data || [];
+  const totalCount = usersData?.totalCount || 0;
 
   const resetPage = (): void => {
     setCurrentPage(1);
@@ -97,15 +78,21 @@ export default function UserTable({ userType }: { userType: string }) {
     </Space>
   );
 
-  return data === undefined ? (
-    <Loading />
-  ) : (
+  if (error) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-red-500">Error loading users</div>
+      </div>
+    );
+  }
+
+  return (
     <div className="flex-1">
       <Table
         className="shadow-lg"
         rowKey="id"
         title={getTitle}
-        loading={loading}
+        loading={isLoading}
         columns={columns}
         dataSource={data}
         pagination={{

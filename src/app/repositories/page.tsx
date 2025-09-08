@@ -1,51 +1,33 @@
 'use client';
 
 import { Radio, RadioChangeEvent, Select, Space, Table } from 'antd';
-import { JSX, useContext, useEffect, useState } from 'react';
+import { JSX, useContext, useState } from 'react';
 
-import { getTopReposAsync } from '@/api';
 import TopicInput from '@/app/repositories/_components/topic-input';
 import { getColumns, sortOptions } from '@/app/repositories/columns';
-import Loading from '@/components/loading';
 import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
+import { useTopRepos } from '@/hooks/use-github-api';
 import { getLanguagesOptions, scrollToTop } from '@/utils';
 
-import type { Repo, Sort } from '@/api/types';
+import type { Sort } from '@/api/types';
 
 export default function Repositories() {
   const languages = useContext(LanguageContext);
 
   const [sort, setSort] = useState<Sort>('stars');
-  const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
   const [topics, setTopics] = useState<string[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [data, setData] = useState<Repo[]>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const getTopRepos = async (): Promise<void> => {
-      setLoading(true);
-      const { totalCount, data } = await getTopReposAsync(
-        currentPage,
-        sort,
-        language,
-        topics
-      );
-      setTotalCount(totalCount);
-      setData(data);
-      setLoading(false);
-      setTableSort(sort);
-    };
-    const id = setTimeout(() => {
-      void getTopRepos();
-    }, 300);
-    return () => {
-      clearTimeout(id);
-    };
-  }, [currentPage, sort, language, topics]);
+  const {
+    data: reposData,
+    isLoading,
+    error,
+  } = useTopRepos(currentPage, sort, language, topics);
+
+  const data = reposData?.data || [];
+  const totalCount = reposData?.totalCount || 0;
 
   const resetPage = (): void => {
     setCurrentPage(1);
@@ -98,16 +80,23 @@ export default function Repositories() {
     </Space>
   );
 
-  return data === undefined ? (
-    <Loading />
-  ) : (
+  // TODO: Add a nice error page
+  if (error) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-red-500">Error loading repositories</div>
+      </div>
+    );
+  }
+
+  return (
     <div className="flex-1">
       <Table
         className="shadow-lg"
         rowKey="id"
         title={getTitle}
-        loading={loading}
-        columns={getColumns(tableSort)}
+        loading={isLoading}
+        columns={getColumns(sort)}
         dataSource={data}
         pagination={{
           current: currentPage,

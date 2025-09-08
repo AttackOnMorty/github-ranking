@@ -1,20 +1,19 @@
 'use client';
 
-import { createContext, useEffect, useState } from 'react';
+import { createContext } from 'react';
 
-import { getLanguagesAsync } from '@/api';
+import { useLanguages } from '@/hooks/use-github-api';
 
 export const LanguageContext = createContext<string[]>([]);
 
-export default function LanguageProvider({ children }: React.PropsWithChildren) {
-  const [languages, setLanguages] = useState<string[]>([]);
+export default function LanguageProvider({
+  children,
+}: React.PropsWithChildren) {
+  const { data: languages = [], error } = useLanguages();
 
-  useEffect(() => {
-    const getLanguages = async (): Promise<void> => {
-      setLanguages(await getLanguagesAsync());
-    };
-    getLanguages();
-  }, []);
+  if (error) {
+    console.error('Error loading languages:', error);
+  }
 
   return (
     <LanguageContext.Provider value={languages}>
