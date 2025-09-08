@@ -186,3 +186,22 @@ export const getFeaturedTopicsAsync = async (): Promise<Topic[]> => {
     description: topic.short_description,
   }));
 };
+
+export const getRepositoryInfoAsync = async (owner: string, repo: string) => {
+  try {
+    const res = await octokit.rest.repos.get({ owner, repo });
+
+    if (res.status !== 200) {
+      return null;
+    }
+
+    return {
+      stars: res.data.stargazers_count,
+      forks: res.data.forks_count,
+      description: res.data.description,
+    };
+  } catch (error) {
+    console.error('Error fetching repository info:', error);
+    return null;
+  }
+};

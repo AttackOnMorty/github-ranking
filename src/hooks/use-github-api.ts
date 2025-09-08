@@ -1,13 +1,19 @@
 import {
   getFeaturedTopicsAsync,
   getLanguagesAsync,
-  getTopicsAsync,
+  getRepositoryInfoAsync,
   getTopReposAsync,
   getTopUsersAsync,
 } from '@/api';
 import useSWR from 'swr';
 
 import type { Repos, Sort, Topic, Users } from '@/api/types';
+
+const CACHE_DURATION = {
+  ONE_DAY: 86400000, // 24 hours
+  ONE_HOUR: 3600000, // 1 hour
+  THIRTY_MINUTES: 1800000, // 30 minutes
+} as const;
 
 export const useTopRepos = (
   page: number,
@@ -26,7 +32,7 @@ export const useTopRepos = (
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
-      dedupingInterval: 86400000, // 1 day
+      dedupingInterval: CACHE_DURATION.ONE_DAY,
     }
   );
 };
@@ -47,7 +53,7 @@ export const useTopUsers = (
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
-      dedupingInterval: 86400000, // 1 day
+      dedupingInterval: CACHE_DURATION.ONE_DAY,
     }
   );
 };
@@ -56,7 +62,7 @@ export const useLanguages = () => {
   return useSWR<string[]>('languages', getLanguagesAsync, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
-    dedupingInterval: 86400000, // 1 day
+    dedupingInterval: CACHE_DURATION.ONE_DAY,
   });
 };
 
@@ -64,19 +70,18 @@ export const useFeaturedTopics = () => {
   return useSWR<Topic[]>('featured-topics', getFeaturedTopicsAsync, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
-    dedupingInterval: 86400000, // 1 day
+    dedupingInterval: CACHE_DURATION.ONE_DAY,
   });
 };
 
-// TODO: Cache topic search
-export const useTopics = (topic: string) => {
-  return useSWR<Topic[]>(
-    topic ? `topics-${topic}` : null,
-    () => getTopicsAsync(topic),
+export const useRepositoryInfo = (owner: string, repo: string) => {
+  return useSWR(
+    `repo-info-${owner}-${repo}`,
+    () => getRepositoryInfoAsync(owner, repo),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
-      dedupingInterval: 86400000, // 1 day
+      dedupingInterval: CACHE_DURATION.ONE_DAY,
     }
   );
 };

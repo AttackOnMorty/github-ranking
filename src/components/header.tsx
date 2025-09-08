@@ -1,11 +1,14 @@
 'use client';
 
-import { GithubOutlined } from '@ant-design/icons';
+import { GithubOutlined, StarFilled } from '@ant-design/icons';
 import { Button, Menu, Tooltip } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+
+import { useRepositoryInfo } from '@/hooks/use-github-api';
+import { formatNumber } from '@/utils';
 
 import type { MenuProps } from 'antd';
 
@@ -49,6 +52,11 @@ const Header: React.FC = () => {
 
   const [current, setCurrent] = useState(
     pathname === '/' ? '/repositories' : pathname
+  );
+
+  const { data: repoInfo } = useRepositoryInfo(
+    'AttackOnMorty',
+    'github-ranking'
   );
 
   const handleTitleClick = (): void => {
@@ -111,8 +119,14 @@ const Header: React.FC = () => {
         target="_blank"
         rel="noreferrer"
       >
-        <Button type="text">
+        <Button type="text" className="flex items-center space-x-1">
           <GithubOutlined className="text-xl" />
+          {repoInfo?.stars && (
+            <span className="flex items-center space-x-1 text-sm">
+              <StarFilled />
+              <span>{formatNumber(repoInfo.stars)}</span>
+            </span>
+          )}
         </Button>
       </a>
     </header>
