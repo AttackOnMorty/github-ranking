@@ -1,3 +1,5 @@
+import useSWR from 'swr';
+
 import {
   getFeaturedTopicsAsync,
   getLanguagesAsync,
@@ -5,7 +7,6 @@ import {
   getTopReposAsync,
   getTopUsersAsync,
 } from '@/api';
-import useSWR from 'swr';
 
 import type { Repos, Sort, Topic, Users } from '@/api/types';
 
