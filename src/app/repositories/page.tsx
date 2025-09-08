@@ -9,6 +9,7 @@ import {
 } from '@/app/repositories/_components/loading';
 import TopicInput from '@/app/repositories/_components/topic-input';
 import { getColumns, sortOptions } from '@/app/repositories/columns';
+import ErrorState from '@/components/error-state';
 import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
 import { useTopRepos } from '@/hooks/use-github-api';
@@ -84,13 +85,8 @@ export default function Repositories() {
     </Space>
   );
 
-  // TODO: Add a nice error page
   if (error) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-red-500">Error loading repositories</div>
-      </div>
-    );
+    return <ErrorState />;
   }
 
   return (

@@ -8,6 +8,7 @@ import {
   generateSkeletonRows,
 } from '@/app/users/_components/loading';
 import { columns } from '@/app/users/columns';
+import ErrorState from '@/components/error-state';
 import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
 import { useTopUsers } from '@/hooks/use-github-api';
@@ -83,11 +84,7 @@ export default function UserTable({ userType }: { userType: string }) {
   );
 
   if (error) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-red-500">Error loading users</div>
-      </div>
-    );
+    return <ErrorState />;
   }
 
   return (
