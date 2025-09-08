@@ -12,6 +12,11 @@ import { formatNumber } from '@/utils';
 
 import type { MenuProps } from 'antd';
 
+const REPO_OWNER = 'AttackOnMorty';
+const REPO_NAME = 'github-ranking';
+const GITHUB_RANKING_REPO_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
+const GITHUB_TRENDS_URL = 'https://www.github-trends.dev';
+
 const menuItems = [
   {
     key: '/repositories',
@@ -54,10 +59,7 @@ const Header: React.FC = () => {
     pathname === '/' ? '/repositories' : pathname
   );
 
-  const { data: repoInfo } = useRepositoryInfo(
-    'AttackOnMorty',
-    'github-ranking'
-  );
+  const { data: repoInfo } = useRepositoryInfo(REPO_OWNER, REPO_NAME);
 
   const handleTitleClick = (): void => {
     setCurrent('/repositories');
@@ -98,7 +100,7 @@ const Header: React.FC = () => {
       </div>
       <a
         className="hidden lg:block"
-        href="https://www.github-trends.dev/"
+        href={GITHUB_TRENDS_URL}
         target="_blank"
         rel="noreferrer"
       >
@@ -115,7 +117,7 @@ const Header: React.FC = () => {
       </a>
       <a
         className="hidden lg:block"
-        href="https://github.com/AttackOnMorty/github-ranking"
+        href={GITHUB_RANKING_REPO_URL}
         target="_blank"
         rel="noreferrer"
       >
