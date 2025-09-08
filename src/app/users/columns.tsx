@@ -1,8 +1,7 @@
-import { LinkOutlined, TwitterOutlined } from '@ant-design/icons';
-import { Space } from 'antd';
-import Image from 'next/image';
 import { JSX } from 'react';
 
+import { SocialLinks } from '@/components/social-links';
+import { UserAvatar } from '@/components/user-avatar';
 import { EMPTY } from '@/constants';
 import { convertTextToEmoji, formatNumber, getMedalEmoji } from '@/utils';
 
@@ -55,7 +54,9 @@ export const columns: ColumnsType<User> = [
     title: 'Links',
     dataIndex: 'socialLinks',
     key: 'socialLinks',
-    render: (_, record) => renderSocialLinks(record),
+    render: (_, record) => (
+      <SocialLinks blog={record.blog} twitter={record.twitter} />
+    ),
     width: 100,
     responsive: ['lg'],
   },
@@ -70,14 +71,8 @@ export function renderNameColumn({
   company,
 }: User): JSX.Element {
   return (
-    <div className="flex items-center">
-      <Image
-        className="mr-4 rounded-full"
-        src={avatarUrl}
-        width={40}
-        height={40}
-        alt="avatar"
-      />
+    <div className="flex items-center space-x-4">
+      <UserAvatar url={url} avatarUrl={avatarUrl} name={username} />
       <div>
         <a href={url} target="_black" rel="noreferrer">
           {name ?? username}
@@ -102,45 +97,5 @@ export function renderNameColumn({
         </div>
       </div>
     </div>
-  );
-}
-
-export function renderSocialLinks({
-  blog,
-  twitter,
-}: User): JSX.Element | string {
-  const blogIcon =
-    blog !== '' ? (
-      <a
-        className="text-black"
-        href={blog.startsWith('http') ? blog : `https://${blog}`}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <LinkOutlined />
-      </a>
-    ) : null;
-
-  const twitterIcon =
-    twitter !== null ? (
-      <a
-        className="text-black"
-        href={`https://twitter.com/${twitter}`}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <TwitterOutlined />
-      </a>
-    ) : null;
-
-  if (blogIcon === null && twitterIcon === null) {
-    return EMPTY;
-  }
-
-  return (
-    <Space>
-      {blogIcon}
-      {twitterIcon}
-    </Space>
   );
 }

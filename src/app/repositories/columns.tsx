@@ -1,6 +1,6 @@
 import { Tag } from 'antd';
-import Image from 'next/image';
 
+import { UserAvatar } from '@/components/user-avatar';
 import { EMPTY } from '@/constants';
 import { convertTextToEmoji, formatNumber, getMedalEmoji } from '@/utils';
 
@@ -42,16 +42,12 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
       dataIndex: 'name',
       key: 'name',
       render: (name, { owner, url }) => (
-        <div className="flex items-center">
-          <a href={owner.url} target="_blank" rel="noreferrer">
-            <Image
-              className="mr-4 rounded-full"
-              src={owner.avatarUrl}
-              width={40}
-              height={40}
-              alt="avatar"
-            />
-          </a>
+        <div className="flex items-center space-x-4">
+          <UserAvatar
+            url={owner.url}
+            avatarUrl={owner.avatarUrl}
+            name={owner.login}
+          />
           <a href={url} target="_blank" rel="noreferrer">
             {name}
           </a>

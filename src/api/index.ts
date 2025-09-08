@@ -1,11 +1,17 @@
-// TODO: Type for Octokit
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { load } from 'js-yaml';
 import { Octokit } from 'octokit';
 
 import { PAGE_SIZE } from '@/constants';
 
-import type { Repos, Topic, User, Users } from '@/api/types';
+import type { Repos, Sort, Topic, User, Users } from '@/api/types';
+import type { Endpoints } from '@octokit/types';
+
+type RepoResponse =
+  Endpoints['GET /search/repositories']['response']['data']['items'][0];
+type UserResponse =
+  Endpoints['GET /search/users']['response']['data']['items'][0];
+type TopicResponse =
+  Endpoints['GET /search/topics']['response']['data']['items'][0];
 
 // NOTE: Data would be unstable if we filter stars/forks/followers with a small number
 const MIN_COUNT = 100;
@@ -16,7 +22,7 @@ const octokit = new Octokit({
 
 export const getTopReposAsync = async (
   page: number,
-  sort: string,
+  sort: Sort,
   language?: string,
   topics?: string[]
 ): Promise<Repos> => {
@@ -30,10 +36,7 @@ export const getTopReposAsync = async (
     q += ` ${topics.map((topic) => `topic:${topic}`).join(' ')}`;
   }
 
-  const res = await octokit.request('GET /search/repositories{?q}', {
-    headers: {
-      accept: 'application/vnd.github+json',
-    },
+  const res = await octokit.rest.search.repos({
     q,
     sort,
     per_page: PAGE_SIZE,
@@ -44,22 +47,21 @@ export const getTopReposAsync = async (
     return { totalCount: 0, data: [] };
   }
 
-  const data = res.data.items.map(
-    (repo: any, index: number) => ({
-      id: repo.id,
-      rank: (page - 1) * PAGE_SIZE + index + 1,
-      name: repo.name,
-      url: repo.html_url,
-      owner: {
-        avatarUrl: repo.owner.avatar_url,
-        url: repo.owner.html_url,
-      },
-      stars: repo.stargazers_count,
-      forks: repo.forks,
-      description: repo.description,
-      language: repo.language,
-    })
-  );
+  const data = res.data.items.map((repo: RepoResponse, index: number) => ({
+    id: String(repo.id),
+    rank: (page - 1) * PAGE_SIZE + index + 1,
+    name: repo.name,
+    url: repo.html_url,
+    owner: {
+      login: repo.owner?.login,
+      avatarUrl: repo.owner?.avatar_url,
+      url: repo.owner?.html_url,
+    },
+    stars: repo.stargazers_count,
+    forks: repo.forks,
+    description: repo.description,
+    language: repo.language,
+  }));
 
   return {
     totalCount: res.data.total_count,
@@ -83,7 +85,7 @@ export const getLanguagesAsync = async (): Promise<string[]> => {
 };
 
 export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
-  const res = await octokit.request('GET /search/topics{?q}', {
+  const res = await octokit.rest.search.topics({
     q: topic,
   });
 
@@ -91,7 +93,7 @@ export const getTopicsAsync = async (topic: string): Promise<Topic[]> => {
     return [];
   }
 
-  return res.data.items.map((topic: any) => ({
+  return res.data.items.map((topic: TopicResponse) => ({
     name: topic.name,
     description: topic.short_description,
   }));
@@ -113,7 +115,7 @@ export const getTopUsersAsync = async (
     q += ` location:"${location}"`;
   }
 
-  const res = await octokit.request('GET /search/users{?q}', {
+  const res = await octokit.rest.search.users({
     q,
     sort: 'followers',
     per_page: PAGE_SIZE,
@@ -124,12 +126,14 @@ export const getTopUsersAsync = async (
     return { totalCount: 0, data: [] };
   }
 
-  const usernames = res.data.items.map((user: any) => user.login);
+  const usernames = res.data.items.map((user: UserResponse) => user.login);
   const users = await Promise.all(usernames.map(getUserAsync));
-  const data = users.map((user, index) => ({
-    ...user,
-    rank: (page - 1) * PAGE_SIZE + index + 1,
-  }));
+  const data = users
+    .filter((user): user is User => user !== null)
+    .map((user, index) => ({
+      ...user,
+      rank: (page - 1) * PAGE_SIZE + index + 1,
+    }));
 
   return {
     totalCount: res.data.total_count,
@@ -138,7 +142,9 @@ export const getTopUsersAsync = async (
 };
 
 const getUserAsync = async (username: string): Promise<User | null> => {
-  const res = await octokit.request(`GET /users/${username}`);
+  const res = await octokit.rest.users.getByUsername({
+    username,
+  });
 
   if (res.status !== 200) {
     return null;

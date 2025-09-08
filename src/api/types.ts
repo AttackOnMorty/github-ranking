@@ -1,16 +1,19 @@
+export type Sort = 'stars' | 'forks';
+
 export interface Repo {
   id: string;
   rank: number;
   name: string;
   url: string;
   owner: {
-    avatarUrl: string;
-    url: string;
+    login: string | undefined;
+    avatarUrl: string | undefined;
+    url: string | undefined;
   };
   stars: number;
   forks: number;
-  description: string;
-  language: string;
+  description: string | null;
+  language: string | null;
 }
 
 export interface Repos {
@@ -20,23 +23,23 @@ export interface Repos {
 
 export interface Topic {
   name: string;
-  description: string;
+  description: string | null;
 }
 
 export interface User {
   id: number;
   rank?: number;
-  avatarUrl: string;
-  url: string;
+  avatarUrl: string | undefined;
+  url: string | undefined;
   username: string;
   name: string | null;
   followers: number;
   following: number;
   company: string | null;
-  blog: string;
-  bio: string;
+  blog: string | null;
+  bio: string | null;
   location: string | null;
-  twitter: string | null;
+  twitter: string | null | undefined;
 }
 
 export interface Users {

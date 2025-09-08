@@ -42,6 +42,9 @@ importers:
       '@eslint/eslintrc':
         specifier: ^3
         version: 3.3.1
+      '@octokit/types':
+        specifier: ^14.1.0
+        version: 14.1.0
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.13

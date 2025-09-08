@@ -11,12 +11,12 @@ import { MAX_DATA_COUNT, PAGE_SIZE } from '@/constants';
 import { LanguageContext } from '@/context/language-provider';
 import { getLanguagesOptions, scrollToTop } from '@/utils';
 
-import type { Repo } from '@/api/types';
+import type { Repo, Sort } from '@/api/types';
 
 export default function Repositories() {
   const languages = useContext(LanguageContext);
 
-  const [sort, setSort] = useState('stars');
+  const [sort, setSort] = useState<Sort>('stars');
   const [tableSort, setTableSort] = useState(sort);
   const [language, setLanguage] = useState<string>();
   const [topics, setTopics] = useState<string[]>([]);
