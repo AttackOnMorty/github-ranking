@@ -10,6 +10,9 @@ import LanguageProvider from '@/context/language-provider';
 
 import '@/app/globals.css';
 
+// https://ant.design/docs/react/v5-for-19
+import '@ant-design/v5-patch-for-react-19';
+
 export const firaCode = Fira_Code({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
