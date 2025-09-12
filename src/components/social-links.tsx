@@ -40,7 +40,7 @@ export const SocialLinks = ({ blog, twitter }: SocialLinksProps) => {
       {links.map((link, index) => (
         <a
           key={index}
-          className="text-black"
+          className="custom-link"
           href={link.url}
           target="_blank"
           rel="noreferrer"

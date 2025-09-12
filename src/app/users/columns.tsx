@@ -67,7 +67,7 @@ export function renderNameColumn({
     <div className="flex items-center space-x-4">
       <UserAvatar url={url} avatarUrl={avatarUrl} name={username} />
       <div>
-        <a href={url} target="_black" rel="noreferrer">
+        <a className="custom-link" href={url} target="_black" rel="noreferrer">
           {name ?? username}
         </a>
         <div className="flex items-center text-xs font-extralight">

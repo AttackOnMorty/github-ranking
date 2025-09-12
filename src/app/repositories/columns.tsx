@@ -43,7 +43,12 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
             avatarUrl={owner.avatarUrl}
             name={owner.login}
           />
-          <a href={url} target="_blank" rel="noreferrer">
+          <a
+            className="custom-link"
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+          >
             {name}
           </a>
         </div>
@@ -74,16 +79,11 @@ export function getColumns(sorter: string): ColumnsType<Repo> {
       title: 'Language',
       key: 'language',
       dataIndex: 'language',
-      render: (language) =>
-        language !== null ? (
-          <Tag color="processing" key={language} bordered={false}>
-            {language}
-          </Tag>
-        ) : (
-          <Tag color="orange" key="N/A" bordered={false}>
-            N/A
-          </Tag>
-        ),
+      render: (language) => (
+        <Tag key={language} bordered={false}>
+          {language ?? '-'}
+        </Tag>
+      ),
       width: 160,
       responsive: ['lg'],
     },

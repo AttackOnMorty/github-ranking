@@ -30,3 +30,12 @@ html,
 body {
   height: 100%;
 }
+
+.custom-link {
+  color: black !important;
+}
+
+.custom-link:hover {
+  text-decoration: black underline !important;
+  text-underline-offset: 4px;
+}

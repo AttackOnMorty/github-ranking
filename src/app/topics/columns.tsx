@@ -11,6 +11,7 @@ export const columns: ColumnsType<Topic> = [
     key: 'name',
     render: (name, { displayName }) => (
       <a
+        className="custom-link"
         href={`https://github.com/topics/${name}`}
         target="_blank"
         rel="noreferrer"
