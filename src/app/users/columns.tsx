@@ -1,3 +1,4 @@
+import { Building, MapPin } from 'lucide-react';
 import { JSX } from 'react';
 
 import { SocialLinks } from '@/components/social-links';
@@ -72,18 +73,19 @@ export function renderNameColumn({
         <div className="flex items-center text-xs font-extralight">
           {company !== null && (
             <>
-              {/* TODO: */}
-              {/* <Company className="mr-1" /> */}
+              <Building
+                className="mr-1 text-gray-500 flex-shrink-0"
+                size={12}
+              />
               <span>{company}</span>
             </>
           )}
         </div>
-        <div className="flex items-center text-xs font-extralight">
+        <div className="flex items-center">
           {location !== null && (
             <>
-              {/* TODO: */}
-              {/* <Location className="mr-1" /> */}
-              <span>{location}</span>
+              <MapPin className="mr-1 text-gray-500 flex-shrink-0" size={12} />
+              <span className="text-xs font-extralight">{location}</span>
             </>
           )}
         </div>
