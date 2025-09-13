@@ -1,7 +1,6 @@
 import useSWR from 'swr';
 
 import {
-  getFeaturedTopicsAsync,
   getLanguagesAsync,
   getRepositoryInfoAsync,
   getTopReposAsync,
@@ -61,14 +60,6 @@ export const useTopUsers = (
 
 export const useLanguages = () => {
   return useSWR<string[]>('languages', getLanguagesAsync, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: true,
-    dedupingInterval: CACHE_DURATION.ONE_DAY,
-  });
-};
-
-export const useFeaturedTopics = () => {
-  return useSWR<Topic[]>('featured-topics', getFeaturedTopicsAsync, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
     dedupingInterval: CACHE_DURATION.ONE_DAY,

@@ -169,24 +169,6 @@ const getUserAsync = async (username: string): Promise<User | null> => {
   };
 };
 
-export const getFeaturedTopicsAsync = async (): Promise<Topic[]> => {
-  const res = await octokit.rest.search.topics({
-    q: 'is:featured',
-  });
-
-  console.log(res);
-
-  if (res.status !== 200) {
-    return [];
-  }
-
-  return res.data.items.map((topic: TopicResponse) => ({
-    name: topic.name,
-    displayName: topic.display_name,
-    description: topic.short_description,
-  }));
-};
-
 export const getRepositoryInfoAsync = async (owner: string, repo: string) => {
   try {
     const res = await octokit.rest.repos.get({ owner, repo });

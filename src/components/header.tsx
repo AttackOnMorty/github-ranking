@@ -42,14 +42,6 @@ const menuItems = [
       </Link>
     ),
   },
-  {
-    key: '/topics',
-    label: (
-      <Link href="/topics" className="text-base">
-        Topics
-      </Link>
-    ),
-  },
 ];
 
 const Header: React.FC = () => {
