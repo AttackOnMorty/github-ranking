@@ -73,7 +73,7 @@ export default function Repositories() {
           <Space>
             <span>Topics:</span>
             <TopicInput
-              className="w-48"
+              className="w-56"
               placeholder="Any"
               value={topics}
               setValue={setTopics}
