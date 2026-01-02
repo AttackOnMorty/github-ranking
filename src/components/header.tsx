@@ -15,7 +15,7 @@ import type { MenuProps } from 'antd';
 const REPO_OWNER = 'AttackOnMorty';
 const REPO_NAME = 'github-ranking';
 const GITHUB_RANKING_REPO_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
-const GITHUB_TRENDS_URL = 'https://www.github-trends.dev';
+const GITHUB_TRENDS_URL = 'https://github-trends-attackonmortys-projects.vercel.app';
 
 const menuItems = [
   {
