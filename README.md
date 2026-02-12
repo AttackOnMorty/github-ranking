@@ -1,5 +1,7 @@
 # GitHub Ranking
 
+<img width="1203" height="754" alt="image" src="https://github.com/user-attachments/assets/e0245309-678c-4cfa-9d12-b15099ee0cac" />
+
 ## Project Overview
 
 GitHub Ranking is a Next.js 16 web application that displays rankings of GitHub repositories, users, and organizations by stars, forks, and followers. Uses the GitHub Search API via Octokit.
