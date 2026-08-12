@@ -1,5 +1,9 @@
+ 'use client';
+
+import React, { useState } from 'react';
 import { GitFork, Star } from 'lucide-react';
 
+import { starRepoAsync } from '@/api';
 import { Badge } from '@/components/ui/badge';
 import { UserAvatar } from '@/components/user-avatar';
 import { EMPTY } from '@/constants';
@@ -21,7 +25,17 @@ export const sortOptions: { value: Sort; label: string; icon: React.ReactNode }[
 ];
 
 export function RepoRow({ repo, sort }: { repo: Repo; sort: Sort }) {
+  const [isStarring, setIsStarring] = useState(false);
   const countValue = sort === 'stars' ? repo.stars : repo.forks;
+
+  const handleStar = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!repo.owner?.login) return;
+    setIsStarring(true);
+    await starRepoAsync(repo.owner.login, repo.name);
+    setIsStarring(false);
+  };
 
   return (
     <>
@@ -33,14 +47,24 @@ export function RepoRow({ repo, sort }: { repo: Repo; sort: Sort }) {
             avatarUrl={repo.owner.avatarUrl}
             name={repo.owner.login}
           />
-          <a
-            className="hover:underline"
-            href={repo.url}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {repo.name}
-          </a>
+          <div className="flex items-center gap-1.5">
+            <a
+              className="hover:underline"
+              href={repo.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {repo.name}
+            </a>
+            <button
+              onClick={handleStar}
+              disabled={isStarring}
+              className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 shrink-0"
+              aria-label="Star repository"
+            >
+              <Star className={`size-3.5 ${isStarring ? 'animate-pulse' : ''}`} />
+            </button>
+          </div>
         </div>
       </td>
       <td className="p-2 w-24 hidden md:table-cell">
