@@ -189,3 +189,16 @@ export const getRepositoryInfoAsync = async (owner: string, repo: string) => {
     return null;
   }
 };
+
+export const starRepoAsync = async (owner: string, repo: string) => {
+  try {
+    const res = await octokit.rest.activity.starRepoForAuthenticatedUser({
+      username: owner,
+      repo,
+    });
+    return res.status === 204;
+  } catch (error) {
+    console.error('Error starring repository:', error);
+    return false;
+  }
+};
